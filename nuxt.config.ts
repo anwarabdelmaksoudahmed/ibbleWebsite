@@ -82,8 +82,9 @@ export default defineNuxtConfig({
         { name: 'description', content: 'منصة إبل — خدمات الإبل في المملكة العربية السعودية' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/images/brand/ibbil-mark.svg' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       ],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
