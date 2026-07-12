@@ -1,5 +1,11 @@
 export const ROUTES = {
   HOME: '/',
+  STORES: {
+    ROOT: '/stores',
+    CATEGORY: (slug: string) => `/stores/${encodeURIComponent(slug)}`,
+    STORE: (categorySlug: string, storeSlug: string) =>
+      `/stores/${encodeURIComponent(categorySlug)}/${encodeURIComponent(storeSlug)}`,
+  },
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',

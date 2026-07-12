@@ -33,10 +33,10 @@ export const HOME_SERVICE_LINKS: SiteNavItem[] = [
 ]
 
 export const SITE_FOOTER_STORES = [
-  { key: 'site.footer.camelStores', to: '/stores/camels' },
-  { key: 'site.footer.fodderStores', to: '/stores/fodder' },
-  { key: 'site.footer.productStores', to: '/stores/products' },
-  { key: 'site.footer.supplies', to: '/stores/supplies' },
+  { key: 'site.footer.camelStores', to: '/stores/camel' },
+  { key: 'site.footer.fodderStores', to: '/stores/feed' },
+  { key: 'site.footer.productStores', to: '/stores/camel_products' },
+  { key: 'site.footer.supplies', to: '/stores/camel_supplies' },
 ]
 
 export const SITE_FOOTER_SERVICES = [

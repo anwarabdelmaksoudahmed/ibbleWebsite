@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ROUTES } from '@shared/constants/routes'
 import { SITE_SERVICE_LINKS, SITE_TOP_LINKS } from '@shared/constants/site-nav'
+import { pathMatchesPrefix, stripLocalePrefix } from '@shared/utils/locale-path'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -17,6 +18,14 @@ watch(
     mobileOpen.value = false
   },
 )
+
+/** `/services` must not stay active on `/services/*` sibling pages that have their own nav items. */
+function isServiceNavActive(to: string) {
+  if (to === '/services') {
+    return stripLocalePrefix(route.path) === '/services'
+  }
+  return pathMatchesPrefix(route.path, to)
+}
 
 function onSearch() {
   if (!searchQuery.value.trim()) return
@@ -132,9 +141,18 @@ function onSearch() {
             v-for="link in SITE_SERVICE_LINKS"
             :key="link.key"
             :to="link.to"
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-ibbil-green-dark/90 transition-all hover:bg-black/10 hover:text-ibbil-green-dark"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-all"
+            :class="isServiceNavActive(link.to)
+              ? 'bg-ibbil-green text-white shadow-sm'
+              : 'text-ibbil-green-dark/90 hover:bg-black/10 hover:text-ibbil-green-dark'"
+            :aria-current="isServiceNavActive(link.to) ? 'page' : undefined"
           >
-            <Icon v-if="link.icon" :name="link.icon" class="h-4 w-4 opacity-80" />
+            <Icon
+              v-if="link.icon"
+              :name="link.icon"
+              class="h-4 w-4"
+              :class="isServiceNavActive(link.to) ? 'opacity-100' : 'opacity-80'"
+            />
             {{ t(link.key) }}
           </NuxtLinkLocale>
         </nav>
@@ -187,9 +205,18 @@ function onSearch() {
             v-for="link in SITE_SERVICE_LINKS"
             :key="`ms-${link.key}`"
             :to="link.to"
-            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-foreground hover:bg-surface-muted"
+            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors"
+            :class="isServiceNavActive(link.to)
+              ? 'bg-ibbil-green/10 font-medium text-ibbil-green'
+              : 'text-foreground hover:bg-surface-muted'"
+            :aria-current="isServiceNavActive(link.to) ? 'page' : undefined"
           >
-            <Icon v-if="link.icon" :name="link.icon" class="h-4 w-4 text-ibbil-gold" />
+            <Icon
+              v-if="link.icon"
+              :name="link.icon"
+              class="h-4 w-4"
+              :class="isServiceNavActive(link.to) ? 'text-ibbil-green' : 'text-ibbil-gold'"
+            />
             {{ t(link.key) }}
           </NuxtLinkLocale>
           <NuxtLinkLocale

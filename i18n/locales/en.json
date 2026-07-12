@@ -9,6 +9,9 @@
     "search": "Search",
     "loading": "Loading...",
     "noResults": "No results found",
+    "emptyDescription": "There is nothing to display here yet.",
+    "errorDescription": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try again",
     "confirm": "Confirm",
     "back": "Back",
     "next": "Next",
@@ -180,13 +183,68 @@
     "stores": {
       "seoTitle": "Stores | Ibbil",
       "seoDescription": "Browse camel, fodder, supplies, and product store categories on the Ibbil platform.",
+      "categorySeoTitle": "{name} | Ibbil Stores",
       "eyebrow": "Ibbil Marketplace",
       "title": "Store Categories",
       "subtitle": "Pick a category and browse trusted stores.",
+      "categorySubtitle": "Browse trusted stores in this category.",
       "exploreCategory": "Browse stores",
+      "exploreStore": "Visit store",
+      "backToCategories": "Back to store categories",
       "errorTitle": "Could not load store categories",
       "emptyTitle": "No categories yet",
-      "emptyDescription": "No store categories are available to display. Please try again later."
+      "emptyDescription": "No store categories are available to display. Please try again later.",
+      "storesErrorTitle": "Could not load stores",
+      "storesEmptyTitle": "No stores yet",
+      "storesEmptyDescription": "No stores were found in this category yet. Please try again later.",
+      "clearFilters": "Clear filters",
+      "deliveryCities": "Delivery to {count} cities",
+      "productsCount": "{count} products",
+      "filters": {
+        "label": "Filters",
+        "all": "All",
+        "country": "Country",
+        "city": "City",
+        "defaultSort": "Default sort",
+        "sortDesc": "Newest first",
+        "sortAsc": "Oldest first",
+        "search": "Search"
+      },
+      "view": {
+        "label": "View mode",
+        "grid": "Grid view",
+        "list": "List view"
+      },
+      "profile": {
+        "seoTitle": "{name} | Ibbil Stores",
+        "seoDescription": "Browse products, categories, and store details on the Ibbil marketplace.",
+        "errorTitle": "Could not load this store",
+        "backToCategory": "Back to category",
+        "summary": "Store summary",
+        "socialLinks": "Social links",
+        "currency": "SAR",
+        "rating": "Rating {rating} out of 5",
+        "categoriesTitle": "Categories",
+        "categoriesEmptyTitle": "No categories yet",
+        "categoriesEmptyDescription": "This store has not published product categories yet.",
+        "categoriesErrorTitle": "Could not load categories",
+        "productsTitle": "Products",
+        "productsEmptyTitle": "No products yet",
+        "productsEmptyDescription": "No products match this filter. Try another category or check back later.",
+        "productsErrorTitle": "Could not load products",
+        "clearCategoryFilter": "Show all products",
+        "tabs": {
+          "about": "About the store",
+          "policies": "Terms & policies"
+        },
+        "stats": {
+          "label": "Store statistics",
+          "products": "Products",
+          "views": "Views",
+          "reviews": "Reviews",
+          "favorites": "Favorites"
+        }
+      }
     }
   },
   "nav": {

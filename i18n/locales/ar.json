@@ -9,6 +9,9 @@
     "search": "بحث",
     "loading": "جاري التحميل...",
     "noResults": "لا توجد نتائج",
+    "emptyDescription": "لا يوجد محتوى للعرض حالياً.",
+    "errorDescription": "حدث خطأ غير متوقع. حاول مرة أخرى.",
+    "tryAgain": "إعادة المحاولة",
     "confirm": "تأكيد",
     "back": "رجوع",
     "next": "التالي",
@@ -180,13 +183,68 @@
     "stores": {
       "seoTitle": "المتاجر | منصة إبل",
       "seoDescription": "تصفّح فئات متاجر الإبل والأعلاف والمستلزمات ومنتجات الإبل على منصة إبل.",
+      "categorySeoTitle": "{name} | متاجر إبل",
       "eyebrow": "سوق إبل",
       "title": "فئات المتاجر",
       "subtitle": "اختر الفئة وتصفّح المتاجر المعتمدة.",
+      "categorySubtitle": "تصفّح المتاجر المعتمدة ضمن هذه الفئة.",
       "exploreCategory": "تصفّح المتاجر",
+      "exploreStore": "زيارة المتجر",
+      "backToCategories": "العودة إلى فئات المتاجر",
       "errorTitle": "تعذر تحميل فئات المتاجر",
       "emptyTitle": "لا توجد فئات حالياً",
-      "emptyDescription": "لم يتم العثور على فئات متاجر للعرض. حاول مرة أخرى لاحقاً."
+      "emptyDescription": "لم يتم العثور على فئات متاجر للعرض. حاول مرة أخرى لاحقاً.",
+      "storesErrorTitle": "تعذر تحميل المتاجر",
+      "storesEmptyTitle": "لا توجد متاجر حالياً",
+      "storesEmptyDescription": "لم يتم العثور على متاجر في هذه الفئة بعد. حاول مرة أخرى لاحقاً.",
+      "clearFilters": "مسح الفلاتر",
+      "deliveryCities": "التوصيل لـ {count} مدن",
+      "productsCount": "{count} منتج",
+      "filters": {
+        "label": "فلاتر",
+        "all": "الكل",
+        "country": "الدولة",
+        "city": "المدينة",
+        "defaultSort": "البحث الافتراضي",
+        "sortDesc": "الأحدث أولاً",
+        "sortAsc": "الأقدم أولاً",
+        "search": "بحث"
+      },
+      "view": {
+        "label": "طريقة العرض",
+        "grid": "عرض شبكي",
+        "list": "عرض قائمة"
+      },
+      "profile": {
+        "seoTitle": "{name} | متاجر إبل",
+        "seoDescription": "تصفّح منتجات المتجر وأقسامه وتفاصيله على سوق منصة إبل.",
+        "errorTitle": "تعذر تحميل هذا المتجر",
+        "backToCategory": "العودة إلى الفئة",
+        "summary": "نبذة عن المتجر",
+        "socialLinks": "روابط التواصل",
+        "currency": "ر.س",
+        "rating": "التقييم {rating} من 5",
+        "categoriesTitle": "الأقسام",
+        "categoriesEmptyTitle": "لا توجد أقسام حالياً",
+        "categoriesEmptyDescription": "لم ينشر هذا المتجر أقسام منتجات بعد.",
+        "categoriesErrorTitle": "تعذر تحميل الأقسام",
+        "productsTitle": "المنتجات",
+        "productsEmptyTitle": "لا توجد منتجات حالياً",
+        "productsEmptyDescription": "لا توجد منتجات مطابقة لهذا الفلتر. جرّب قسماً آخر أو عد لاحقاً.",
+        "productsErrorTitle": "تعذر تحميل المنتجات",
+        "clearCategoryFilter": "عرض كل المنتجات",
+        "tabs": {
+          "about": "عن المتجر",
+          "policies": "الشروط والسياسات"
+        },
+        "stats": {
+          "label": "إحصائيات المتجر",
+          "products": "المنتجات",
+          "views": "المشاهدات",
+          "reviews": "التقييمات",
+          "favorites": "المفضلة"
+        }
+      }
     }
   },
   "nav": {
