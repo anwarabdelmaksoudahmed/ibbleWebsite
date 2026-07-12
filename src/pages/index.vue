@@ -18,10 +18,11 @@ type HeroSlide = {
 }
 
 const heroSlides: HeroSlide[] = [
-  { src: '/images/hero/camel-1.jpg', altKey: 'desert' },
-  { src: '/images/hero/camel-2.jpg', altKey: 'portrait' },
+  // { src: '/images/hero/camel-1.jpg', altKey: 'desert' },
+  // { src: '/images/hero/camel-2.jpg', altKey: 'portrait' },
   { src: '/images/hero/camel-3.jpg', altKey: 'dunes' },
   { src: '/images/hero/camel-4.jpg', altKey: 'caravan' },
+  { src: '/images/hero/camel-5.png', altKey: 'desert' },
 ]
 </script>
 
