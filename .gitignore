@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Nuxt / Nitro
+.nuxt/
+.output/
+.nitro/
+.cache/
+dist/
+.data/
+
+# Builds & generated
+*.log
+logs/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor / IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+*.local
+.temp/
+.tmp/

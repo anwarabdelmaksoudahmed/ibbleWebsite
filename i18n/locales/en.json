@@ -1,0 +1,182 @@
+{
+  "welcome": "Welcome to Ibble",
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "actions": "Actions",
+    "swiper": {
+      "label": "Image gallery",
+      "slideStatus": "Slide {current} of {total}"
+    }
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "register": "Create Account",
+    "createAccount": "Create an account",
+    "platformName": "Ibbil Platform",
+    "mobile": "Mobile Number",
+    "secretPassword": "Password",
+    "registerNewAccount": "Register a new account?",
+    "email": "Email",
+    "phone": "Phone Number",
+    "phonePlaceholder": "01003259962",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "countryCode": "Country Code",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "welcomeBack": "Welcome back",
+    "loginSubtitle": "Sign in to your account to continue",
+    "loginSuccess": "Welcome back! You have been signed in successfully.",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "registerSubtitle": "Create a new account to access Ibbil platform services",
+    "registerComingSoon": "Registration is being activated. It will be connected to the server soon.",
+    "hero": {
+      "title": "Specialized camel services platform",
+      "subtitle": "Insurance, transport, permits, veterinary care and stores in one place.",
+      "rights": "All rights reserved for Ibbil Platform"
+    },
+    "features": {
+      "secure": "Bank-grade security & encrypted sessions",
+      "fast": "Lightning-fast performance at any scale",
+      "enterprise": "Built for multi-team enterprise workflows"
+    }
+  },
+  "site": {
+    "nav": {
+      "home": "Home",
+      "about": "About Us",
+      "contact": "Contact Us",
+      "stores": "Stores",
+      "insurance": "Insurance",
+      "transport": "Transport",
+      "veterinary": "Veterinary",
+      "permits": "Permits",
+      "services": "Our Services",
+      "media": "Media Center",
+      "cart": "Shopping Cart",
+      "menu": "Menu",
+      "joinMerchant": "Join as a merchant or service provider"
+    },
+    "search": {
+      "placeholder": "Search the platform...",
+      "all": "All",
+      "category": "Category"
+    },
+    "locale": {
+      "chooser": "Language & region",
+      "switchTo": "Switch to {language}",
+      "switchFailed": "Could not switch language. Please try again."
+    },
+    "footer": {
+      "description": "Ibbil is a specialized platform providing comprehensive camel services in Saudi Arabia, including insurance, transport, permits, fodder, and veterinary care.",
+      "policies": "Terms & Policies",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy",
+      "vision": "Saudi Vision 2030",
+      "camelStores": "Camel Stores",
+      "fodderStores": "Fodder Stores",
+      "productStores": "Camel Product Stores",
+      "supplies": "Camel Supplies"
+    },
+    "whatsapp": {
+      "cta": "Contact us on WhatsApp"
+    },
+    "home": {
+      "seoTitle": "Ibbil Platform | Camel Services in Saudi Arabia",
+      "seoDescription": "A specialized platform for camel services: insurance, transport, permits, veterinary care and stores.",
+      "badge": "Saudi Arabia's leading camel platform",
+      "heroTitle": "Everything you need for the camel world in one place",
+      "heroSubtitle": "Browse stores, manage permits, and request insurance, transport, and veterinary services with ease and security.",
+      "servicesTitle": "Platform Services",
+      "servicesSubtitle": "Choose the service you need and get started instantly on Ibbil.",
+      "exploreService": "Explore service",
+      "servicesEyebrow": "What we offer",
+      "serviceItems": {
+        "stores": "Shop fodder, supplies, and camel products from trusted stores.",
+        "insurance": "Clear insurance policies to protect your camels with confidence.",
+        "transport": "Reliable transport services across cities and regions.",
+        "veterinary": "Veterinary care and health follow-up from specialists.",
+        "permits": "Issue and manage permits with simple, clear steps.",
+        "media": "News and coverage from the camel world and the platform."
+      },
+      "about": {
+        "title": "About Us",
+        "lead": "Ibbil is the first platform to offer a complete commercial marketplace for all camel-related services in the Kingdom of Saudi Arabia.",
+        "body": "It covers insurance, transport, and permits, as well as fodder and food stores, camel supplies, and veterinary services — in addition to camel trading, leasing, and sharing. Shop across many stores and benefit from services offered by merchants, veterinarians, and store owners on the Ibbil platform.",
+        "cta": "Learn more",
+        "imageAlt": "A camel in a desert setting representing the Ibbil platform"
+      },
+      "ctaTitle": "Are you a merchant or service provider?",
+      "ctaSubtitle": "Join Ibbil and grow your business with thousands of users.",
+      "stats": {
+        "title": "Statistics",
+        "items": {
+          "insurance": "Insurance policies",
+          "purchases": "Purchase orders",
+          "transport": "Transport operations",
+          "merchants": "Merchants",
+          "products": "Products",
+          "doctors": "Veterinarians"
+        }
+      },
+      "hero": {
+        "prev": "Previous slide",
+        "next": "Next slide",
+        "slidesLabel": "Hero image slides",
+        "slideStatus": "Slide {current} of {total}",
+        "slides": {
+          "desert": "Saddled camel standing in a dusty desert",
+          "portrait": "Close-up portrait of a camel in the desert",
+          "dunes": "Camel walking across golden sand dunes",
+          "caravan": "Camel caravan crossing desert dunes"
+        }
+      },
+      "highlights": {
+        "secure": {
+          "title": "Secure & Trusted",
+          "text": "Encrypted sessions and data protection with best practices."
+        },
+        "marketplace": {
+          "title": "Complete Marketplace",
+          "text": "Camel, fodder, and supply stores in one platform."
+        },
+        "services": {
+          "title": "Full Services",
+          "text": "Insurance, transport, permits and veterinary care in simple steps."
+        }
+      }
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "description": "This page is under development and will be available soon with a better experience."
+    }
+  },
+  "nav": {
+    "products": "Products",
+    "orders": "Orders",
+    "customers": "Customers",
+    "settings": "Settings"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to view this page"
+  }
+}

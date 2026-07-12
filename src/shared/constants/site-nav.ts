@@ -1,0 +1,52 @@
+import { ROUTES } from '@shared/constants/routes'
+
+export type SiteNavItem = {
+  key: string
+  to: string
+  icon?: string
+}
+
+export const SITE_TOP_LINKS: SiteNavItem[] = [
+  { key: 'site.nav.home', to: ROUTES.HOME },
+  { key: 'site.nav.about', to: '/about' },
+  { key: 'site.nav.contact', to: '/contact' },
+]
+
+export const SITE_SERVICE_LINKS: SiteNavItem[] = [
+  { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
+  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
+  { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
+  { key: 'site.nav.services', to: '/services', icon: 'lucide:briefcase' },
+  { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
+]
+
+/** Core services shown on the home page (avoids redundant “all services” entry). */
+export const HOME_SERVICE_LINKS: SiteNavItem[] = [
+  { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
+  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
+  { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
+  { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
+]
+
+export const SITE_FOOTER_STORES = [
+  { key: 'site.footer.camelStores', to: '/stores/camels' },
+  { key: 'site.footer.fodderStores', to: '/stores/fodder' },
+  { key: 'site.footer.productStores', to: '/stores/products' },
+  { key: 'site.footer.supplies', to: '/stores/supplies' },
+]
+
+export const SITE_FOOTER_SERVICES = [
+  { key: 'site.nav.permits', to: '/services/permits' },
+  { key: 'site.nav.insurance', to: '/services/insurance' },
+  { key: 'site.nav.transport', to: '/services/transport' },
+  { key: 'site.nav.veterinary', to: '/services/veterinary' },
+]
+
+export const SITE_FOOTER_POLICIES = [
+  { key: 'site.footer.terms', to: '/terms' },
+  { key: 'site.footer.privacy', to: '/privacy' },
+]

@@ -1,0 +1,380 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-50: oklch(0.97 0.02 250);
+  --color-primary-100: oklch(0.93 0.04 250);
+  --color-primary-200: oklch(0.86 0.08 250);
+  --color-primary-300: oklch(0.76 0.12 250);
+  --color-primary-400: oklch(0.66 0.16 250);
+  --color-primary-500: oklch(0.55 0.2 250);
+  --color-primary-600: oklch(0.48 0.2 250);
+  --color-primary-700: oklch(0.4 0.18 250);
+  --color-primary-800: oklch(0.33 0.15 250);
+  --color-primary-900: oklch(0.27 0.12 250);
+  --color-primary-950: oklch(0.2 0.08 250);
+
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: oklch(0.98 0 0);
+  --color-surface-elevated: oklch(1 0 0);
+  --color-border: oklch(0.9 0 0);
+  --color-border-muted: oklch(0.94 0 0);
+  --color-foreground: oklch(0.2 0 0);
+  --color-foreground-muted: oklch(0.45 0 0);
+  --color-danger: oklch(0.55 0.22 25);
+  --color-success: oklch(0.55 0.17 145);
+  --color-warning: oklch(0.75 0.15 85);
+  --color-info: oklch(0.6 0.15 250);
+
+  --color-ibbil-green: #2d533d;
+  --color-ibbil-green-dark: #1f3a2b;
+  --color-ibbil-gold: #d4a044;
+  --color-ibbil-gold-hover: #c09030;
+
+  --font-sans: 'Tajawal', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    --color-surface: oklch(0.17 0.01 250);
+    --color-surface-muted: oklch(0.2 0.01 250);
+    --color-surface-elevated: oklch(0.22 0.01 250);
+    --color-border: oklch(0.3 0.01 250);
+    --color-border-muted: oklch(0.25 0.01 250);
+    --color-foreground: oklch(0.95 0 0);
+    --color-foreground-muted: oklch(0.7 0 0);
+  }
+
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    @apply antialiased scroll-smooth;
+  }
+
+  body {
+    @apply bg-surface text-foreground font-sans min-h-screen;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ibbil-green;
+  }
+
+  html[lang='ar'] body,
+  html[dir='rtl'] body {
+    font-family: 'Tajawal', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  html[lang='en'] body,
+  html[dir='ltr'] body {
+    font-family: 'Inter', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  html.locale-switching {
+    cursor: progress;
+  }
+
+  html.locale-switching .locale-shell {
+    pointer-events: none;
+  }
+}
+
+@layer components {
+  /* Enterprise language menu (Airbnb / Booking style) */
+  .locale-menu {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .locale-menu__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    border: 0;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.18s ease, opacity 0.18s ease;
+  }
+
+  .locale-menu--header .locale-menu__trigger,
+  .locale-menu--auth .locale-menu__trigger {
+    color: rgb(255 255 255 / 0.92);
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .locale-menu--header .locale-menu__trigger:hover,
+  .locale-menu--auth .locale-menu__trigger:hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .locale-menu--mobile .locale-menu__trigger {
+    color: #1f3a2b;
+    background: #eef2ef;
+  }
+
+  .locale-menu--mobile .locale-menu__trigger:hover {
+    background: #e4ebe6;
+  }
+
+  .locale-menu__trigger:disabled {
+    cursor: progress;
+    opacity: 0.75;
+  }
+
+  .locale-menu__flag {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  .locale-menu__label {
+    max-width: 7rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .locale-menu__chevron {
+    width: 0.9rem;
+    height: 0.9rem;
+    opacity: 0.75;
+    transition: transform 0.18s ease;
+  }
+
+  .locale-menu.is-open .locale-menu__chevron {
+    transform: rotate(180deg);
+  }
+
+  .locale-menu__spinner {
+    width: 0.9rem;
+    height: 0.9rem;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .locale-menu__panel {
+    position: absolute;
+    top: calc(100% + 0.45rem);
+    inset-inline-end: 0;
+    z-index: 80;
+    width: min(18.5rem, calc(100vw - 1.5rem));
+    overflow: hidden;
+    border-radius: 0.9rem;
+    border: 1px solid rgb(45 83 61 / 0.1);
+    background: #fff;
+    padding: 0.45rem;
+    box-shadow:
+      0 18px 40px -20px rgb(31 58 43 / 0.45),
+      0 0 0 1px rgb(255 255 255 / 0.4) inset;
+  }
+
+  .locale-menu--mobile .locale-menu__panel {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+  }
+
+  .locale-menu__heading {
+    margin: 0;
+    padding: 0.55rem 0.7rem 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #7a8a80;
+  }
+
+  .locale-menu__item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.7rem;
+    border: 0;
+    border-radius: 0.65rem;
+    background: transparent;
+    padding: 0.65rem 0.7rem;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .locale-menu__item:hover {
+    background: #f4f7f5;
+  }
+
+  .locale-menu__item.is-active {
+    background: #eef5f0;
+  }
+
+  .locale-menu__item-flag {
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
+  .locale-menu__item-text {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .locale-menu__item-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1f3a2b;
+  }
+
+  .locale-menu__item-region {
+    font-size: 0.75rem;
+    color: #6b7a70;
+  }
+
+  .locale-menu__check {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: #2d533d;
+  }
+
+  /* Thin top progress — YouTube / GitHub / large SaaS pattern */
+  .locale-progress {
+    pointer-events: none;
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 200;
+    height: 2px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .locale-progress.is-active {
+    opacity: 1;
+  }
+
+  .locale-progress__bar {
+    display: block;
+    height: 100%;
+    width: 40%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2d533d, #d4a044, #2d533d);
+    background-size: 200% 100%;
+    animation: locale-progress-slide 0.85s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .page-enter-active,
+  .page-leave-active,
+  .layout-enter-active,
+  .layout-leave-active {
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  .page-enter-from,
+  .page-leave-to,
+  .layout-enter-from,
+  .layout-leave-to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .locale-shell {
+    transition: opacity 0.16s ease;
+  }
+
+  .locale-shell.is-locale-switching {
+    opacity: 0.72;
+  }
+
+  .locale-menu-panel-enter-active,
+  .locale-menu-panel-leave-active {
+    transition: opacity 0.16s ease, transform 0.16s ease;
+  }
+
+  .locale-menu-panel-enter-from,
+  .locale-menu-panel-leave-to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+    animation-timing-function: ease;
+  }
+
+  ::view-transition-old(root) {
+    animation-name: locale-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: locale-fade-in;
+  }
+
+  @keyframes locale-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes locale-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes locale-progress-slide {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(280%);
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .locale-shell,
+    .locale-shell.is-locale-switching,
+    .page-enter-active,
+    .page-leave-active,
+    .layout-enter-active,
+    .layout-leave-active,
+    .locale-menu-panel-enter-active,
+    .locale-menu-panel-leave-active,
+    .locale-progress__bar,
+    .locale-menu__spinner {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none !important;
+    }
+  }
+}
