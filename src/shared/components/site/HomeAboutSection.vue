@@ -148,14 +148,14 @@ useIntersectionObserver(
               class="group inline-flex items-center gap-2 rounded-lg bg-ibbil-green px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-ibbil-green-dark hover:shadow-md hover:shadow-ibbil-green/20"
             >
               {{ t('site.nav.services') }}
-              <Icon name="lucide:arrow-left" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+              <DirectionalArrow animated />
             </NuxtLinkLocale>
             <NuxtLinkLocale
               to="/about"
-              class="about-link-secondary inline-flex items-center gap-2 px-2 py-2.5 text-sm font-semibold text-ibbil-green transition-colors duration-300 hover:text-ibbil-gold"
+              class="group inline-flex items-center gap-2 px-2 py-2.5 text-sm font-semibold text-ibbil-green transition-colors duration-300 hover:text-ibbil-gold"
             >
               {{ t('site.home.about.cta') }}
-              <Icon name="lucide:arrow-left" class="h-4 w-4 transition-transform duration-300 rtl:rotate-180" />
+              <DirectionalArrow animated />
             </NuxtLinkLocale>
           </div>
         </div>
@@ -214,14 +214,6 @@ useIntersectionObserver(
 .about-corner-bl {
   animation-delay: 0.55s;
   transform-origin: bottom left;
-}
-
-.about-link-secondary:hover :deep(svg) {
-  transform: translateX(-3px);
-}
-
-html[dir='ltr'] .about-link-secondary:hover :deep(svg) {
-  transform: translateX(3px);
 }
 
 @keyframes about-fade-up {
@@ -308,10 +300,6 @@ html[dir='ltr'] .about-link-secondary:hover :deep(svg) {
   .about-corner {
     animation: none;
     opacity: 1;
-    transform: none;
-  }
-
-  .about-link-secondary:hover :deep(svg) {
     transform: none;
   }
 }

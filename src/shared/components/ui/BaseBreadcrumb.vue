@@ -12,7 +12,11 @@ defineProps<BaseBreadcrumbProps>()
   <nav aria-label="Breadcrumb">
     <ol class="flex flex-wrap items-center gap-1 text-sm">
       <li v-for="(item, index) in items" :key="index" class="flex items-center gap-1">
-        <Icon v-if="index > 0" name="lucide:chevron-right" class="size-4 text-foreground-muted" aria-hidden="true" />
+        <DirectionalArrow
+          v-if="index > 0"
+          variant="chevron"
+          class="text-foreground-muted"
+        />
         <NuxtLink
           v-if="item.to && index < items.length - 1"
           :to="item.to"

@@ -35,6 +35,7 @@ useHead({
       <NuxtPage />
     </NuxtLayout>
     <BaseToastContainer />
+    <BaseConfirmDialog />
     <LocaleProgressBar />
   </div>
 </template>

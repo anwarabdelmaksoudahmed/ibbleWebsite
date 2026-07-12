@@ -19,6 +19,16 @@
       "slideStatus": "Slide {current} of {total}"
     }
   },
+  "crud": {
+    "createTitle": "Create",
+    "editTitle": "Edit",
+    "createSuccess": "Created successfully",
+    "updateSuccess": "Updated successfully",
+    "deleteSuccess": "Deleted successfully",
+    "deleteConfirmTitle": "Delete item",
+    "deleteConfirmMessage": "Are you sure you want to delete this item? This action cannot be undone.",
+    "deleteConfirmNamed": "Are you sure you want to delete \"{name}\"? This action cannot be undone."
+  },
   "auth": {
     "login": "Sign In",
     "logout": "Sign Out",
@@ -166,6 +176,17 @@
     "comingSoon": {
       "title": "Coming Soon",
       "description": "This page is under development and will be available soon with a better experience."
+    },
+    "stores": {
+      "seoTitle": "Stores | Ibbil",
+      "seoDescription": "Browse camel, fodder, supplies, and product store categories on the Ibbil platform.",
+      "eyebrow": "Ibbil Marketplace",
+      "title": "Store Categories",
+      "subtitle": "Pick a category and browse trusted stores.",
+      "exploreCategory": "Browse stores",
+      "errorTitle": "Could not load store categories",
+      "emptyTitle": "No categories yet",
+      "emptyDescription": "No store categories are available to display. Please try again later."
     }
   },
   "nav": {

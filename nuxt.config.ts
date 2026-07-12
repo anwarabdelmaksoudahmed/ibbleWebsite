@@ -60,15 +60,21 @@ export default defineNuxtConfig({
 
   components: [
     { path: '~/shared/components', pathPrefix: false },
-    { path: '~/modules', pathPrefix: false, ignore: ['**/pages/**', '**/stores/**', '**/services/**', '**/api/**'] },
+    {
+      path: '~/modules',
+      pathPrefix: false,
+      ignore: ['**/pages/**', '**/stores/**/*.{ts,js}', '**/services/**', '**/api/**'],
+    },
   ],
 
   runtimeConfig: {
     public: {
-      appName: 'Ibble',
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api',
+      appName: process.env.NUXT_PUBLIC_APP_NAME || 'Ibble',
+      apiBaseUrl:
+        process.env.NUXT_PUBLIC_API_BASE_URL || 'https://marketplace-api-ibbil-dev.dafagate.com/api',
       authBaseUrl: process.env.NUXT_PUBLIC_AUTH_BASE_URL || 'https://auth-ibbil-dev.dafagate.com',
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '966500000000',
     },
   },
 
@@ -138,7 +144,7 @@ export default defineNuxtConfig({
 
   site: {
     url: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    name: 'Ibble',
+    name: process.env.NUXT_PUBLIC_APP_NAME || 'Ibble',
     description: 'Enterprise SaaS Platform',
     defaultLocale: 'ar',
   },

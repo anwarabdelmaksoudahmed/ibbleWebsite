@@ -31,7 +31,7 @@ const features = [
               :to="ROUTES.HOME"
               class="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1.5 text-xs font-medium text-white/90 transition-colors hover:bg-white/20"
             >
-              <Icon name="lucide:arrow-right" class="h-3.5 w-3.5 rtl:rotate-180" />
+              <DirectionalArrow direction="back" size="xs" />
               {{ t('site.nav.home') }}
             </NuxtLinkLocale>
           </div>

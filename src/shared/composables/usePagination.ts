@@ -1,6 +1,6 @@
 import { APP_CONFIG } from '@shared/constants/app-config'
 
-export function usePagination(initialPage = 1, initialPerPage = APP_CONFIG.DEFAULT_PAGE_SIZE) {
+export function usePagination(initialPage = 1, initialPerPage: number = APP_CONFIG.DEFAULT_PAGE_SIZE) {
   const page = ref(initialPage)
   const perPage = ref(initialPerPage)
   const total = ref(0)

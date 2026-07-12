@@ -9,8 +9,6 @@ export const APP_CONFIG = {
   DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
   CURRENCY: 'USD',
   LOCALE: 'en-US',
-  /** International format without + (e.g. 9665xxxxxxxx) */
-  WHATSAPP_NUMBER: '966500000000',
 } as const
 
 export const STORAGE_KEYS = {

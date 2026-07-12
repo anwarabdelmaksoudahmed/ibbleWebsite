@@ -29,4 +29,8 @@ export const ENDPOINTS = {
     PROFILE: '/settings/profile',
     PREFERENCES: '/settings/preferences',
   },
+  STORES: {
+    CATEGORIES: '/v1/stores-categories',
+    CATEGORY_BY_SLUG: (slug: string) => `/v1/stores-categories/${slug}`,
+  },
 } as const

@@ -88,7 +88,7 @@ const heroSlides: HeroSlide[] = [
                     class="inline-flex items-center gap-2 rounded-lg bg-ibbil-gold px-4 py-2.5 text-sm font-bold text-ibbil-green-dark shadow-md shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-ibbil-gold-hover"
                   >
                     {{ t('auth.login') }}
-                    <Icon name="lucide:arrow-left" class="h-4 w-4 rtl:rotate-180" />
+                    <DirectionalArrow />
                   </NuxtLinkLocale>
                   <NuxtLinkLocale
                     to="/services"

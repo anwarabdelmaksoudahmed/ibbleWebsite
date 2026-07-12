@@ -2,6 +2,7 @@ import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axio
 import { navigateTo } from '#app'
 import { tokenStorage } from '@core/auth/token-storage'
 import { normalizeApiError } from '@core/api/http/errors'
+import { applyAcceptLanguageHeader } from '@core/api/http/locale'
 import { AUTH_ENDPOINT_FLAGS } from '@modules/auth/constants/endpoints'
 import { useAuthStore } from '@modules/auth/stores/auth.store'
 import { ROUTES } from '@shared/constants/routes'
@@ -83,6 +84,8 @@ async function attemptTokenRefresh(client: AxiosInstance, originalRequest: Inter
 
 export function setupRequestInterceptor(client: AxiosInstance): void {
   client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    applyAcceptLanguageHeader(config)
+
     if (!config.skipAuth) {
       const token = tokenStorage.getAccessToken()
       if (token) {

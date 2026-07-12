@@ -348,8 +348,7 @@ defineExpose({
               class="base-swiper__nav-btn"
               :aria-label="prevLabel || t('common.previous')"
             >
-              <Icon name="lucide:chevron-right" class="h-4 w-4 rtl:hidden" />
-              <Icon name="lucide:chevron-left" class="hidden h-4 w-4 rtl:block" />
+              <DirectionalArrow direction="back" variant="chevron" />
             </button>
             <button
               :id="nextId"
@@ -357,8 +356,7 @@ defineExpose({
               class="base-swiper__nav-btn"
               :aria-label="nextLabel || t('common.next')"
             >
-              <Icon name="lucide:chevron-left" class="h-4 w-4 rtl:hidden" />
-              <Icon name="lucide:chevron-right" class="hidden h-4 w-4 rtl:block" />
+              <DirectionalArrow variant="chevron" />
             </button>
           </div>
         </div>

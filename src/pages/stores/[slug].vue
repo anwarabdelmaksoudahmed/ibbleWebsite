@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import StoreCategoriesSection from '@modules/stores/components/StoreCategoriesSection.vue'
-
 definePageMeta({ layout: 'site' })
 
 const { t } = useI18n()
@@ -12,5 +10,5 @@ useSeoMeta({
 </script>
 
 <template>
-  <StoreCategoriesSection />
+  <ComingSoonSection title-key="site.nav.stores" />
 </template>

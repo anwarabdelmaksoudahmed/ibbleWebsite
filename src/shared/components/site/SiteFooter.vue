@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { APP_CONFIG } from '@shared/constants/app-config'
 import {
   SITE_FOOTER_POLICIES,
   SITE_FOOTER_SERVICES,
@@ -7,19 +6,20 @@ import {
 } from '@shared/constants/site-nav'
 
 const { t } = useI18n()
+const config = useRuntimeConfig()
 const year = new Date().getFullYear()
 
-const socialLinks = [
+const socialLinks = computed(() => [
   {
     icon: 'simple-icons:whatsapp',
     label: 'WhatsApp',
-    href: `https://wa.me/${APP_CONFIG.WHATSAPP_NUMBER}`,
+    href: `https://wa.me/${config.public.whatsappNumber}`,
   },
   { icon: 'carbon:logo-facebook', label: 'Facebook', href: '#' },
   { icon: 'carbon:logo-instagram', label: 'Instagram', href: '#' },
   { icon: 'carbon:logo-linkedin', label: 'LinkedIn', href: '#' },
   { icon: 'carbon:logo-x', label: 'X', href: '#' },
-]
+])
 </script>
 
 <template>

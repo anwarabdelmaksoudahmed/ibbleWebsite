@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { APP_CONFIG } from '@shared/constants/app-config'
-
 const { t, locale } = useI18n()
+const config = useRuntimeConfig()
 
 const message = computed(() =>
   locale.value === 'ar'
@@ -11,7 +10,7 @@ const message = computed(() =>
 
 const href = computed(() => {
   const text = encodeURIComponent(message.value)
-  return `https://wa.me/${APP_CONFIG.WHATSAPP_NUMBER}?text=${text}`
+  return `https://wa.me/${config.public.whatsappNumber}?text=${text}`
 })
 </script>
 

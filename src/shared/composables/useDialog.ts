@@ -6,11 +6,15 @@ export type DialogOptions = {
   variant?: 'danger' | 'primary' | 'warning'
 }
 
-export function useDialog() {
-  const isOpen = ref(false)
-  const options = ref<DialogOptions | null>(null)
-  let resolvePromise: ((value: boolean) => void) | null = null
+const isOpen = ref(false)
+const options = ref<DialogOptions | null>(null)
+let resolvePromise: ((value: boolean) => void) | null = null
 
+/**
+ * App-wide confirm dialog state (singleton), same pattern as useToast.
+ * Mount `<BaseConfirmDialog />` once in app.vue.
+ */
+export function useDialog() {
   function confirm(dialogOptions: DialogOptions): Promise<boolean> {
     options.value = dialogOptions
     isOpen.value = true

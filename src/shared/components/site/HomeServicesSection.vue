@@ -96,11 +96,7 @@ useIntersectionObserver(
 
             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ibbil-green transition-colors duration-300 group-hover:text-ibbil-gold">
               {{ t('site.home.exploreService') }}
-              <Icon
-                name="lucide:arrow-left"
-                class="h-4 w-4 transition-transform duration-300 rtl:rotate-180 ltr:group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5"
-                aria-hidden="true"
-              />
+              <DirectionalArrow animated />
             </span>
           </NuxtLinkLocale>
         </li>

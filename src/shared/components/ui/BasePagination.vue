@@ -42,7 +42,7 @@ function goTo(p: number) {
 <template>
   <nav aria-label="Pagination" class="flex items-center gap-1">
     <BaseButton variant="ghost" size="sm" :disabled="disabled || page <= 1" @click="goTo(page - 1)">
-      <Icon name="lucide:chevron-left" class="size-4" />
+      <DirectionalArrow direction="back" variant="chevron" />
     </BaseButton>
     <template v-for="(p, i) in pages" :key="i">
       <span v-if="p === 'ellipsis'" class="px-2 text-foreground-muted">...</span>
@@ -58,7 +58,7 @@ function goTo(p: number) {
       </BaseButton>
     </template>
     <BaseButton variant="ghost" size="sm" :disabled="disabled || page >= totalPages" @click="goTo(page + 1)">
-      <Icon name="lucide:chevron-right" class="size-4" />
+      <DirectionalArrow variant="chevron" />
     </BaseButton>
   </nav>
 </template>
