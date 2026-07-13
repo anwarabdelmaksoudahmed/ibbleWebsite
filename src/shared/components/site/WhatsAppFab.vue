@@ -16,8 +16,11 @@ const href = computed(() => {
   return `https://wa.me/${config.public.whatsappNumber}?text=${text}`
 })
 
-/** Lift above the cart mobile checkout bar when on /cart. */
-const liftForCartBar = computed(() => stripLocalePrefix(route.path) === '/cart')
+/** Lift above the cart/checkout mobile checkout bar. */
+const liftForCartBar = computed(() => {
+  const path = stripLocalePrefix(route.path)
+  return path === '/cart' || path === '/checkout'
+})
 </script>
 
 <template>

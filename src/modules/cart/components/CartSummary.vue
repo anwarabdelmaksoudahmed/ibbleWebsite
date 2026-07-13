@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getCartTotal } from '@modules/cart/utils/mappers'
 import type { Cart } from '@modules/cart/types'
+import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
 
 const props = defineProps<{
@@ -9,13 +10,15 @@ const props = defineProps<{
 }>()
 
 const { t, n } = useI18n()
-const toast = useToast()
+const localePath = useLocalePath()
 
 const storeCount = computed(() => props.cart.stores.length)
 const grandTotal = computed(() => getCartTotal(props.cart))
 
-function onCheckoutAll() {
-  toast.info(t('site.commerce.cart.checkoutSoon'))
+async function onCheckoutAll() {
+  const firstStoreId = props.cart.stores[0]?.storeId
+  if (!firstStoreId) return
+  await navigateTo(localePath(CHECKOUT_ROUTES.forStore(firstStoreId)))
 }
 </script>
 

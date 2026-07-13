@@ -2,6 +2,7 @@
 import CartLineItem from '@modules/cart/components/CartLineItem.vue'
 import { getStoreSubtotal } from '@modules/cart/utils/mappers'
 import type { CartStoreGroup } from '@modules/cart/types'
+import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
 
 const props = defineProps<{
@@ -10,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const { t, n } = useI18n()
-const toast = useToast()
+const localePath = useLocalePath()
 
 const productCount = computed(() =>
   props.store.products.reduce((sum, p) => sum + p.quantity, 0),
@@ -18,8 +19,8 @@ const productCount = computed(() =>
 
 const subtotal = computed(() => getStoreSubtotal(props.store))
 
-function onCheckout() {
-  toast.info(t('site.commerce.cart.checkoutSoon'))
+async function onCheckout() {
+  await navigateTo(localePath(CHECKOUT_ROUTES.forStore(props.store.storeId)))
 }
 </script>
 

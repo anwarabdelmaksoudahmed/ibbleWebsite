@@ -82,6 +82,8 @@ export default defineNuxtConfig({
       apiBaseUrl:
         process.env.NUXT_PUBLIC_API_BASE_URL || 'https://marketplace-api-ibbil-dev.dafagate.com/api',
       authBaseUrl: process.env.NUXT_PUBLIC_AUTH_BASE_URL || 'https://auth.ibbil.com',
+      webApiBaseUrl:
+        process.env.NUXT_PUBLIC_WEB_API_BASE_URL || 'https://api-web.ibbil.com/api',
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '966500000000',
     },

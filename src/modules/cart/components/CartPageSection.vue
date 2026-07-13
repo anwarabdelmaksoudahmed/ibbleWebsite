@@ -4,6 +4,7 @@ import CartSummary from '@modules/cart/components/CartSummary.vue'
 import MarketplaceFetchLoader from '@shared/components/site/MarketplaceFetchLoader.vue'
 import { getCartTotal } from '@modules/cart/utils/mappers'
 import { ROUTES } from '@shared/constants/routes'
+import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
 
 const { t, n } = useI18n()
@@ -40,14 +41,14 @@ const showEmpty = computed(
 const grandTotal = computed(() => getCartTotal(cart.value))
 const formattedGrandTotal = computed(() => n(grandTotal.value))
 
-const toast = useToast()
-
 async function goToLogin() {
   await navigateTo(localePath(ROUTES.AUTH.LOGIN))
 }
 
-function onMobileCheckout() {
-  toast.info(t('site.commerce.cart.checkoutSoon'))
+async function onMobileCheckout() {
+  const firstStoreId = cart.value.stores[0]?.storeId
+  if (!firstStoreId) return
+  await navigateTo(localePath(CHECKOUT_ROUTES.forStore(firstStoreId)))
 }
 
 onMounted(() => {
