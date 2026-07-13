@@ -70,7 +70,7 @@ function clearFiltersAndSearch() {
       "
     />
 
-    <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-6 lg:py-14">
+    <div class="relative mx-auto max-w-7xl px-4 py-[12px] ">
       <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
       <header class="mb-6 flex items-start gap-4 sm:mb-8 sm:gap-5">

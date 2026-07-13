@@ -133,6 +133,9 @@ export default defineNuxtConfig({
       contentSecurityPolicy: {
         'img-src': ["'self'", 'data:', 'https:'],
         'font-src': ["'self'", 'https:', 'data:'],
+        // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
+        // upgrade CSS/JS/images to HTTPS and they fail to load.
+        'upgrade-insecure-requests': process.env.NODE_ENV === 'development' ? false : true,
       },
       crossOriginEmbedderPolicy: process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
       referrerPolicy: 'strict-origin-when-cross-origin',

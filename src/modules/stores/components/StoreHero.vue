@@ -40,7 +40,7 @@ const hasReviews = computed(() => props.store.reviewsCount > 0)
       <div class="absolute inset-x-0 bottom-0 z-10">
         <div class="mx-auto flex w-full max-w-7xl items-end gap-3 px-4 sm:gap-5 sm:px-6 lg:gap-6 lg:px-6">
           <div
-            class="size-[7rem] shrink-0 translate-y-1/2 overflow-hidden rounded-2xl border-[3px] border-white bg-white
+            class="size-[7rem] shrink-0 translate-y-[50px] overflow-hidden rounded-2xl border-[3px] border-white bg-white
                    shadow-[0_16px_40px_-12px_rgba(0,0,0,0.45)]
                    sm:size-[9rem] sm:rounded-[1.25rem]
                    md:size-[10.5rem] md:rounded-3xl

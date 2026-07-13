@@ -28,5 +28,6 @@ export type ApiErrorResponse = {
 export type RequestConfig = {
   skipAuth?: boolean
   skipErrorToast?: boolean
+  apiLocale?: string
   _retry?: boolean
 }

@@ -17,6 +17,8 @@
     "next": "Next",
     "previous": "Previous",
     "actions": "Actions",
+    "breadcrumb": "Breadcrumb",
+    "breadcrumbMore": "Show more path levels",
     "swiper": {
       "label": "Image gallery",
       "slideStatus": "Slide {current} of {total}"

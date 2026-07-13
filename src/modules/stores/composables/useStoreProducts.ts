@@ -11,6 +11,13 @@ export function useStoreProducts(slug: MaybeRefOrGetter<string>) {
 
   const resolvedSlug = computed(() => toValue(slug))
 
+  // Category ids are locale-agnostic, but clear filter on language switch so
+  // a stale selection never masks the content-fallback retry.
+  watch(locale, () => {
+    categoryId.value = ''
+    page.value = 1
+  })
+
   const {
     data,
     pending,

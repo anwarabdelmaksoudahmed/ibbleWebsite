@@ -1,4 +1,6 @@
 import { BaseApiService } from '@core/api/base-service'
+import { isApiError, normalizeApiError } from '@core/api/http/errors'
+import { resolveApiLocale } from '@core/api/http/locale'
 import { STORES_ENDPOINTS } from '@modules/stores/constants/endpoints'
 import type {
   CategoryStoresApiResponse,
@@ -23,6 +25,21 @@ import {
   mapStoreProductsResponse,
   mapStoreProfile,
 } from '@modules/stores/utils/mappers'
+
+/** Marketplace product endpoints omit EN rows / 404 when translations are missing. */
+const CONTENT_FALLBACK_LOCALE = 'ar'
+
+function shouldRetryWithContentFallback(): boolean {
+  return resolveApiLocale() !== CONTENT_FALLBACK_LOCALE
+}
+
+function storeProductsQuery(params: StoreProductsQueryParams = {}) {
+  return {
+    ...(params.category ? { category: params.category } : {}),
+    page: params.page ?? 1,
+    limit: params.limit ?? 12,
+  }
+}
 
 export class StoresService extends BaseApiService {
   async listCategories(): Promise<StoreCategory[]> {
@@ -57,28 +74,51 @@ export class StoresService extends BaseApiService {
   }
 
   async listStoreProductCategories(slug: string): Promise<StoreProductCategory[]> {
-    const { data } = await this.client.get<StoreProductCategoriesApiResponse>(
-      STORES_ENDPOINTS.PRODUCT_CATEGORIES(slug),
-    )
-    return mapStoreProductCategoriesResponse(data)
+    try {
+      const { data } = await this.client.get<StoreProductCategoriesApiResponse>(
+        STORES_ENDPOINTS.PRODUCT_CATEGORIES(slug),
+      )
+      return mapStoreProductCategoriesResponse(data)
+    } catch (error) {
+      const apiError = isApiError(error) ? error : normalizeApiError(error)
+      if (apiError.statusCode !== 404 || !shouldRetryWithContentFallback()) {
+        throw error
+      }
+
+      const { data } = await this.client.get<StoreProductCategoriesApiResponse>(
+        STORES_ENDPOINTS.PRODUCT_CATEGORIES(slug),
+        { apiLocale: CONTENT_FALLBACK_LOCALE },
+      )
+      return mapStoreProductCategoriesResponse(data)
+    }
   }
 
   async listStoreProducts(
     slug: string,
     params: StoreProductsQueryParams = {},
   ): Promise<StoreProductsResult> {
+    const query = storeProductsQuery(params)
     const { data } = await this.client.get<StoreProductsApiResponse>(
       STORES_ENDPOINTS.PRODUCTS(slug),
-      {
-        params: {
-          ...(params.category ? { category: params.category } : {}),
-          page: params.page ?? 1,
-          limit: params.limit ?? 12,
-        },
-      },
+      { params: query },
     )
 
-    return mapStoreProductsResponse(data)
+    const result = mapStoreProductsResponse(data)
+
+    // EN returns `data: []` while meta still reports items (missing translations).
+    if (
+      result.products.length === 0 &&
+      result.meta.totalItems > 0 &&
+      shouldRetryWithContentFallback()
+    ) {
+      const { data: fallback } = await this.client.get<StoreProductsApiResponse>(
+        STORES_ENDPOINTS.PRODUCTS(slug),
+        { params: query, apiLocale: CONTENT_FALLBACK_LOCALE },
+      )
+      return mapStoreProductsResponse(fallback)
+    }
+
+    return result
   }
 }
 

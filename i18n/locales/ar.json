@@ -17,6 +17,8 @@
     "next": "التالي",
     "previous": "السابق",
     "actions": "الإجراءات",
+    "breadcrumb": "مسار التنقل",
+    "breadcrumbMore": "عرض المزيد من مستويات المسار",
     "swiper": {
       "label": "معرض صور",
       "slideStatus": "الشريحة {current} من {total}"

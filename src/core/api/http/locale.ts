@@ -29,5 +29,8 @@ export function resolveApiLocale(): string {
 }
 
 export function applyAcceptLanguageHeader(config: InternalAxiosRequestConfig): void {
-  config.headers.set('Accept-Language', resolveApiLocale())
+  const override = config.apiLocale
+  const locale =
+    override === 'ar' || override === 'en' ? override : resolveApiLocale()
+  config.headers.set('Accept-Language', locale)
 }
