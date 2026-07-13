@@ -1,4 +1,5 @@
 import { APP_CONFIG } from '@shared/constants/app-config'
+import { createId } from '@shared/utils/id'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -13,7 +14,7 @@ const toasts = ref<Toast[]>([])
 
 export function useToast() {
   function show(message: string, type: ToastType = 'info', duration: number = APP_CONFIG.TOAST_DURATION_MS) {
-    const id = crypto.randomUUID()
+    const id = createId()
     toasts.value.push({ id, message, type, duration })
 
     if (import.meta.client && duration > 0) {

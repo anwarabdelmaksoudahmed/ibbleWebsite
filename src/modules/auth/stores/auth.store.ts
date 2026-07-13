@@ -117,7 +117,13 @@ export const useAuthStore = defineStore('auth', {
 
     hydrateFromStorage() {
       const persisted = tokenManager.readPersistedTokens()
-      if (!persisted) return
+      if (!persisted) {
+        // Pinia may still have stale `isAuthenticated` from persist — clear it.
+        if (this.isAuthenticated || this.accessToken) {
+          this.clearSession()
+        }
+        return
+      }
 
       if (tokenManager.isAccessTokenExpired()) {
         this.clearSession()

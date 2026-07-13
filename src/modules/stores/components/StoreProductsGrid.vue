@@ -4,6 +4,7 @@ import type { StoreProduct } from '@modules/stores/types'
 
 defineProps<{
   products: StoreProduct[]
+  storeId?: string
   loading?: boolean
   animate?: boolean
 }>()
@@ -18,6 +19,7 @@ defineProps<{
     <li v-for="(product, index) in products" :key="product.id">
       <StoreProductCard
         :product="product"
+        :store-id="storeId"
         :index="index"
         :animate="animate"
       />

@@ -9,7 +9,10 @@ export default defineNuxtPlugin(() => {
 
   const authStore = useAuthStore()
   const localePath = useLocalePath()
+  const authSessionReady = useAuthSessionReady()
+
   authStore.hydrateFromStorage()
+  authSessionReady.value = true
 
   window.setInterval(() => {
     if (!authStore.isAuthenticated) return

@@ -5,7 +5,10 @@ import { tokenManager } from '@modules/auth/utils/token-manager'
 export function isAuthenticated(): boolean {
   const authStore = useAuthStore()
   if (!authStore.isAuthenticated) return false
-  if (!tokenManager.getAccessToken()) return false
+
+  const token = authStore.accessToken || tokenManager.getAccessToken()
+  if (!token) return false
+
   if (tokenManager.isAccessTokenExpired()) return false
   return true
 }

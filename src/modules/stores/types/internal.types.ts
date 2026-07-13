@@ -72,6 +72,7 @@ export type StoreProductCategory = {
 
 export type StoreProduct = {
   id: string
+  storeId: string
   name: string
   description: string
   image: string

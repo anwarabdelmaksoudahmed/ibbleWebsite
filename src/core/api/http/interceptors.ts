@@ -106,6 +106,15 @@ export function setupResponseInterceptor(client: AxiosInstance): void {
       const status = error.response?.status
 
       if (status === 401 && !originalRequest.skipAuth && !originalRequest._retry) {
+        const hadToken = Boolean(originalRequest.headers?.Authorization)
+
+        // No token was sent (stale Pinia auth) — clear local session quietly.
+        if (!hadToken) {
+          const authStore = useAuthStore()
+          authStore.clearSession()
+          return Promise.reject(normalizeApiError(error))
+        }
+
         // TODO: Enable automatic refresh when AUTH_ENDPOINT_FLAGS.REFRESH_ENABLED is true.
         if (AUTH_ENDPOINT_FLAGS.REFRESH_ENABLED) {
           return attemptTokenRefresh(client, originalRequest)

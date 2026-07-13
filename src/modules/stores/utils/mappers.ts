@@ -165,6 +165,7 @@ export function mapStoreProduct(dto: StoreProductApiDto): StoreProduct {
 
   return {
     id: dto.id,
+    storeId: String(dto.store_id || ''),
     name: dto.name.trim(),
     description: (dto.description || dto.content || '').trim(),
     image: dto.featured_image || dto.product_images?.[0] || '',

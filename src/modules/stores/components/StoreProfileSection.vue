@@ -34,6 +34,10 @@ const {
   setPage,
 } = useStoreProducts(() => props.store.slug)
 
+// Single shared subscribers for this page — product cards reuse the same query keys.
+useCart()
+useWishlist()
+
 const breadcrumbItems = computed(() => {
   const items: { label: string; to?: string }[] = [
     { label: t('site.nav.home'), to: localePath('/') },
@@ -156,6 +160,7 @@ function onCategoryUpdate(id: string) {
 
           <StoreProductsGrid
             :products="products"
+            :store-id="store.id"
             :loading="productsLoading"
             :animate="!showProductsOverlay"
           />

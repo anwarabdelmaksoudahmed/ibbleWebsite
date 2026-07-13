@@ -247,6 +247,23 @@
           "favorites": "Favorites"
         }
       }
+    },
+    "commerce": {
+      "authRequired": "Please sign in to continue",
+      "cart": {
+        "add": "Add to cart",
+        "inCart": "In cart",
+        "addSuccess": "Product added to cart",
+        "alreadyInCart": "This product is already in your cart",
+        "missingStore": "Could not add this product — store information is missing"
+      },
+      "wishlist": {
+        "add": "Add to wishlist",
+        "remove": "Remove from wishlist",
+        "addSuccess": "Product added to wishlist",
+        "removeSuccess": "Product removed from wishlist",
+        "alreadyFavourite": "This product is already in your wishlist"
+      }
     }
   },
   "nav": {
