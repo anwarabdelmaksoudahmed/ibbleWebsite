@@ -16,9 +16,33 @@ export type CartStoreProductApiDto = {
   final_price?: number
 }
 
+/** Grouped cart shape (legacy / mutation-friendly). */
 export type CartStoreGroupApiDto = {
   store_info: CartStoreInfoApiDto
   store_products: CartStoreProductApiDto[]
+}
+
+/**
+ * Flat cart line returned by GET `/v1/carts` (`data: CartLineItemApiDto[]`).
+ * Each entry embeds store + product; the mapper groups these by store.
+ */
+export type CartLineItemApiDto = {
+  id: string
+  qty?: string | number
+  quantity?: string | number
+  store?: CartStoreInfoApiDto
+  product?: {
+    id: string
+    name?: string
+    featured_image?: string
+    price?: number
+    price_info?: {
+      final_price?: number
+      price_without_tax?: number
+      tax?: number
+      discount?: number
+    }
+  }
 }
 
 export type CartAddProductApiPayload = {
@@ -35,19 +59,26 @@ export type CartAddApiRequest = {
   carts: CartAddStoreApiPayload[]
 }
 
-/** GET `/v1/carts` may wrap groups under `data`, `data.carts`, or return them directly. */
+export type CartPayloadListItem = CartStoreGroupApiDto | CartLineItemApiDto
+
+/** GET `/v1/carts` may wrap under `data`, `data.carts`, or return groups/lines directly. */
 export type CartApiResponse =
-  | CartStoreGroupApiDto[]
+  | CartPayloadListItem[]
   | {
-      data?: CartStoreGroupApiDto[] | { carts?: CartStoreGroupApiDto[] }
-      carts?: CartStoreGroupApiDto[]
+      data?: CartPayloadListItem[] | { carts?: CartPayloadListItem[] }
+      carts?: CartPayloadListItem[]
       message?: string
       success?: boolean
     }
 
 export type CartMutationApiResponse = {
-  data?: CartStoreGroupApiDto[] | { carts?: CartStoreGroupApiDto[] }
-  carts?: CartStoreGroupApiDto[]
+  data?: CartPayloadListItem[] | { carts?: CartPayloadListItem[] }
+  carts?: CartPayloadListItem[]
+  message?: string
+  success?: boolean
+}
+
+export type CartDeleteApiResponse = {
   message?: string
   success?: boolean
 }

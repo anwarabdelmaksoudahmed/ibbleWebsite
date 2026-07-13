@@ -2,6 +2,13 @@ import { CartApi } from '@modules/cart/api/cart.api'
 import type { Cart, CartItemInput } from '@modules/cart/types'
 import { createEmptyCart, mapCartResponse } from '@modules/cart/utils/mappers'
 
+export type CartMutationResult = {
+  cart: Cart
+  message?: string
+  /** True when the API body included cart line data (not message-only). */
+  hasPayload: boolean
+}
+
 function buildUpsertPayload(input: CartItemInput, quantity: number) {
   return {
     carts: [
@@ -18,6 +25,18 @@ function buildUpsertPayload(input: CartItemInput, quantity: number) {
   }
 }
 
+function resolveMutationResult(
+  response: { message?: string } | null | undefined,
+): CartMutationResult {
+  const cart = mapCartResponse(response)
+  const hasPayload = cart.stores.length > 0 || Object.keys(cart.productQuantities).length > 0
+  return {
+    cart: hasPayload ? cart : createEmptyCart(),
+    message: response?.message,
+    hasPayload,
+  }
+}
+
 export class CartService {
   private readonly api: CartApi
 
@@ -30,35 +49,25 @@ export class CartService {
     return mapCartResponse(response)
   }
 
-  async addToCart(input: CartItemInput): Promise<Cart> {
+  async addToCart(input: CartItemInput): Promise<CartMutationResult> {
     const quantity = Math.max(1, Math.floor(input.quantity ?? 1))
     const response = await this.api.upsertCart(buildUpsertPayload(input, quantity))
-    const mapped = mapCartResponse(response)
-    // Some backends return only a message — caller should invalidate & refetch.
-    return mapped.stores.length > 0 ? mapped : createEmptyCart()
+    return resolveMutationResult(response)
   }
 
-  /** Future-ready: set absolute quantity for a line. */
-  async updateQuantity(input: CartItemInput & { quantity: number }): Promise<Cart> {
-    const quantity = Math.max(0, Math.floor(input.quantity))
+  async updateQuantity(input: CartItemInput & { quantity: number }): Promise<CartMutationResult> {
+    const quantity = Math.max(1, Math.floor(input.quantity))
     const response = await this.api.upsertCart(buildUpsertPayload(input, quantity))
-    return mapCartResponse(response)
+    return resolveMutationResult(response)
   }
 
-  async increaseQuantity(input: CartItemInput, currentQuantity: number): Promise<Cart> {
-    return this.updateQuantity({
-      ...input,
-      quantity: Math.max(1, currentQuantity) + 1,
-    })
-  }
-
-  async decreaseQuantity(input: CartItemInput, currentQuantity: number): Promise<Cart> {
-    const next = Math.max(0, currentQuantity - 1)
-    return this.updateQuantity({ ...input, quantity: next })
-  }
-
-  async removeFromCart(input: CartItemInput): Promise<Cart> {
-    return this.updateQuantity({ ...input, quantity: 0 })
+  async removeFromCart(input: CartItemInput): Promise<CartMutationResult> {
+    const response = await this.api.removeProduct(String(input.productId))
+    return {
+      cart: createEmptyCart(),
+      message: response.message,
+      hasPayload: false,
+    }
   }
 }
 

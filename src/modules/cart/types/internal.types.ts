@@ -1,5 +1,7 @@
 export type CartProduct = {
   id: string
+  /** Cart line id from GET `/v1/carts` when API returns flat items. */
+  lineId?: string
   quantity: number
   name: string
   image: string

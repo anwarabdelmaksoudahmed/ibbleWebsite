@@ -27,16 +27,15 @@ export function useCart() {
     queryKey: CART_QUERY_KEYS.list(),
     queryFn: () => getCartService().getCart(),
     enabled: computed(() => import.meta.client && authSessionReady.value && authenticated.value),
-    staleTime: 60_000,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    staleTime: 30_000,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => {
       const status = normalizeApiError(error).statusCode
       if (status === 401 || status === 403) return false
       return failureCount < 2
     },
-    placeholderData: createEmptyCart(),
   })
 
   const cart = computed<Cart>(() => cartQuery.data.value ?? createEmptyCart())
@@ -45,9 +44,19 @@ export function useCart() {
     Object.values(cart.value.productQuantities).reduce((sum, qty) => sum + qty, 0),
   )
 
+  const isInitialLoading = computed(
+    () =>
+      authSessionReady.value &&
+      authenticated.value &&
+      (cartQuery.isPending.value || (cartQuery.isFetching.value && !cartQuery.isFetched.value)),
+  )
+
   const pendingProductId = computed(() => {
-    const vars = addMutation.variables.value
-    return vars ? resolveProductId(vars.productId) : null
+    const addVars = addMutation.variables.value
+    const qtyVars = quantityMutation.variables.value
+    const removeVars = removeMutation.variables.value
+    const id = addVars?.productId ?? qtyVars?.productId ?? removeVars?.productId
+    return id != null ? resolveProductId(id) : null
   })
 
   function isInCart(productId: string | number): boolean {
@@ -59,13 +68,20 @@ export function useCart() {
   }
 
   function isCartMutating(productId: string | number): boolean {
-    if (!addMutation.isPending.value && !quantityMutation.isPending.value) return false
+    const pending =
+      addMutation.isPending.value ||
+      quantityMutation.isPending.value ||
+      removeMutation.isPending.value
+    if (!pending) return false
+
     const target = resolveProductId(productId)
     const addVars = addMutation.variables.value
     const qtyVars = quantityMutation.variables.value
+    const removeVars = removeMutation.variables.value
     return (
       (addVars != null && resolveProductId(addVars.productId) === target) ||
-      (qtyVars != null && resolveProductId(qtyVars.productId) === target)
+      (qtyVars != null && resolveProductId(qtyVars.productId) === target) ||
+      (removeVars != null && resolveProductId(removeVars.productId) === target)
     )
   }
 
@@ -83,6 +99,7 @@ export function useCart() {
   ): Cart {
     const base = previous ?? createEmptyCart()
     const productId = resolveProductId(input.productId)
+    const storeId = String(input.storeId)
     const nextQuantities = { ...base.productQuantities }
 
     if (quantity <= 0) {
@@ -91,10 +108,31 @@ export function useCart() {
       nextQuantities[productId] = quantity
     }
 
+    const stores = base.stores
+      .map((store) => {
+        if (store.storeId !== storeId) return store
+
+        const products =
+          quantity <= 0
+            ? store.products.filter((p) => p.id !== productId)
+            : store.products.map((p) => (p.id === productId ? { ...p, quantity } : p))
+
+        return { ...store, products }
+      })
+      .filter((store) => store.products.length > 0)
+
     return {
-      stores: base.stores,
+      stores,
       productQuantities: nextQuantities,
     }
+  }
+
+  async function syncCartAfterMutation(hasPayload: boolean, cartData?: Cart): Promise<void> {
+    if (hasPayload && cartData && hasCartPayload(cartData)) {
+      queryClient.setQueryData(CART_QUERY_KEYS.list(), cartData)
+      return
+    }
+    await queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root })
   }
 
   const addMutation = useMutation({
@@ -116,12 +154,9 @@ export function useCart() {
       }
       handleError(error)
     },
-    onSuccess: (data) => {
-      // Prefer server payload when present; otherwise keep optimistic cache (no extra GET).
-      if (hasCartPayload(data)) {
-        queryClient.setQueryData(CART_QUERY_KEYS.list(), data)
-      }
-      toast.success(t('site.commerce.cart.addSuccess'))
+    onSuccess: async (result) => {
+      await syncCartAfterMutation(result.hasPayload, result.cart)
+      toast.success(result.message || t('site.commerce.cart.addSuccess'))
     },
   })
 
@@ -144,10 +179,32 @@ export function useCart() {
       }
       handleError(error)
     },
-    onSuccess: (data) => {
-      if (hasCartPayload(data) || Object.keys(data.productQuantities).length === 0) {
-        queryClient.setQueryData(CART_QUERY_KEYS.list(), data)
+    onSuccess: async (result) => {
+      await syncCartAfterMutation(result.hasPayload, result.cart)
+    },
+  })
+
+  const removeMutation = useMutation({
+    mutationFn: (input: CartItemInput) => getCartService().removeFromCart(input),
+    retry: false,
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: CART_QUERY_KEYS.root })
+      const previous = queryClient.getQueryData<Cart>(CART_QUERY_KEYS.list())
+      queryClient.setQueryData<Cart>(
+        CART_QUERY_KEYS.list(),
+        applyOptimisticQuantity(previous, input, 0),
+      )
+      return { previous }
+    },
+    onError: (error, _input, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(CART_QUERY_KEYS.list(), context.previous)
       }
+      handleError(error)
+    },
+    onSuccess: async (result) => {
+      await syncCartAfterMutation(result.hasPayload, result.cart)
+      toast.success(result.message || t('site.commerce.cart.removeSuccess'))
     },
   })
 
@@ -175,10 +232,11 @@ export function useCart() {
   async function updateQuantity(input: CartItemInput & { quantity: number }): Promise<void> {
     if (!(await ensureAuthenticated())) return
     if (isCartMutating(input.productId)) return
+    const quantity = Math.max(1, Math.floor(input.quantity))
     await quantityMutation.mutateAsync({
       storeId: String(input.storeId),
       productId: resolveProductId(input.productId),
-      quantity: input.quantity,
+      quantity,
     })
   }
 
@@ -189,18 +247,28 @@ export function useCart() {
 
   async function decreaseQuantity(input: CartItemInput): Promise<void> {
     const current = getQuantity(input.productId)
-    await updateQuantity({ ...input, quantity: Math.max(0, current - 1) })
+    if (current <= 1) {
+      toast.info(t('site.commerce.cart.minQuantity'))
+      return
+    }
+    await updateQuantity({ ...input, quantity: current - 1 })
   }
 
   async function removeFromCart(input: CartItemInput): Promise<void> {
-    await updateQuantity({ ...input, quantity: 0 })
+    if (!(await ensureAuthenticated())) return
+    if (isCartMutating(input.productId)) return
+    await removeMutation.mutateAsync({
+      storeId: String(input.storeId),
+      productId: resolveProductId(input.productId),
+    })
   }
 
   return {
     cart,
     itemCount,
-    isLoading: computed(() => cartQuery.isPending.value),
+    isLoading: isInitialLoading,
     isFetching: computed(() => cartQuery.isFetching.value),
+    isFetched: computed(() => cartQuery.isFetched.value),
     isError: computed(() => cartQuery.isError.value),
     error: computed(() => cartQuery.error.value),
     pendingProductId,
