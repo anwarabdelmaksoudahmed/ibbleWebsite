@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   imports: {
     dirs: [
       'shared/composables',
+      'shared/payment/composables',
       'shared/utils',
       'core/helpers',
       'modules/**/composables',
@@ -60,6 +61,7 @@ export default defineNuxtConfig({
 
   components: [
     { path: '~/shared/components', pathPrefix: false },
+    { path: '~/shared/payment/components', pathPrefix: false },
     {
       path: '~/modules',
       pathPrefix: false,
@@ -86,6 +88,9 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_WEB_API_BASE_URL || 'https://api-web.ibbil.com/api',
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '966500000000',
+      hyperPayWidgetBaseUrl:
+        process.env.NUXT_PUBLIC_HYPERPAY_WIDGET_BASE_URL
+        || 'https://eu-test.oppwa.com/v1/paymentWidgets.js',
     },
   },
 
@@ -144,6 +149,9 @@ export default defineNuxtConfig({
       contentSecurityPolicy: {
         'img-src': ["'self'", 'data:', 'https:'],
         'font-src': ["'self'", 'https:', 'data:'],
+        'script-src': ["'self'", "'unsafe-inline'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        'frame-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        'connect-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com', 'https:'],
         // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
         // upgrade CSS/JS/images to HTTPS and they fail to load.
         'upgrade-insecure-requests': process.env.NODE_ENV === 'development' ? false : true,
@@ -180,6 +188,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/auth/**': { ssr: false },
+    '/payment/**': { ssr: false },
   },
 
   hooks: {

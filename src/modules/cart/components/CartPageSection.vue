@@ -15,7 +15,9 @@ const authSessionReady = useAuthSessionReady()
 const {
   cart,
   itemCount,
+  hasItems,
   isLoading,
+  isCartSyncing,
   isFetched,
   isError,
   refetch,
@@ -30,13 +32,20 @@ const breadcrumbItems = computed(() => [
 ])
 
 const isGuest = computed(() => authSessionReady.value && !authenticated.value)
-const hasItems = computed(() => cart.value.stores.length > 0)
 const showSessionLoader = computed(() => !authSessionReady.value)
 const showLoader = computed(
-  () => authSessionReady.value && authenticated.value && isLoading.value,
+  () =>
+    authSessionReady.value &&
+    authenticated.value &&
+    (isLoading.value || isCartSyncing.value),
 )
 const showEmpty = computed(
-  () => authSessionReady.value && authenticated.value && isFetched.value && !hasItems.value,
+  () =>
+    authSessionReady.value &&
+    authenticated.value &&
+    isFetched.value &&
+    !hasItems.value &&
+    !isCartSyncing.value,
 )
 const grandTotal = computed(() => getCartTotal(cart.value))
 const formattedGrandTotal = computed(() => n(grandTotal.value))

@@ -156,6 +156,17 @@ export function createEmptyCart(): Cart {
   return { stores: [], productQuantities: {} }
 }
 
+/** True when the cart has line items ready to render. */
+export function cartHasDisplayableItems(cart: Cart): boolean {
+  return cart.stores.some((store) => store.products.length > 0)
+}
+
+/** True when quantities exist but store groups are missing (stale/optimistic cache). */
+export function cartNeedsSync(cart: Cart): boolean {
+  const quantityCount = Object.values(cart.productQuantities).reduce((sum, qty) => sum + qty, 0)
+  return quantityCount > 0 && !cartHasDisplayableItems(cart)
+}
+
 /** Line subtotal for a cart product (final unit price × qty). */
 export function getLineTotal(product: CartProduct): number {
   const unit = product.finalPrice ?? product.price ?? 0

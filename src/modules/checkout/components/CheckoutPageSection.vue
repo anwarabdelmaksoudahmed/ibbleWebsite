@@ -9,7 +9,9 @@ import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
 import type { AddressFormInput, CustomerAddress, PaymentMethodId } from '@modules/checkout/types'
+import type { CartStoreGroup } from '@modules/cart/types'
 import { getStoreSubtotal } from '@modules/cart/utils/mappers'
+import { toRaw } from 'vue'
 
 const { t, n } = useI18n()
 const localePath = useLocalePath()
@@ -20,10 +22,13 @@ const authSessionReady = useAuthSessionReady()
 
 const {
   cart,
+  hasItems,
   isLoading: cartLoading,
+  isCartSyncing,
   isFetched: cartFetched,
   isError: cartError,
   refetch: refetchCart,
+  restoreStoreGroup,
 } = useCart()
 
 const {
@@ -41,6 +46,7 @@ const {
 
 const { countries, cities } = useCheckoutGeo()
 const { primaryWallet, isLoading: walletsLoading } = useCheckoutWallets()
+const { placeCardOrder } = useCheckoutOrder()
 
 const paymentMethod = ref<PaymentMethodId>('card')
 const discountCode = ref('')
@@ -71,7 +77,10 @@ const breadcrumbItems = computed(() => [
 const isGuest = computed(() => authSessionReady.value && !authenticated.value)
 const showSessionLoader = computed(() => !authSessionReady.value)
 const showCartLoader = computed(
-  () => authSessionReady.value && authenticated.value && cartLoading.value,
+  () =>
+    authSessionReady.value &&
+    authenticated.value &&
+    (cartLoading.value || isCartSyncing.value),
 )
 const hasCheckoutStore = computed(() => Boolean(checkoutStore.value))
 const showEmptyCart = computed(
@@ -79,14 +88,15 @@ const showEmptyCart = computed(
     authSessionReady.value &&
     authenticated.value &&
     cartFetched.value &&
-    !cart.value.stores.length,
+    !hasItems.value &&
+    !isCartSyncing.value,
 )
 const showMissingStore = computed(
   () =>
     authSessionReady.value &&
     authenticated.value &&
     cartFetched.value &&
-    cart.value.stores.length > 0 &&
+    hasItems.value &&
     !checkoutStore.value,
 )
 
@@ -133,16 +143,78 @@ function onApplyDiscount() {
 }
 
 async function onPlaceOrder() {
-  if (!canSubmit.value) {
-    if (!selectedAddress.value) {
-      toast.warning(t('site.commerce.checkout.selectAddressFirst'))
-    }
+  if (!selectedAddress.value) {
+    toast.warning(t('site.commerce.checkout.selectAddressFirst'))
     return
   }
 
+  const store = checkoutStore.value
+  if (!store) {
+    toast.warning(t('site.commerce.checkout.emptyTitle'))
+    return
+  }
+
+  if (paymentMethod.value === 'wallet') {
+    toast.info(t('site.commerce.checkout.walletPaymentSoon'))
+    return
+  }
+
+  const address = selectedAddress.value
   placingOrder.value = true
+  let checkoutSnapshot: CartStoreGroup | null = null
+
   try {
-    toast.info(t('site.commerce.checkout.placeOrderSoon'))
+    checkoutSnapshot = structuredClone(toRaw(store))
+
+    const paymentSummary = {
+      title: store.storeName,
+      subtotal: storeTotal.value,
+      shipping: 0,
+      tax: 0,
+      total: storeTotal.value,
+      currency: 'SAR',
+    }
+
+    const result = await placeCardOrder(
+      {
+        addressId: address.id,
+        storeId: store.storeId,
+        paymentMethodId: paymentMethod.value,
+        couponCode: discountCode.value.trim(),
+      },
+      paymentSummary,
+    )
+
+    if (result.success) {
+      toast.success(result.message || t('site.commerce.checkout.orderSuccess'))
+      await refetchCart()
+      await navigateTo(localePath(ROUTES.HOME))
+      return
+    }
+
+    if (result.orderId && checkoutSnapshot) {
+      await refetchCart()
+      const storeStillInCart = cart.value.stores.some(
+        (entry) =>
+          entry.storeId === checkoutSnapshot!.storeId &&
+          entry.products.length > 0,
+      )
+
+      if (!storeStillInCart) {
+        try {
+          await restoreStoreGroup(checkoutSnapshot)
+          await refetchCart()
+        } catch {
+          toast.warning(t('site.commerce.checkout.cartRestoreFailed'))
+        }
+      }
+    }
+
+    if (result.status !== 'cancelled') {
+      toast.error(result.message || t('site.commerce.checkout.orderFailed'))
+    }
+  } catch {
+    toast.error(t('site.commerce.checkout.orderFailed'))
   } finally {
     placingOrder.value = false
   }
@@ -358,12 +430,18 @@ onMounted(() => {
           </div>
           <button
             type="button"
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-ibbil-green px-4 py-2.5 text-sm font-bold text-white disabled:opacity-55"
-            :disabled="placingOrder || !canSubmit"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-ibbil-green px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-55"
+            :disabled="placingOrder"
             @click="onPlaceOrder"
           >
+            <Icon
+              v-if="placingOrder"
+              name="lucide:loader-circle"
+              class="size-4 animate-spin"
+              aria-hidden="true"
+            />
             {{ t('site.commerce.checkout.placeOrder') }}
-            <DirectionalArrow class="size-4" />
+            <DirectionalArrow v-if="!placingOrder" class="size-4" />
           </button>
         </div>
       </div>

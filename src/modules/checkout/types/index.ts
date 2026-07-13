@@ -6,4 +6,5 @@ export type {
   UserWallet,
   PaymentMethodId,
   DiscountDraft,
+  CreateOrderInput,
 } from './internal.types'

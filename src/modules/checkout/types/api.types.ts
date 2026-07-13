@@ -75,3 +75,32 @@ export type WalletsApiResponse =
   | WalletApiDto[]
   | { data: WalletApiDto[] | WalletApiDto }
   | WalletApiDto
+
+export type CreateOrderApiRequest = {
+  address_id: string
+  store_id: string
+  payment_method_id: string
+  PIN_code: string
+  coupon_code: string
+}
+
+export type CreateOrderApiResponse = {
+  message: string
+  amount: number
+  currency: string
+  payment_type: string
+  merchant_transaction_id: number | string
+  description: string
+  module: string
+  payment_method_id: number | string
+  address: {
+    customer_email: string
+    country: string
+    state: string
+    street1: string
+    postcode: string
+    first_name: string
+    last_name: string
+  }
+  invoice?: unknown | null
+}

@@ -185,11 +185,17 @@ function unitPrice(product: CartStoreGroup['products'][number]) {
       <button
         type="button"
         class="group flex w-full items-center justify-center gap-2 rounded-xl bg-ibbil-green px-4 py-3.5 text-sm font-bold text-white transition-colors hover:bg-ibbil-green-dark disabled:cursor-not-allowed disabled:opacity-55"
-        :disabled="submitting || !canSubmit"
+        :disabled="submitting"
         @click="emit('placeOrder')"
       >
+        <Icon
+          v-if="submitting"
+          name="lucide:loader-circle"
+          class="size-4 animate-spin"
+          aria-hidden="true"
+        />
         {{ t('site.commerce.checkout.placeOrder') }}
-        <DirectionalArrow animated class="size-4" />
+        <DirectionalArrow v-if="!submitting" animated class="size-4" />
       </button>
 
       <NuxtLinkLocale

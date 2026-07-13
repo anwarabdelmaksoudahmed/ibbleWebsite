@@ -53,3 +53,11 @@ export type DiscountDraft = {
   code: string
   applied: boolean
 }
+
+export type CreateOrderInput = {
+  addressId: string
+  storeId: string
+  paymentMethodId: PaymentMethodId
+  pinCode?: string
+  couponCode?: string
+}

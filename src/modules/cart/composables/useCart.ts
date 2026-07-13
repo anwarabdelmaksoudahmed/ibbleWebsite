@@ -1,8 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { normalizeApiError } from '@core/api/http/errors'
 import { getCartService } from '@modules/cart/services/cart.service'
 import { CART_QUERY_KEYS } from '@modules/cart/constants/query-keys'
-import { createEmptyCart } from '@modules/cart/utils/mappers'
+import {
+  cartHasDisplayableItems,
+  cartNeedsSync,
+  createEmptyCart,
+} from '@modules/cart/utils/mappers'
 import type { Cart, CartItemInput } from '@modules/cart/types'
 import { ROUTES } from '@shared/constants/routes'
 
@@ -11,8 +15,10 @@ function resolveProductId(productId: string | number): string {
 }
 
 function hasCartPayload(cart: Cart): boolean {
-  return cart.stores.length > 0 || Object.keys(cart.productQuantities).length > 0
+  return cartHasDisplayableItems(cart) || Object.keys(cart.productQuantities).length > 0
 }
+
+let cartPrefetchBound = false
 
 export function useCart() {
   const { t } = useI18n()
@@ -27,8 +33,9 @@ export function useCart() {
     queryKey: CART_QUERY_KEYS.list(),
     queryFn: () => getCartService().getCart(),
     enabled: computed(() => import.meta.client && authSessionReady.value && authenticated.value),
+    placeholderData: keepPreviousData,
     staleTime: 30_000,
-    refetchOnMount: true,
+    refetchOnMount: 'always',
     refetchOnReconnect: true,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => {
@@ -50,6 +57,16 @@ export function useCart() {
       authenticated.value &&
       (cartQuery.isPending.value || (cartQuery.isFetching.value && !cartQuery.isFetched.value)),
   )
+
+  const isCartSyncing = computed(
+    () =>
+      authSessionReady.value &&
+      authenticated.value &&
+      cartQuery.isFetched.value &&
+      cartNeedsSync(cart.value),
+  )
+
+  const hasItems = computed(() => cartHasDisplayableItems(cart.value))
 
   const pendingProductId = computed(() => {
     const addVars = addMutation.variables.value
@@ -108,18 +125,52 @@ export function useCart() {
       nextQuantities[productId] = quantity
     }
 
-    const stores = base.stores
-      .map((store) => {
-        if (store.storeId !== storeId) return store
+    let stores = base.stores.map((store) => {
+      if (store.storeId !== storeId) return store
 
-        const products =
-          quantity <= 0
-            ? store.products.filter((p) => p.id !== productId)
-            : store.products.map((p) => (p.id === productId ? { ...p, quantity } : p))
+      const products =
+        quantity <= 0
+          ? store.products.filter((p) => p.id !== productId)
+          : store.products.some((p) => p.id === productId)
+            ? store.products.map((p) => (p.id === productId ? { ...p, quantity } : p))
+            : [
+                ...store.products,
+                {
+                  id: productId,
+                  quantity,
+                  name: '',
+                  image: '',
+                  price: null,
+                  finalPrice: null,
+                },
+              ]
 
-        return { ...store, products }
-      })
-      .filter((store) => store.products.length > 0)
+      return { ...store, products }
+    })
+
+    if (quantity > 0 && !stores.some((store) => store.storeId === storeId)) {
+      stores = [
+        ...stores,
+        {
+          storeId,
+          storeName: '',
+          storeLogo: '',
+          storeSlug: '',
+          products: [
+            {
+              id: productId,
+              quantity,
+              name: '',
+              image: '',
+              price: null,
+              finalPrice: null,
+            },
+          ],
+        },
+      ]
+    }
+
+    stores = stores.filter((store) => store.products.length > 0)
 
     return {
       stores,
@@ -132,7 +183,11 @@ export function useCart() {
       queryClient.setQueryData(CART_QUERY_KEYS.list(), cartData)
       return
     }
-    await queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root })
+
+    await queryClient.refetchQueries({
+      queryKey: CART_QUERY_KEYS.root,
+      type: 'active',
+    })
   }
 
   const addMutation = useMutation({
@@ -263,10 +318,39 @@ export function useCart() {
     })
   }
 
+  async function restoreStoreGroup(store: Cart['stores'][number]): Promise<void> {
+    if (!(await ensureAuthenticated())) return
+    await getCartService().restoreStoreGroup(store)
+    await cartQuery.refetch()
+  }
+
+  if (import.meta.client && !cartPrefetchBound) {
+    cartPrefetchBound = true
+    watch(
+      [authSessionReady, authenticated],
+      ([ready, isAuth]) => {
+        if (!ready || !isAuth) return
+        void cartQuery.refetch()
+      },
+      { immediate: true },
+    )
+
+    watch(
+      isCartSyncing,
+      (syncing) => {
+        if (!syncing || cartQuery.isFetching.value) return
+        void cartQuery.refetch()
+      },
+      { immediate: true },
+    )
+  }
+
   return {
     cart,
     itemCount,
+    hasItems,
     isLoading: isInitialLoading,
+    isCartSyncing,
     isFetching: computed(() => cartQuery.isFetching.value),
     isFetched: computed(() => cartQuery.isFetched.value),
     isError: computed(() => cartQuery.isError.value),
@@ -280,6 +364,7 @@ export function useCart() {
     increaseQuantity,
     decreaseQuantity,
     removeFromCart,
+    restoreStoreGroup,
     refetch: cartQuery.refetch,
   }
 }

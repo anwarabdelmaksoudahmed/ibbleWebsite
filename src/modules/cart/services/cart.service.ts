@@ -69,6 +69,23 @@ export class CartService {
       hasPayload: false,
     }
   }
+
+  /** Re-add checkout items after a cancelled/failed payment when the backend cleared the cart. */
+  async restoreStoreGroup(store: Cart['stores'][number]): Promise<void> {
+    if (!store.storeId || store.products.length === 0) return
+
+    await this.api.upsertCart({
+      carts: [
+        {
+          store_info: { id: store.storeId },
+          store_products: store.products.map((product) => ({
+            id: product.id,
+            quantityInCart: product.quantity,
+          })),
+        },
+      ],
+    })
+  }
 }
 
 let cartService: CartService | null = null
