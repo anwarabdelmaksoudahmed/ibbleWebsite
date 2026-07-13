@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CartNavLink from '@modules/cart/components/CartNavLink.vue'
 import { ROUTES } from '@shared/constants/routes'
 import { SITE_SERVICE_LINKS, SITE_TOP_LINKS } from '@shared/constants/site-nav'
 import { pathMatchesPrefix, stripLocalePrefix } from '@shared/utils/locale-path'
@@ -113,13 +114,7 @@ function onSearch() {
             <span class="hidden sm:inline">{{ t('auth.login') }}</span>
           </NuxtLinkLocale>
 
-          <NuxtLinkLocale
-            to="/cart"
-            class="relative inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
-          >
-            <Icon name="lucide:shopping-cart" class="h-4 w-4" />
-            <span class="hidden lg:inline">{{ t('site.nav.cart') }}</span>
-          </NuxtLinkLocale>
+          <CartNavLink />
 
           <button
             type="button"

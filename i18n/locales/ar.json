@@ -277,6 +277,7 @@
         "removeConfirmMessage": "سيتم إزالة هذا المنتج من سلة المشتريات.",
         "removeSuccess": "تمت إزالة المنتج من السلة",
         "minQuantity": "لا يمكن أن تقل الكمية عن 1. استخدم زر الحذف لإزالة المنتج من السلة.",
+        "navWithCount": "سلة المشتريات، {count} منتج",
         "perUnit": "للوحدة",
         "productCount": "{count} منتج",
         "storeSubtotal": "الإجمالي",

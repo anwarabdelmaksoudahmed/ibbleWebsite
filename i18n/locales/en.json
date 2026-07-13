@@ -277,6 +277,7 @@
         "removeConfirmMessage": "This product will be removed from your cart.",
         "removeSuccess": "Product removed from cart",
         "minQuantity": "Quantity cannot be less than 1. Use the remove button to delete this item from your cart.",
+        "navWithCount": "Shopping cart, {count} items",
         "perUnit": "each",
         "productCount": "{count} products",
         "storeSubtotal": "Subtotal",
