@@ -78,10 +78,10 @@ onMounted(() => {
       "
     />
 
-    <div class="relative mx-auto max-w-7xl px-4 pt-10 sm:px-6 sm:pt-12 lg:px-6 lg:pt-14">
+    <div class="relative mx-auto max-w-7xl px-5 py-[15px]">
       <BaseBreadcrumb :items="breadcrumbItems" />
 
-      <header class="mb-8 mt-6 sm:mb-10 sm:mt-8">
+      <!-- <header class="mb-8 mt-6 sm:mb-10 sm:mt-8">
         <h1 class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl">
           {{ t('site.commerce.cart.title') }}
         </h1>
@@ -91,7 +91,7 @@ onMounted(() => {
         >
           {{ t('site.commerce.cart.subtitle', { count: itemCount }) }}
         </p>
-      </header>
+      </header> -->
     </div>
 
     <div
@@ -157,9 +157,9 @@ onMounted(() => {
 
       <div
         v-else-if="hasItems"
-        class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start xl:grid-cols-[minmax(0,1fr)_22rem] xl:gap-8"
+        class="grid min-w-0 gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start xl:grid-cols-[minmax(0,1fr)_22rem] xl:gap-8"
       >
-        <div class="space-y-5 sm:space-y-6">
+        <div class="order-2 min-w-0 space-y-5 sm:space-y-6 lg:order-none">
           <CartStoreGroup
             v-for="(store, storeIndex) in cart.stores"
             :key="store.storeId"
@@ -169,7 +169,7 @@ onMounted(() => {
         </div>
 
         <CartSummary
-          class="hidden lg:block"
+          class="order-1 min-w-0 lg:order-none"
           :cart="cart"
           :item-count="itemCount"
         />

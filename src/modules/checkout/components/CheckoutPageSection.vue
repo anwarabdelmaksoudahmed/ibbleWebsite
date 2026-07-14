@@ -257,7 +257,7 @@ onMounted(() => {
       "
     />
 
-    <div class="relative mx-auto max-w-7xl px-4 pt-10 sm:px-6 sm:pt-12 lg:px-6 lg:pt-14">
+    <div class="relative mx-auto max-w-7xl px-4 pt-[10px] sm:px-6">
       <BaseBreadcrumb :items="breadcrumbItems" />
 
       <header class="mb-8 mt-6 sm:mb-10 sm:mt-8">

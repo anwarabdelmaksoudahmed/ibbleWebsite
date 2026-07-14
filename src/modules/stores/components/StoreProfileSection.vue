@@ -75,9 +75,7 @@ function onCategoryUpdate(id: string) {
       "
     />
 
-    <div class="relative mx-auto max-w-7xl px-4 pt-10 sm:px-6 sm:pt-12 lg:px-6 lg:pt-14">
-      <BaseBreadcrumb :items="breadcrumbItems" />
-    </div>
+
 
     <StoreHero :store="store" />
 

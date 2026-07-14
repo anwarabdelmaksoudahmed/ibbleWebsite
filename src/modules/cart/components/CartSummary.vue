@@ -24,7 +24,7 @@ async function onCheckoutAll() {
 
 <template>
   <aside
-    class="cart-summary sticky top-24 overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white shadow-[0_10px_32px_-22px_rgba(45,83,61,0.35)] dark:border-ibbil-green/20 dark:bg-surface-elevated"
+    class="cart-summary overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white shadow-[0_10px_32px_-22px_rgba(45,83,61,0.35)] lg:sticky lg:top-24 dark:border-ibbil-green/20 dark:bg-surface-elevated"
     :aria-label="t('site.commerce.cart.summaryTitle')"
   >
     <div class="border-b border-ibbil-green/10 bg-gradient-to-br from-ibbil-green/[0.08] via-transparent to-ibbil-gold/[0.06] px-5 py-4">
@@ -64,7 +64,7 @@ async function onCheckoutAll() {
     <div class="space-y-2 border-t border-ibbil-green/10 px-5 py-4">
       <button
         type="button"
-        class="group flex w-full items-center justify-center gap-2 rounded-xl bg-ibbil-green px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-ibbil-green-dark"
+        class="group hidden w-full items-center justify-center gap-2 rounded-xl bg-ibbil-green px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-ibbil-green-dark lg:flex"
         @click="onCheckoutAll"
       >
         {{ t('site.commerce.cart.checkout') }}
