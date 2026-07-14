@@ -7,6 +7,7 @@ const props = withDefaults(
     storeId?: string
     index?: number
     animate?: boolean
+    to?: string
   }>(),
   {
     animate: false,
@@ -91,24 +92,47 @@ async function onAddToCart() {
     :style="animationStyle"
   >
     <div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-ibbil-green/[0.08] to-ibbil-green/[0.02]">
-      <img
-        v-if="product.image"
-        :src="product.image"
-        :alt="product.name"
-        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-        loading="lazy"
+      <NuxtLinkLocale
+        v-if="to"
+        :to="to"
+        class="block h-full w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-gold focus-visible:ring-inset"
       >
-      <div
-        v-else
-        class="flex h-full items-center justify-center"
-        aria-hidden="true"
-      >
-        <Icon name="lucide:package" class="h-12 w-12 text-ibbil-green/25" />
+        <img
+          v-if="product.image"
+          :src="product.image"
+          :alt="product.name"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        >
+        <div
+          v-else
+          class="flex h-full items-center justify-center"
+          aria-hidden="true"
+        >
+          <Icon name="lucide:package" class="h-12 w-12 text-ibbil-green/25" />
+        </div>
+      </NuxtLinkLocale>
+
+      <div v-else class="block h-full w-full">
+        <img
+          v-if="product.image"
+          :src="product.image"
+          :alt="product.name"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        >
+        <div
+          v-else
+          class="flex h-full items-center justify-center"
+          aria-hidden="true"
+        >
+          <Icon name="lucide:package" class="h-12 w-12 text-ibbil-green/25" />
+        </div>
       </div>
 
       <span
         v-if="hasDiscount && discountPercent > 0"
-        class="absolute start-3 top-3 z-[1] rounded-lg bg-ibbil-gold px-2 py-1 text-xs font-bold text-ibbil-green-dark shadow-sm"
+        class="pointer-events-none absolute start-3 top-3 z-[1] rounded-lg bg-ibbil-gold px-2 py-1 text-xs font-bold text-ibbil-green-dark shadow-sm"
       >
         -{{ discountPercent }}%
       </span>
@@ -173,7 +197,16 @@ async function onAddToCart() {
       </p>
 
       <h3 class="text-base font-bold leading-snug text-ibbil-green sm:text-lg">
-        {{ product.name }}
+        <NuxtLinkLocale
+          v-if="to"
+          :to="to"
+          class="transition-colors hover:text-ibbil-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-gold focus-visible:ring-offset-2"
+        >
+          {{ product.name }}
+        </NuxtLinkLocale>
+        <template v-else>
+          {{ product.name }}
+        </template>
       </h3>
 
       <p

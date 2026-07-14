@@ -5,4 +5,5 @@ export const STORES_ENDPOINTS = {
   BY_SLUG: (slug: string) => `/v1/stores/${slug}`,
   PRODUCT_CATEGORIES: (slug: string) => `/v1/${slug}/product-categories`,
   PRODUCTS: (slug: string) => `/v1/${slug}/products`,
+  PRODUCT_BY_ID: (id: string) => `/v1/products/${id}`,
 } as const

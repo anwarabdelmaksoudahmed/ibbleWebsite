@@ -122,6 +122,7 @@ export type StoreProductApiDto = {
   sku: string
   product_images: string[]
   product_categories: StoreProductCategoryApiDto[]
+  related_products?: StoreProductApiDto[]
   discounts: unknown[]
   price_info: StoreProductPriceInfoApiDto | null
   stars: number | null

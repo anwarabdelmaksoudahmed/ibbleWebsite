@@ -22,6 +22,10 @@
     "swiper": {
       "label": "Image gallery",
       "slideStatus": "Slide {current} of {total}"
+    },
+    "imageGallery": {
+      "thumbnails": "Image gallery",
+      "selectImage": "View image {index}"
     }
   },
   "crud": {
@@ -246,6 +250,21 @@
           "reviews": "Reviews",
           "favorites": "Favorites"
         }
+      },
+      "productDetail": {
+        "seoTitle": "{name} | {store}",
+        "seoDescription": "Product details, price, and specifications on the Ibbil marketplace.",
+        "errorTitle": "Could not load this product",
+        "backToStore": "Back to store",
+        "back": "Back",
+        "currentPrice": "Current price",
+        "specifications": "Specifications",
+        "showMore": "Show more",
+        "showLess": "Show less",
+        "inStock": "In stock ({count} items)",
+        "galleryThumbnails": "Product images",
+        "selectImage": "View image {index}",
+        "relatedProducts": "Related products"
       }
     },
     "commerce": {

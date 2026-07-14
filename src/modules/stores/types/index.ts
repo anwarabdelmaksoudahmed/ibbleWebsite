@@ -24,5 +24,6 @@ export type {
   CategoryStoresResult,
   StoreProductCategory,
   StoreProduct,
+  StoreProductDetail,
   StoreProductsResult,
 } from './internal.types'

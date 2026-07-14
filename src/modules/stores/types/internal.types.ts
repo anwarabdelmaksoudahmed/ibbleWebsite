@@ -84,6 +84,15 @@ export type StoreProduct = {
   categoryName: string
 }
 
+/** Full product detail for the public product page */
+export type StoreProductDetail = StoreProduct & {
+  content: string
+  images: string[]
+  quantity: number
+  sku: string
+  relatedProducts: StoreProduct[]
+}
+
 export type StoreProductsResult = {
   products: StoreProduct[]
   meta: CategoryStoresMeta

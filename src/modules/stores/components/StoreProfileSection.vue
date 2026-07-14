@@ -159,6 +159,8 @@ function onCategoryUpdate(id: string) {
           <StoreProductsGrid
             :products="products"
             :store-id="store.id"
+            :category-slug="store.categorySlug"
+            :store-slug="store.slug"
             :loading="productsLoading"
             :animate="!showProductsOverlay"
           />

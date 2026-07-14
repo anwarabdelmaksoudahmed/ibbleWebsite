@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import StoreProductCard from '@modules/stores/components/StoreProductCard.vue'
 import type { StoreProduct } from '@modules/stores/types'
+import { STORES_ROUTES } from '@modules/stores/constants/routes'
 
-defineProps<{
+const props = defineProps<{
   products: StoreProduct[]
   storeId?: string
+  categorySlug?: string
+  storeSlug?: string
   loading?: boolean
   animate?: boolean
 }>()
+
+const localePath = useLocalePath()
+
+function productTo(product: StoreProduct) {
+  if (!props.categorySlug || !props.storeSlug) return undefined
+  return localePath(
+    STORES_ROUTES.PRODUCT(props.categorySlug, props.storeSlug, product.id),
+  )
+}
 </script>
 
 <template>
@@ -20,6 +32,7 @@ defineProps<{
       <StoreProductCard
         :product="product"
         :store-id="storeId"
+        :to="productTo(product)"
         :index="index"
         :animate="animate"
       />

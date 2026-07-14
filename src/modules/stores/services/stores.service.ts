@@ -7,6 +7,7 @@ import type {
   CategoryStoresQueryParams,
   StoreCategoryApiDto,
   StoreDetailApiDto,
+  StoreProductApiDto,
   StoreProductCategoriesApiResponse,
   StoreProductsApiResponse,
   StoreProductsQueryParams,
@@ -14,6 +15,7 @@ import type {
 import type {
   CategoryStoresResult,
   StoreProductCategory,
+  StoreProductDetail,
   StoreProductsResult,
   StoreProfile,
   StoreCategory,
@@ -22,6 +24,7 @@ import {
   mapCategoryStoresResponse,
   mapStoreCategories,
   mapStoreProductCategoriesResponse,
+  mapStoreProductDetail,
   mapStoreProductsResponse,
   mapStoreProfile,
 } from '@modules/stores/utils/mappers'
@@ -119,6 +122,27 @@ export class StoresService extends BaseApiService {
     }
 
     return result
+  }
+
+  /** Product detail body is unwrapped (not `{ data: ... }`). */
+  async getProductById(id: string): Promise<StoreProductDetail> {
+    try {
+      const { data } = await this.client.get<StoreProductApiDto>(
+        STORES_ENDPOINTS.PRODUCT_BY_ID(id),
+      )
+      return mapStoreProductDetail(data)
+    } catch (error) {
+      const apiError = isApiError(error) ? error : normalizeApiError(error)
+      if (apiError.statusCode !== 404 || !shouldRetryWithContentFallback()) {
+        throw error
+      }
+
+      const { data } = await this.client.get<StoreProductApiDto>(
+        STORES_ENDPOINTS.PRODUCT_BY_ID(id),
+        { apiLocale: CONTENT_FALLBACK_LOCALE },
+      )
+      return mapStoreProductDetail(data)
+    }
   }
 }
 

@@ -17,6 +17,7 @@ import type {
   StoreCategory,
   StoreProduct,
   StoreProductCategory,
+  StoreProductDetail,
   StoreProductsResult,
   StoreProfile,
   StoreSocialLink,
@@ -156,6 +157,20 @@ export function mapStoreProductCategoriesResponse(
   return mapStoreProductCategories(response.data ?? [])
 }
 
+function collectProductImages(dto: StoreProductApiDto): string[] {
+  const seen = new Set<string>()
+  const images: string[] = []
+
+  for (const src of [dto.featured_image, ...(dto.product_images ?? [])]) {
+    const trimmed = src?.trim()
+    if (!trimmed || seen.has(trimmed)) continue
+    seen.add(trimmed)
+    images.push(trimmed)
+  }
+
+  return images
+}
+
 export function mapStoreProduct(dto: StoreProductApiDto): StoreProduct {
   const primaryCategory = dto.product_categories?.[0]
   const priceInfo = dto.price_info
@@ -175,6 +190,24 @@ export function mapStoreProduct(dto: StoreProductApiDto): StoreProduct {
     rating: typeof dto.stars === 'number' && Number.isFinite(dto.stars) ? dto.stars : null,
     categoryId: primaryCategory?.id || '',
     categoryName: primaryCategory?.name?.trim() || '',
+  }
+}
+
+export function mapStoreProductDetail(dto: StoreProductApiDto): StoreProductDetail {
+  const base = mapStoreProduct(dto)
+  const images = collectProductImages(dto)
+  const relatedProducts = mapStoreProducts(dto.related_products ?? []).filter(
+    (item) => item.id !== base.id,
+  )
+
+  return {
+    ...base,
+    image: images[0] || base.image,
+    content: (dto.content || dto.description || '').trim(),
+    images,
+    quantity: toCount(dto.quantity),
+    sku: (dto.sku || '').trim(),
+    relatedProducts,
   }
 }
 

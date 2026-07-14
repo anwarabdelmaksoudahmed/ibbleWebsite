@@ -4,9 +4,11 @@ export const ROUTES = {
   CHECKOUT: '/checkout',
   STORES: {
     ROOT: '/stores',
-    CATEGORY: (slug: string) => `/stores/${encodeURIComponent(slug)}`,
+    CATEGORY: (slug: string) => `/stores/${slug}`,
     STORE: (categorySlug: string, storeSlug: string) =>
-      `/stores/${encodeURIComponent(categorySlug)}/${encodeURIComponent(storeSlug)}`,
+      `/stores/${categorySlug}/${storeSlug}`,
+    PRODUCT: (categorySlug: string, storeSlug: string, productId: string) =>
+      `/stores/${categorySlug}/${storeSlug}/products/${productId}`,
   },
   AUTH: {
     LOGIN: '/auth/login',

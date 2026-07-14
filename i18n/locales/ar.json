@@ -22,6 +22,10 @@
     "swiper": {
       "label": "معرض صور",
       "slideStatus": "الشريحة {current} من {total}"
+    },
+    "imageGallery": {
+      "thumbnails": "معرض الصور",
+      "selectImage": "عرض الصورة {index}"
     }
   },
   "crud": {
@@ -246,6 +250,21 @@
           "reviews": "التقييمات",
           "favorites": "المفضلة"
         }
+      },
+      "productDetail": {
+        "seoTitle": "{name} | {store}",
+        "seoDescription": "تفاصيل المنتج والسعر والمواصفات على سوق منصة إبل.",
+        "errorTitle": "تعذر تحميل هذا المنتج",
+        "backToStore": "العودة إلى المتجر",
+        "back": "الرجوع",
+        "currentPrice": "السعر الآن",
+        "specifications": "المواصفات",
+        "showMore": "إظهار المزيد",
+        "showLess": "إظهار أقل",
+        "inStock": "متوفر ({count} قطعة)",
+        "galleryThumbnails": "صور المنتج",
+        "selectImage": "عرض الصورة {index}",
+        "relatedProducts": "منتجات مشابهة"
       }
     },
     "commerce": {
