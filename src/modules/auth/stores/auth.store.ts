@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { AuthState, InternalAuthModel, LoginCredentials, User } from '@modules/auth/types'
+import type { AuthState, InternalAuthModel, LoginCredentials, RegisterCredentials, User } from '@modules/auth/types'
 import { AuthService } from '@modules/auth/services/auth.service'
 import { tokenManager } from '@modules/auth/utils/token-manager'
 import { AuthEndpointNotAvailableError } from '@modules/auth/utils/errors'
@@ -37,6 +37,16 @@ export const useAuthStore = defineStore('auth', {
         this.applyAuthModel(authModel)
         tokenManager.setRememberMe(Boolean(credentials.remember))
         return authModel
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    async register(credentials: RegisterCredentials) {
+      this.isLoading = true
+      try {
+        const authService = new AuthService()
+        return await authService.signup(credentials)
       } finally {
         this.isLoading = false
       }

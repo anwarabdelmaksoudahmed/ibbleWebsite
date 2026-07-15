@@ -20,6 +20,27 @@ export type LoginApiUserDto = {
   updated_at: string
 }
 
+export type SignupApiRequest = {
+  name: string
+  phone: string
+  country_code: string
+  password: string
+  confirm_password: string
+  national_id?: string
+  email?: string
+  avatar?: string
+  status?: string
+  address?: string
+  otp?: string
+  otp_created_at?: string
+  preferred_date_type?: string
+}
+
+export type SignupApiResponse = {
+  message?: string
+  data?: LoginApiUserDto
+}
+
 export type LoginApiRoleDto = {
   app_name: string
   role: string

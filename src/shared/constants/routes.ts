@@ -13,6 +13,7 @@ export const ROUTES = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
+    OTP: '/auth/otp',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
   },
@@ -41,6 +42,7 @@ export const ROUTES = {
 export const GUEST_ROUTES = [
   ROUTES.AUTH.LOGIN,
   ROUTES.AUTH.REGISTER,
+  ROUTES.AUTH.OTP,
   ROUTES.AUTH.FORGOT_PASSWORD,
   ROUTES.AUTH.RESET_PASSWORD,
 ] as const

@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import type { LoginCredentials, Permission } from '@modules/auth/types'
+import type { LoginCredentials, Permission, RegisterCredentials } from '@modules/auth/types'
 import { useAuthStore } from '@modules/auth/stores/auth.store'
 import {
   hasAllPermissions,
@@ -30,6 +30,10 @@ export function useAuth() {
 
   async function login(credentials: LoginCredentials) {
     return authStore.login(credentials)
+  }
+
+  async function register(credentials: RegisterCredentials) {
+    return authStore.register(credentials)
   }
 
   async function logout() {
@@ -79,6 +83,7 @@ export function useAuth() {
     isLoading,
     isSessionExpired,
     login,
+    register,
     logout,
     refreshSession,
     loadCurrentUser,

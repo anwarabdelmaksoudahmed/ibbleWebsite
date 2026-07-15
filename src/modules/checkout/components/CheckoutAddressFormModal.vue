@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from '@modules/auth/constants/country-codes'
+import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
 import type { AddressFormInput, CheckoutCity, CheckoutCountry, CustomerAddress } from '@modules/checkout/types'
 import {
   addressToFormInput,
@@ -41,11 +41,6 @@ const cityOptions = computed(() =>
 const countryOptions = computed(() =>
   props.countries.map((country) => ({ label: country.name, value: country.id })),
 )
-
-const dialOptions = COUNTRY_CODES.map((item) => ({
-  label: `${item.flag} ${item.dialCode}`,
-  value: item.apiCode,
-}))
 
 watch(
   () => [props.open, props.address] as const,
@@ -119,38 +114,16 @@ function onSubmit() {
         :placeholder="t('site.commerce.checkout.form.emailPlaceholder')"
       />
 
-      <div class="space-y-1.5">
-        <label class="block text-sm font-medium text-foreground">
-          {{ t('site.commerce.checkout.form.phone') }}
-          <span class="text-danger">*</span>
-        </label>
-        <div
-          class="flex overflow-hidden rounded-lg border bg-surface"
-          :class="errors.phone ? 'border-danger' : 'border-border'"
-        >
-          <select
-            v-model="form.countryCode"
-            class="shrink-0 border-e border-border bg-surface-muted px-2 text-sm outline-none"
-            :aria-label="t('site.commerce.checkout.form.countryCode')"
-          >
-            <option
-              v-for="opt in dialOptions"
-              :key="opt.value"
-              :value="opt.value"
-            >
-              {{ opt.label }}
-            </option>
-          </select>
-          <input
-            v-model="form.phone"
-            type="tel"
-            class="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none"
-            :placeholder="t('site.commerce.checkout.form.phonePlaceholder')"
-            dir="ltr"
-          >
-        </div>
-        <p v-if="errors.phone" class="text-xs text-danger">{{ errors.phone }}</p>
-      </div>
+      <BasePhoneInput
+        id="checkout-phone"
+        v-model:phone="form.phone"
+        v-model:country-code="form.countryCode"
+        :label="t('site.commerce.checkout.form.phone')"
+        :placeholder="t('site.commerce.checkout.form.phonePlaceholder')"
+        :error="errors.phone"
+        :country-aria-label="t('site.commerce.checkout.form.countryCode')"
+        required
+      />
 
       <div class="grid gap-4 sm:grid-cols-2">
         <BaseSelect
@@ -159,6 +132,7 @@ function onSubmit() {
           :placeholder="t('site.commerce.checkout.form.countryPlaceholder')"
           :options="countryOptions"
           :error="errors.countryId"
+          searchable
           required
         />
         <BaseSelect
@@ -168,6 +142,7 @@ function onSubmit() {
           :options="cityOptions"
           :error="errors.cityId"
           :disabled="!form.countryId"
+          searchable
           required
         />
       </div>

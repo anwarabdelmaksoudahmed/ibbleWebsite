@@ -1,55 +1,180 @@
 <script setup lang="ts">
 import { phoneRegisterSchema } from '@shared/schemas/auth.schema'
 import { ROUTES } from '@shared/constants/routes'
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from '@modules/auth/constants/country-codes'
+import { useAuth } from '@modules/auth/composables/useAuth'
+import { isAuthError } from '@modules/auth/utils/errors'
+import { DEFAULT_COUNTRY_CODE, findCountryByApiCode } from '@shared/constants/country-codes'
+import { savePendingRegistration } from '@modules/auth/utils/pending-registration'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const toast = useToast()
+const { register, isLoading } = useAuth()
 
 const form = reactive({
-  name: '',
+  nationalId: '',
   phone: '',
   countryCode: DEFAULT_COUNTRY_CODE.apiCode,
+  name: '',
+  email: '',
   password: '',
   confirmPassword: '',
 })
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
-const isSubmitting = ref(false)
+const touched = reactive<Record<string, boolean>>({})
 const fieldErrors = reactive<Record<string, string>>({})
 const formError = ref('')
 
+const selectedCountry = computed(() => findCountryByApiCode(form.countryCode))
+
+const passwordChecks = computed(() => {
+  const value = form.password
+  return [
+    { key: 'length', ok: value.length >= 6, label: t('auth.passwordHints.minLength') },
+    { key: 'letter', ok: /[A-Za-z\u0600-\u06FF]/.test(value), label: t('auth.passwordHints.letter') },
+    { key: 'number', ok: /\d/.test(value), label: t('auth.passwordHints.number') },
+  ]
+})
+
+const passwordStrength = computed(() => {
+  const score = passwordChecks.value.filter((check) => check.ok).length
+  if (!form.password) return { score: 0, label: '', tone: '' }
+  if (score <= 1) return { score: 1, label: t('auth.passwordHints.weak'), tone: 'bg-danger' }
+  if (score === 2) return { score: 2, label: t('auth.passwordHints.medium'), tone: 'bg-ibbil-gold' }
+  return { score: 3, label: t('auth.passwordHints.strong'), tone: 'bg-ibbil-green' }
+})
+
+const passwordsMatch = computed(() => {
+  if (!form.confirmPassword) return null
+  return form.password === form.confirmPassword
+})
+
+const confirmWrapperClass = computed(() => {
+  if (fieldErrors.confirmPassword || passwordsMatch.value === false) return 'border-danger'
+  if (passwordsMatch.value) return 'border-ibbil-green/50'
+  return undefined
+})
+
+watch(
+  () => form.password,
+  () => {
+    if (touched.confirmPassword) validateField('confirmPassword')
+  },
+)
+
 function clearErrors() {
   formError.value = ''
-  Object.keys(fieldErrors).forEach((key) => {
-    delete fieldErrors[key]
-  })
+  for (const key of Object.keys(fieldErrors)) {
+    fieldErrors[key] = ''
+  }
 }
 
 function applyValidationErrors(issues: { path: PropertyKey[]; message: string }[]) {
   issues.forEach((issue) => {
     const field = String(issue.path[0] ?? '')
-    if (field) fieldErrors[field] = issue.message
+    if (field) fieldErrors[field] = t(issue.message)
   })
+}
+
+function validateField(field: keyof typeof form) {
+  touched[field] = true
+  const validation = phoneRegisterSchema.safeParse(form)
+
+  fieldErrors[field] = ''
+
+  if (!validation.success) {
+    const issue = validation.error.issues.find((item) => String(item.path[0]) === field)
+    if (issue) fieldErrors[field] = t(issue.message)
+  }
+}
+
+function setDigitsOnly(field: 'nationalId', value: string | number, maxLength: number) {
+  const cleaned = String(value).replace(/\D/g, '').slice(0, maxLength)
+  form[field] = cleaned
+  if (touched[field]) validateField(field)
+}
+
+function mapApiFieldErrors(apiFieldErrors: Record<string, string[]>) {
+  const fieldMap: Record<string, string> = {
+    name: 'name',
+    email: 'email',
+    national_id: 'nationalId',
+    phone: 'phone',
+    country_code: 'countryCode',
+    password: 'password',
+    confirm_password: 'confirmPassword',
+  }
+
+  Object.entries(apiFieldErrors).forEach(([field, messages]) => {
+    const mapped = fieldMap[field] ?? field
+    fieldErrors[mapped] = messages[0] ?? ''
+  })
+}
+
+function scrollToFirstError() {
+  const firstErrorField = Object.keys(fieldErrors).find((key) => fieldErrors[key])
+  if (!firstErrorField) return
+  const el = document.getElementById(
+    `register-${firstErrorField === 'confirmPassword' ? 'confirm' : firstErrorField === 'nationalId' ? 'national-id' : firstErrorField}`,
+  )
+  el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  el?.focus()
+}
+
+async function goToOtp() {
+  toast.success(t('auth.registerOtpSent'))
+  await navigateTo(localePath(ROUTES.AUTH.OTP))
 }
 
 async function handleSubmit() {
   clearErrors()
+  Object.keys(form).forEach((key) => {
+    touched[key] = true
+  })
 
   const validation = phoneRegisterSchema.safeParse(form)
   if (!validation.success) {
     applyValidationErrors(validation.error.issues)
+    await nextTick()
+    scrollToFirstError()
     return
   }
 
-  isSubmitting.value = true
+  const credentials = {
+    name: form.name.trim(),
+    nationalId: form.nationalId,
+    email: form.email.trim(),
+    phone: form.phone,
+    countryCode: form.countryCode,
+    password: form.password,
+    confirmPassword: form.confirmPassword,
+  }
+
+  savePendingRegistration(credentials)
+
   try {
-    // Registration API is not available yet — keep UI ready for future endpoint.
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    toast.info(t('auth.registerComingSoon'))
-  } finally {
-    isSubmitting.value = false
+    await register(credentials)
+    await goToOtp()
+  } catch (error) {
+    if (isAuthError(error)) {
+      // Inactive existing account — continue OTP verification.
+      if (error.statusCode === 401) {
+        await goToOtp()
+        return
+      }
+
+      formError.value = error.message
+      if (error.fieldErrors) {
+        mapApiFieldErrors(error.fieldErrors)
+        await nextTick()
+        scrollToFirstError()
+      }
+      return
+    }
+
+    formError.value = t('errors.generic')
   }
 }
 </script>
@@ -57,132 +182,200 @@ async function handleSubmit() {
 <template>
   <div class="overflow-hidden rounded-2xl border border-border/70 bg-white shadow-[0_24px_60px_-28px_rgba(45,83,61,0.4)]">
     <div class="border-b border-border/50 px-6 py-6 sm:px-8">
+      <div class="mb-4 flex items-center gap-2">
+        <span class="inline-flex h-7 items-center rounded-full bg-ibbil-green/10 px-2.5 text-xs font-semibold text-ibbil-green">
+          {{ t('auth.steps.step', { current: 1, total: 2 }) }}
+        </span>
+        <span class="text-xs text-foreground-muted">{{ t('auth.steps.accountDetails') }}</span>
+      </div>
       <h2 class="text-xl font-bold text-ibbil-green">{{ t('auth.createAccount') }}</h2>
       <p class="mt-1 text-sm text-foreground-muted">{{ t('auth.registerSubtitle') }}</p>
     </div>
 
-    <form class="space-y-4 px-6 py-6 sm:px-8 sm:py-7" @submit.prevent="handleSubmit">
-      <div
-        v-if="formError"
-        class="rounded-xl border border-danger/25 bg-danger/5 px-3.5 py-2.5 text-sm text-danger"
-        role="alert"
+    <form class="space-y-6 px-6 py-6 sm:px-8 sm:py-7" novalidate @submit.prevent="handleSubmit">
+      <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0 -translate-y-1"
+        enter-to-class="opacity-100 translate-y-0"
       >
-        {{ formError }}
-      </div>
-
-      <div class="space-y-1.5">
-        <label for="register-name" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.fullName') }}
-        </label>
-        <input
-          id="register-name"
-          v-model="form.name"
-          type="text"
-          autocomplete="name"
-          :placeholder="t('auth.fullNamePlaceholder')"
-          class="w-full rounded-xl border bg-[#fafbfa] px-3.5 py-3 text-sm outline-none transition-all placeholder:text-foreground-muted focus:border-ibbil-green focus:bg-white focus:ring-2 focus:ring-ibbil-green/15"
-          :class="fieldErrors.name ? 'border-danger' : 'border-border'"
-        >
-        <p v-if="fieldErrors.name" class="text-xs text-danger">{{ fieldErrors.name }}</p>
-      </div>
-
-      <div class="space-y-1.5">
-        <label for="register-phone" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.mobile') }}
-        </label>
         <div
-          class="flex overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15"
-          :class="fieldErrors.phone ? 'border-danger' : 'border-border'"
+          v-if="formError"
+          class="rounded-xl border border-danger/25 bg-danger/5 px-3.5 py-2.5 text-sm text-danger"
+          role="alert"
         >
-          <div class="flex items-center border-e border-border bg-[#f3f5f3] px-2.5">
-            <select
-              v-model="form.countryCode"
-              class="max-w-[7.5rem] bg-transparent py-3 text-sm font-medium outline-none"
-              :aria-label="t('auth.countryCode')"
-            >
-              <option v-for="country in COUNTRY_CODES" :key="country.apiCode" :value="country.apiCode">
-                {{ country.flag }} {{ country.dialCode }}
-              </option>
-            </select>
-          </div>
-          <input
-            id="register-phone"
-            v-model="form.phone"
-            type="tel"
-            inputmode="numeric"
-            autocomplete="tel-national"
-            :placeholder="t('auth.phonePlaceholder')"
-            class="min-w-0 flex-1 bg-transparent px-3.5 py-3 text-sm outline-none placeholder:text-foreground-muted"
-          >
+          {{ formError }}
         </div>
-        <p v-if="fieldErrors.phone" class="text-xs text-danger">{{ fieldErrors.phone }}</p>
-      </div>
+      </Transition>
 
-      <div class="space-y-1.5">
-        <label for="register-password" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.secretPassword') }}
-        </label>
-        <div
-          class="relative overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15"
-          :class="fieldErrors.password ? 'border-danger' : 'border-border'"
-        >
-          <input
+      <section class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="flex h-6 w-6 items-center justify-center rounded-md bg-ibbil-green/10 text-ibbil-green">
+            <Icon name="lucide:user-round" class="h-3.5 w-3.5" />
+          </span>
+          <h3 class="text-sm font-bold text-ibbil-green">{{ t('auth.sections.identity') }}</h3>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <BaseInput
+            id="register-national-id"
+            :model-value="form.nationalId"
+            :label="t('auth.nationalId')"
+            :hint="t('auth.hints.nationalId')"
+            :error="fieldErrors.nationalId"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="14"
+            required
+            @update:model-value="setDigitsOnly('nationalId', $event, 14)"
+            @blur="validateField('nationalId')"
+          />
+
+          <BasePhoneInput
+            id="register-phone"
+            v-model:phone="form.phone"
+            v-model:country-code="form.countryCode"
+            :label="t('auth.mobile')"
+            :placeholder="selectedCountry.example"
+            :hint="t('auth.hints.phone')"
+            :error="fieldErrors.phone"
+            :country-error="fieldErrors.countryCode"
+            :country-aria-label="t('auth.countryCode')"
+            required
+            @blur="validateField('phone')"
+            @country-change="touched.countryCode && validateField('countryCode')"
+          />
+
+          <BaseInput
+            id="register-name"
+            v-model="form.name"
+            :label="t('auth.username')"
+            :error="fieldErrors.name"
+            type="text"
+            autocomplete="username"
+            maxlength="50"
+            required
+            @blur="validateField('name')"
+          />
+
+          <BaseInput
+            id="register-email"
+            v-model="form.email"
+            :label="t('auth.email')"
+            :error="fieldErrors.email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            required
+            @blur="validateField('email')"
+          />
+        </div>
+      </section>
+
+      <section class="space-y-4 border-t border-border/60 pt-5">
+        <div class="flex items-center gap-2">
+          <span class="flex h-6 w-6 items-center justify-center rounded-md bg-ibbil-gold/15 text-ibbil-gold">
+            <Icon name="lucide:lock-keyhole" class="h-3.5 w-3.5" />
+          </span>
+          <h3 class="text-sm font-bold text-ibbil-green">{{ t('auth.sections.security') }}</h3>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <BaseInput
             id="register-password"
             v-model="form.password"
+            :label="t('auth.secretPassword')"
+            :error="fieldErrors.password"
             :type="showPassword ? 'text' : 'password'"
             autocomplete="new-password"
-            :placeholder="t('auth.passwordPlaceholder')"
-            class="w-full bg-transparent px-3.5 py-3 pe-11 text-sm outline-none placeholder:text-foreground-muted"
+            maxlength="64"
+            required
+            @blur="validateField('password')"
           >
-          <button
-            type="button"
-            class="absolute top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground-muted hover:text-ibbil-green end-2.5"
-            @click="showPassword = !showPassword"
-          >
-            <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
-          </button>
-        </div>
-        <p v-if="fieldErrors.password" class="text-xs text-danger">{{ fieldErrors.password }}</p>
-      </div>
+            <template #suffix>
+              <button
+                type="button"
+                class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+                :aria-label="showPassword ? t('auth.hidePassword') : t('auth.showPassword')"
+                @click="showPassword = !showPassword"
+              >
+                <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+              </button>
+            </template>
 
-      <div class="space-y-1.5">
-        <label for="register-confirm" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.confirmPassword') }}
-        </label>
-        <div
-          class="relative overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15"
-          :class="fieldErrors.confirmPassword ? 'border-danger' : 'border-border'"
-        >
-          <input
+            <template v-if="!fieldErrors.password && form.password" #hint>
+              <div class="space-y-2 pt-1">
+                <div class="flex items-center gap-2">
+                  <div class="flex h-1.5 flex-1 gap-1 overflow-hidden rounded-full">
+                    <span
+                      v-for="index in 3"
+                      :key="index"
+                      class="h-full flex-1 rounded-full transition-colors"
+                      :class="passwordStrength.score >= index ? passwordStrength.tone : 'bg-border'"
+                    />
+                  </div>
+                  <span class="text-[11px] font-medium text-foreground-muted">{{ passwordStrength.label }}</span>
+                </div>
+                <ul class="space-y-1">
+                  <li
+                    v-for="check in passwordChecks"
+                    :key="check.key"
+                    class="flex items-center gap-1.5 text-[11px]"
+                    :class="check.ok ? 'text-ibbil-green' : 'text-foreground-muted'"
+                  >
+                    <Icon :name="check.ok ? 'lucide:check' : 'lucide:circle'" class="h-3 w-3" />
+                    {{ check.label }}
+                  </li>
+                </ul>
+              </div>
+            </template>
+          </BaseInput>
+
+          <BaseInput
             id="register-confirm"
             v-model="form.confirmPassword"
+            :label="t('auth.confirmPassword')"
+            :error="fieldErrors.confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
+            :wrapper-class="confirmWrapperClass"
             autocomplete="new-password"
-            :placeholder="t('auth.confirmPasswordPlaceholder')"
-            class="w-full bg-transparent px-3.5 py-3 pe-11 text-sm outline-none placeholder:text-foreground-muted"
+            maxlength="64"
+            required
+            @blur="validateField('confirmPassword')"
           >
-          <button
-            type="button"
-            class="absolute top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground-muted hover:text-ibbil-green end-2.5"
-            @click="showConfirmPassword = !showConfirmPassword"
-          >
-            <Icon :name="showConfirmPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
-          </button>
-        </div>
-        <p v-if="fieldErrors.confirmPassword" class="text-xs text-danger">{{ fieldErrors.confirmPassword }}</p>
-      </div>
+            <template #suffix>
+              <button
+                type="button"
+                class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+                :aria-label="showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')"
+                @click="showConfirmPassword = !showConfirmPassword"
+              >
+                <Icon :name="showConfirmPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+              </button>
+            </template>
 
-      <button
-        type="submit"
-        class="mt-2 w-full rounded-xl bg-ibbil-green px-4 py-3.5 text-sm font-bold text-white shadow-md shadow-ibbil-green/20 transition-all hover:bg-ibbil-green-dark hover:shadow-lg active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
-        :disabled="isSubmitting"
-      >
-        <span v-if="isSubmitting" class="inline-flex items-center gap-2">
-          <Icon name="lucide:loader-2" class="h-4 w-4 animate-spin" />
+            <template v-if="!fieldErrors.confirmPassword" #hint>
+              <p v-if="passwordsMatch === true" class="flex items-center gap-1 text-xs text-ibbil-green">
+                <Icon name="lucide:check" class="h-3 w-3" />
+                {{ t('auth.passwordHints.match') }}
+              </p>
+              <p v-else-if="passwordsMatch === false" class="text-xs text-danger">
+                {{ t('auth.validation.passwordMismatch') }}
+              </p>
+            </template>
+          </BaseInput>
+        </div>
+      </section>
+
+      <BaseButton type="submit" variant="brand" block :loading="isLoading">
+        <template v-if="!isLoading">
+          {{ t('auth.continueToOtp') }}
+          <DirectionalArrow direction="forward" size="xs" />
+        </template>
+        <template v-else>
           {{ t('common.loading') }}
-        </span>
-        <span v-else>{{ t('auth.createAccount') }}</span>
-      </button>
+        </template>
+      </BaseButton>
 
       <p class="text-center text-sm text-foreground-muted">
         {{ t('auth.hasAccount') }}

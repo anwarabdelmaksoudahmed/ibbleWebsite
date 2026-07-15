@@ -10,6 +10,8 @@ export type BaseButtonProps = {
   disabled?: boolean
   loading?: boolean
   block?: boolean
+  /** Extra classes merged onto the button (preferred over inline styles) */
+  class?: string
 }
 
 const props = withDefaults(defineProps<BaseButtonProps>(), {
@@ -25,12 +27,13 @@ const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
 const classes = computed(() =>
   cn(
-    'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors',
+    'inline-flex items-center justify-center gap-2 font-medium transition-colors',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
-    SIZE_CLASSES[props.size],
+    props.variant !== 'brand' && 'rounded-lg disabled:pointer-events-none disabled:opacity-50',
+    props.variant !== 'brand' && SIZE_CLASSES[props.size],
     VARIANT_CLASSES[props.variant],
     props.block && 'w-full',
+    props.class,
   ),
 )
 

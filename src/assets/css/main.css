@@ -74,6 +74,46 @@
     @apply outline-2 outline-offset-2 outline-ibbil-green;
   }
 
+  /* Override Chrome / Safari autofill yellow-blue background + extra border */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border-color: transparent !important;
+    -webkit-text-fill-color: var(--color-foreground);
+    caret-color: var(--color-foreground);
+    box-shadow: 0 0 0 1000px #fafbfa inset !important;
+    transition: background-color 99999s ease-in-out 0s;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active,
+  .dark textarea:-webkit-autofill,
+  .dark select:-webkit-autofill {
+    border-color: transparent !important;
+    -webkit-text-fill-color: var(--color-foreground);
+    caret-color: var(--color-foreground);
+    box-shadow: 0 0 0 1000px var(--color-surface-muted) inset !important;
+  }
+
+  /* Native inputs inside bordered shells should not show a second outline */
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  select:focus,
+  select:focus-visible {
+    outline: none;
+  }
+
   html[lang='ar'] body,
   html[dir='rtl'] body {
     font-family: 'Tajawal', 'Inter', ui-sans-serif, system-ui, sans-serif;
