@@ -148,18 +148,18 @@ function handleRetry() {
 
       <div
         :class="cn(
-          'relative min-h-[12rem] overflow-hidden rounded-xl border border-border bg-white p-4 dark:bg-surface-elevated',
-          phase === 'widget' && 'min-h-[16rem]',
+          'relative min-h-[12rem] rounded-xl border border-border bg-white p-4 dark:bg-surface-elevated',
+          phase === 'widget' ? 'min-h-[16rem] overflow-visible' : 'overflow-hidden',
         )"
       >
-        <div v-if="phase === 'loading' || isLoading && phase === 'widget'" class="py-10">
+        <div v-if="phase === 'loading'" class="py-10">
           <BaseLoader block show-label :label="t('payment.modal.loadingWidget')" tone="brand" />
         </div>
 
         <div
           v-show="phase === 'widget'"
           ref="widgetContainerRef"
-          class="payment-widget-container w-full"
+          class="payment-widget-container relative z-[1] w-full"
         />
 
         <div v-if="phase === 'verifying'" class="py-10">
@@ -226,6 +226,16 @@ function handleRetry() {
 <style scoped>
 .payment-widget-container :deep(.wpwl-form) {
   margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.payment-widget-container :deep(.wpwl-control),
+.payment-widget-container :deep(.wpwl-button),
+.payment-widget-container :deep(input),
+.payment-widget-container :deep(select),
+.payment-widget-container :deep(iframe) {
+  pointer-events: auto;
 }
 
 .payment-widget-container :deep(.wpwl-group) {

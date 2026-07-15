@@ -30,16 +30,19 @@ export type InitiatePaymentApiResponse = {
   transaction_id: string
 }
 
-export type VerifyPaymentApiRequest = {
+export type CheckPaymentStatusApiRequest = {
+  checkout_id: string
+  transaction_id: string
   resource_path?: string
-  checkout_id?: string
 }
 
-export type VerifyPaymentApiResponse = {
+export type CheckPaymentStatusApiResponse = {
   status: number
   message: string
-  transaction_id: string
+  gateway?: string
+  transaction_id?: string
   payment_status?: string
+  errors?: string[]
 }
 
 export type PaymentStatusApiResponse = {

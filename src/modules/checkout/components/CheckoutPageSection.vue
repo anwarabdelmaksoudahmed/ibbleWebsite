@@ -11,6 +11,8 @@ import { ROUTES } from '@shared/constants/routes'
 import type { AddressFormInput, CustomerAddress, PaymentMethodId } from '@modules/checkout/types'
 import type { CartStoreGroup } from '@modules/cart/types'
 import { getStoreSubtotal } from '@modules/cart/utils/mappers'
+import { restoreCheckoutCartIfNeeded } from '@modules/checkout/utils/cart-restore'
+import { clearCheckoutCartSnapshot, consumePaymentOutcome } from '@shared/payment/utils/pending-payment'
 import { toRaw } from 'vue'
 
 const { t, n } = useI18n()
@@ -47,6 +49,7 @@ const {
 const { countries, cities } = useCheckoutGeo()
 const { primaryWallet, isLoading: walletsLoading } = useCheckoutWallets()
 const { placeCardOrder } = useCheckoutOrder()
+const { restoreOutcome } = usePayment()
 
 const paymentMethod = ref<PaymentMethodId>('card')
 const discountCode = ref('')
@@ -101,8 +104,26 @@ const showMissingStore = computed(
 )
 
 const canSubmit = computed(
-  () => Boolean(selectedAddress.value && checkoutStore.value && paymentMethod.value),
+  () =>
+    Boolean(selectedAddress.value && checkoutStore.value && paymentMethod.value) &&
+    cartFetched.value &&
+    !cartLoading.value &&
+    !isCartSyncing.value &&
+    (checkoutStore.value?.products.length ?? 0) > 0,
 )
+
+async function ensureCheckoutCartReady(storeId: string): Promise<boolean> {
+  const refreshed = await refetchCart()
+  const refreshedCart = refreshed.data ?? cart.value
+  const storeGroup = refreshedCart.stores.find((entry) => entry.storeId === storeId)
+
+  if (!storeGroup?.products.length) {
+    toast.warning(t('site.commerce.checkout.cartNotReady'))
+    return false
+  }
+
+  return true
+}
 
 const storeTotal = computed(() =>
   checkoutStore.value ? getStoreSubtotal(checkoutStore.value) : 0,
@@ -142,6 +163,20 @@ function onApplyDiscount() {
   toast.info(t('site.commerce.checkout.discountSoon'))
 }
 
+async function tryRestoreCheckoutCart(snapshot: CartStoreGroup): Promise<void> {
+  try {
+    const restored = await restoreCheckoutCartIfNeeded(snapshot, {
+      refetchCart,
+      restoreStoreGroup,
+      getCart: () => cart.value,
+    })
+
+    if (!restored) return
+  } catch {
+    toast.warning(t('site.commerce.checkout.cartRestoreFailed'))
+  }
+}
+
 async function onPlaceOrder() {
   if (!selectedAddress.value) {
     toast.warning(t('site.commerce.checkout.selectAddressFirst'))
@@ -156,6 +191,10 @@ async function onPlaceOrder() {
 
   if (paymentMethod.value === 'wallet') {
     toast.info(t('site.commerce.checkout.walletPaymentSoon'))
+    return
+  }
+
+  if (!(await ensureCheckoutCartReady(store.storeId))) {
     return
   }
 
@@ -183,31 +222,19 @@ async function onPlaceOrder() {
         couponCode: discountCode.value.trim(),
       },
       paymentSummary,
+      checkoutSnapshot,
     )
 
     if (result.success) {
+      clearCheckoutCartSnapshot()
       toast.success(result.message || t('site.commerce.checkout.orderSuccess'))
       await refetchCart()
       await navigateTo(localePath(ROUTES.HOME))
       return
     }
 
-    if (result.orderId && checkoutSnapshot) {
-      await refetchCart()
-      const storeStillInCart = cart.value.stores.some(
-        (entry) =>
-          entry.storeId === checkoutSnapshot!.storeId &&
-          entry.products.length > 0,
-      )
-
-      if (!storeStillInCart) {
-        try {
-          await restoreStoreGroup(checkoutSnapshot)
-          await refetchCart()
-        } catch {
-          toast.warning(t('site.commerce.checkout.cartRestoreFailed'))
-        }
-      }
+    if (checkoutSnapshot) {
+      await tryRestoreCheckoutCart(checkoutSnapshot)
     }
 
     if (result.status !== 'cancelled') {
@@ -239,10 +266,35 @@ watch(
   { immediate: true },
 )
 
+async function handleReturnedPaymentOutcome() {
+  const outcome = consumePaymentOutcome()
+  if (!outcome) return
+
+  if (outcome.result.success) {
+    clearCheckoutCartSnapshot()
+    toast.success(outcome.result.message || t('site.commerce.checkout.orderSuccess'))
+    await refetchCart()
+    await navigateTo(localePath(ROUTES.HOME))
+    return
+  }
+
+  if (outcome.cartSnapshot) {
+    await tryRestoreCheckoutCart(outcome.cartSnapshot)
+  }
+
+  clearCheckoutCartSnapshot()
+  restoreOutcome(outcome.result, outcome.request)
+
+  if (outcome.result.status !== 'cancelled') {
+    toast.error(outcome.result.message || t('site.commerce.checkout.orderFailed'))
+  }
+}
+
 onMounted(() => {
   if (authSessionReady.value && authenticated.value) {
     void refetchCart()
   }
+  void handleReturnedPaymentOutcome()
 })
 </script>
 
@@ -431,7 +483,7 @@ onMounted(() => {
           <button
             type="button"
             class="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-ibbil-green px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-55"
-            :disabled="placingOrder"
+            :disabled="placingOrder || !canSubmit"
             @click="onPlaceOrder"
           >
             <Icon

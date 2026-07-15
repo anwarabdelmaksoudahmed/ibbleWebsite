@@ -389,6 +389,7 @@
         "placeOrderSoon": "Order placement is being prepared and will be available soon",
         "orderSuccess": "Your order was confirmed and payment completed successfully",
         "orderFailed": "We could not complete your order. Please try again.",
+        "cartNotReady": "Your cart is not ready to checkout. Please refresh the page and try again.",
         "cartRestoreFailed": "Payment was not completed and we could not restore your cart automatically. Please add your items again.",
         "walletPaymentSoon": "Wallet payment is coming soon. Please choose card to complete checkout.",
         "secureNote": "Your data is protected and used only to complete delivery and payment."
@@ -431,6 +432,12 @@
       "failureHint": "We could not complete your payment. Please try again.",
       "retry": "Try again",
       "done": "Done"
+    },
+    "callback": {
+      "verifying": "Verifying payment...",
+      "redirecting": "Returning to checkout...",
+      "missingSession": "Payment session expired. Please try again.",
+      "verificationFailed": "Payment verification failed. Please try again."
     }
   }
 }

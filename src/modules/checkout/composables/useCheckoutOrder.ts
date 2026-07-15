@@ -1,8 +1,10 @@
 import { getOrdersService, toInitiatePayload } from '@modules/checkout/services/orders.service'
 import type { CreateOrderInput } from '@modules/checkout/types'
 import type { CreateOrderApiResponse } from '@modules/checkout/types/api.types'
+import type { CartStoreGroup } from '@modules/cart/types'
 import { PAYMENT_PROVIDERS } from '@shared/payment/constants/providers'
 import type { PaymentRequest, PaymentResult } from '@shared/payment/types/internal.types'
+import { persistCheckoutCartSnapshot, clearCheckoutCartSnapshot } from '@shared/payment/utils/pending-payment'
 
 export function useCheckoutOrder() {
   const { handleError } = useApi()
@@ -36,17 +38,19 @@ export function useCheckoutOrder() {
   async function placeCardOrder(
     input: CreateOrderInput,
     summary?: PaymentRequest['summary'],
+    cartSnapshot?: CartStoreGroup,
   ): Promise<PaymentResult> {
-    if (summary) {
-      payment.openPreparing(summary)
-    }
-
     try {
+      if (cartSnapshot) {
+        persistCheckoutCartSnapshot(cartSnapshot)
+      }
+
       const order = await createOrder(input)
       return await payWithHyperPay(order, summary)
     } catch (error) {
+      clearCheckoutCartSnapshot()
       payment.close()
-      const apiError = handleError(error, true)
+      const apiError = handleError(error, false)
       return {
         success: false,
         status: 'failed',

@@ -6,15 +6,23 @@ import type {
   PaymentOrderSummary,
   PaymentRequest,
   PaymentResult,
+  PaymentSession,
 } from '@shared/payment/types/internal.types'
 import {
   createCancelledResult,
   createFailureResult,
 } from '@shared/payment/utils/mappers'
+import {
+  clearPendingPayment,
+  loadCheckoutCartSnapshot,
+  persistCheckoutCartSnapshot,
+  persistPendingPayment,
+} from '@shared/payment/utils/pending-payment'
 
 type PaymentCompletionHandler = (result: PaymentResult) => void
 
 let completionHandler: PaymentCompletionHandler | null = null
+let isHandlingCallback = false
 
 /**
  * Global payment orchestration composable.
@@ -35,11 +43,24 @@ export function usePayment() {
   const service = getPaymentService()
   const { handleError } = useApi()
   const { locale } = useI18n()
+  const localePath = useLocalePath()
   const runtimeConfig = useRuntimeConfig()
 
-  const shopperResultUrl = computed(
-    () => `${runtimeConfig.public.appUrl}/payment/callback`,
-  )
+  const shopperResultUrl = computed(() => {
+    const base = (runtimeConfig.public.appUrl as string).replace(/\/$/, '')
+    return `${base}${localePath('/payment/callback')}`
+  })
+
+  function persistActivePayment(request: PaymentRequest, session: PaymentSession) {
+    if (!import.meta.client) return
+
+    persistPendingPayment({
+      session,
+      request,
+      returnPath: `${window.location.pathname}${window.location.search}`,
+      cartSnapshot: loadCheckoutCartSnapshot() ?? undefined,
+    })
+  }
 
   function registerCompletionHandler(handler: PaymentCompletionHandler) {
     completionHandler = handler
@@ -48,6 +69,7 @@ export function usePayment() {
   function resolvePayment(result: PaymentResult) {
     store.setResult(result)
     store.setLoading(false)
+    clearPendingPayment()
     completionHandler?.(result)
     completionHandler = null
   }
@@ -66,6 +88,7 @@ export function usePayment() {
     try {
       const session = await service.initiate(request)
       store.setSession(session)
+      persistActivePayment(request, session)
       store.setStatus('ready')
       store.setModalPhase('widget')
       store.setLoading(false)
@@ -102,15 +125,39 @@ export function usePayment() {
   }
 
   async function handlePaymentCallback(payload: PaymentCallbackPayload) {
-    const session = store.session
-    if (!session) return
+    if (isHandlingCallback) return
 
+    const session = store.session
+    if (!session) {
+      resolvePayment(createFailureResult('', '', 'Payment session expired'))
+      return
+    }
+
+    isHandlingCallback = true
     store.setStatus('verifying')
     store.setModalPhase('verifying')
     store.setLoading(true)
 
-    const result = await service.handleCallback(session, payload)
-    service.destroyWidget(session)
+    let result = createFailureResult(
+      session.orderId,
+      session.transactionId,
+      'Payment verification failed',
+    )
+
+    try {
+      result = await service.handleCallback(session, payload)
+    } catch (error) {
+      const apiError = handleError(error, true)
+      result = createFailureResult(
+        session.orderId,
+        session.transactionId,
+        apiError.message,
+      )
+    } finally {
+      service.destroyWidget(session)
+      isHandlingCallback = false
+    }
+
     resolvePayment(result)
   }
 
@@ -169,6 +216,7 @@ export function usePayment() {
     try {
       const nextSession = await service.initiate(request)
       store.setSession(nextSession)
+      persistActivePayment(request, nextSession)
       store.setStatus('ready')
       store.setModalPhase('widget')
       store.setLoading(false)
@@ -188,6 +236,10 @@ export function usePayment() {
     }
   }
 
+  function restoreOutcome(result: PaymentResult, request: PaymentRequest) {
+    store.restoreOutcome(result, request)
+  }
+
   return {
     pay,
     openPreparing,
@@ -198,6 +250,7 @@ export function usePayment() {
     mountActiveWidget,
     destroyActiveWidget,
     resolvePayment,
+    restoreOutcome,
     status,
     isLoading,
     isOpen,

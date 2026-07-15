@@ -152,6 +152,7 @@ export default defineNuxtConfig({
         'script-src': ["'self'", "'unsafe-inline'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
         'frame-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
         'connect-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com', 'https:'],
+        'form-action': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
         // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
         // upgrade CSS/JS/images to HTTPS and they fail to load.
         'upgrade-insecure-requests': process.env.NODE_ENV === 'development' ? false : true,

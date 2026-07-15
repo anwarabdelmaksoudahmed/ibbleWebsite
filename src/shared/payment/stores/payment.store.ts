@@ -114,6 +114,20 @@ export const usePaymentStore = defineStore('payment', {
       }
     },
 
+    restoreOutcome(result: PaymentResult, request: PaymentRequest) {
+      this.isOpen = true
+      this.isLoading = false
+      this.request = request
+      this.summary = request.summary ?? {
+        total: request.amount,
+        currency: request.currency,
+      }
+      this.result = result
+      this.status = result.status
+      this.modalPhase = result.success ? 'success' : 'failure'
+      this.errorMessage = result.success ? null : result.message ?? null
+    },
+
     close() {
       this.isOpen = false
     },

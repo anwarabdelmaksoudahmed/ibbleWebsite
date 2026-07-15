@@ -58,32 +58,33 @@ export class PaymentService {
     session: PaymentSession,
     payload: PaymentCallbackPayload,
   ): Promise<PaymentResult> {
-    try {
-      const verification = await this.api.verify(session.transactionId, {
-        resource_path: payload.resourcePath,
-        checkout_id: payload.checkoutId,
-      })
+    const checkoutId = payload.checkoutId ?? session.checkoutId
+    const resourcePath =
+      payload.resourcePath ?? `/v1/checkouts/${encodeURIComponent(checkoutId)}/payment`
 
-      if (verification.status === 1) {
-        return createSuccessResult(
-          session.orderId,
-          verification.transaction_id || session.transactionId,
-          verification.message,
-        )
-      }
+    const verification = await this.api.checkStatus({
+      checkout_id: checkoutId,
+      transaction_id: session.transactionId,
+      resource_path: resourcePath,
+    })
 
-      return createFailureResult(
-        session.orderId,
-        session.transactionId,
-        verification.message,
-      )
-    } catch {
+    if (verification.status === 1) {
       return createSuccessResult(
         session.orderId,
-        session.transactionId,
-        'Payment completed. Verification endpoint pending.',
+        verification.transaction_id || session.transactionId,
+        verification.message,
       )
     }
+
+    const failureMessage = [verification.message, ...(verification.errors ?? [])]
+      .filter(Boolean)
+      .join('. ')
+
+    return createFailureResult(
+      session.orderId,
+      session.transactionId,
+      failureMessage || undefined,
+    )
   }
 
   async fetchStatus(transactionId: string): Promise<string | null> {

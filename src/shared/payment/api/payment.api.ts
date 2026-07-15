@@ -3,11 +3,11 @@ import { getHttpClient } from '@core/api/http/client'
 import { PAYMENT_ENDPOINTS } from '@shared/payment/constants/endpoints'
 import type {
   CancelPaymentApiResponse,
+  CheckPaymentStatusApiRequest,
+  CheckPaymentStatusApiResponse,
   InitiatePaymentApiRequest,
   InitiatePaymentApiResponse,
   PaymentStatusApiResponse,
-  VerifyPaymentApiRequest,
-  VerifyPaymentApiResponse,
 } from '@shared/payment/types/api.types'
 
 export class PaymentApi {
@@ -27,12 +27,9 @@ export class PaymentApi {
       .then((response) => response.data)
   }
 
-  verify(
-    transactionId: string,
-    payload?: VerifyPaymentApiRequest,
-  ): Promise<VerifyPaymentApiResponse> {
+  checkStatus(payload: CheckPaymentStatusApiRequest): Promise<CheckPaymentStatusApiResponse> {
     return this.client
-      .post<VerifyPaymentApiResponse>(PAYMENT_ENDPOINTS.verify(transactionId), payload, {
+      .post<CheckPaymentStatusApiResponse>(PAYMENT_ENDPOINTS.CHECK_STATUS, payload, {
         baseURL: this.baseUrl,
       })
       .then((response) => response.data)

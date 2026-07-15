@@ -48,12 +48,13 @@ export class HyperPayProvider implements PaymentProvider {
     const iframe = document.createElement('iframe')
     iframe.name = HYPERPAY_IFRAME_NAME
     iframe.title = 'Payment result'
-    iframe.className = 'sr-only'
     iframe.setAttribute('aria-hidden', 'true')
     iframe.tabIndex = -1
+    iframe.style.cssText =
+      'position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none;visibility:hidden'
 
     const widgetHost = document.createElement('div')
-    widgetHost.className = 'payment-widget-host w-full'
+    widgetHost.className = 'payment-widget-host relative z-[1] w-full'
 
     const form = document.createElement('form')
     form.action = options.shopperResultUrl
@@ -73,8 +74,8 @@ export class HyperPayProvider implements PaymentProvider {
     }
 
     widgetHost.appendChild(form)
-    container.appendChild(iframe)
     container.appendChild(widgetHost)
+    container.appendChild(iframe)
 
     this.messageHandler = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return

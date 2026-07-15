@@ -1,8 +1,8 @@
 export type {
   InitiatePaymentApiRequest,
   InitiatePaymentApiResponse,
-  VerifyPaymentApiRequest,
-  VerifyPaymentApiResponse,
+  CheckPaymentStatusApiRequest,
+  CheckPaymentStatusApiResponse,
   PaymentStatusApiResponse,
   CancelPaymentApiResponse,
 } from './api.types'

@@ -1,7 +1,7 @@
 import { OrdersApi } from '@modules/checkout/api/orders.api'
 import { CHECKOUT_PAYMENT_METHOD_IDS } from '@modules/checkout/constants/payment-methods'
 import type { CreateOrderInput } from '@modules/checkout/types'
-import type { CreateOrderApiResponse } from '@modules/checkout/types/api.types'
+import type { CreateOrderApiRequest, CreateOrderApiResponse } from '@modules/checkout/types/api.types'
 import type { InitiatePaymentApiRequest } from '@shared/payment/types/api.types'
 
 function unwrapOrderResponse(payload: unknown): CreateOrderApiResponse {
@@ -25,14 +25,15 @@ export class OrdersService {
   }
 
   async create(input: CreateOrderInput): Promise<CreateOrderApiResponse> {
-    const response = await this.api.create({
+    const payload: CreateOrderApiRequest = {
       address_id: input.addressId,
       store_id: input.storeId,
       payment_method_id: CHECKOUT_PAYMENT_METHOD_IDS[input.paymentMethodId],
-      PIN_code: input.pinCode ?? '',
-      coupon_code: input.couponCode ?? '',
-    })
+      PIN_code: input.pinCode?.trim() ?? '',
+      coupon_code: input.couponCode?.trim() ?? '',
+    }
 
+    const response = await this.api.create(payload)
     return unwrapOrderResponse(response)
   }
 }
