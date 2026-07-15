@@ -52,6 +52,7 @@ export type PaymentResult = {
   transactionId: string
   orderId: string
   message?: string
+  fieldErrors?: Record<string, string[]>
 }
 
 export type PaymentCallbackPayload = {

@@ -45,6 +45,7 @@ export function createPaymentResult(params: {
   transactionId: string
   orderId: string
   message?: string
+  fieldErrors?: Record<string, string[]>
 }): PaymentResult {
   return {
     success: params.success,
@@ -52,6 +53,7 @@ export function createPaymentResult(params: {
     transactionId: params.transactionId,
     orderId: params.orderId,
     message: params.message,
+    fieldErrors: params.fieldErrors,
   }
 }
 
@@ -73,6 +75,7 @@ export function createFailureResult(
   orderId: string,
   transactionId = '',
   message?: string,
+  fieldErrors?: Record<string, string[]>,
 ): PaymentResult {
   return createPaymentResult({
     success: false,
@@ -80,6 +83,7 @@ export function createFailureResult(
     transactionId,
     orderId,
     message,
+    fieldErrors,
   })
 }
 

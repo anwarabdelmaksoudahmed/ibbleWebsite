@@ -1,6 +1,15 @@
-import { getOrdersService, toInitiatePayload } from '@modules/checkout/services/orders.service'
+import {
+  getOrdersService,
+  isCardOrderResponse,
+  toInitiatePayload,
+} from '@modules/checkout/services/orders.service'
 import type { CreateOrderInput } from '@modules/checkout/types'
-import type { CreateOrderApiResponse } from '@modules/checkout/types/api.types'
+import type { CardOrderApiResponse, CreateOrderApiResponse } from '@modules/checkout/types/api.types'
+import { getApiErrorMessage, getApiFieldErrors } from '@core/api/http/errors'
+import {
+  createFailureResult,
+  createSuccessResult,
+} from '@shared/payment/utils/mappers'
 import type { CartStoreGroup } from '@modules/cart/types'
 import { PAYMENT_PROVIDERS } from '@shared/payment/constants/providers'
 import type { PaymentRequest, PaymentResult } from '@shared/payment/types/internal.types'
@@ -15,7 +24,7 @@ export function useCheckoutOrder() {
   }
 
   function buildPaymentRequest(
-    order: CreateOrderApiResponse,
+    order: CardOrderApiResponse,
     summary?: PaymentRequest['summary'],
   ): PaymentRequest {
     return {
@@ -29,10 +38,33 @@ export function useCheckoutOrder() {
   }
 
   async function payWithHyperPay(
-    order: CreateOrderApiResponse,
+    order: CardOrderApiResponse,
     summary?: PaymentRequest['summary'],
   ): Promise<PaymentResult> {
     return payment.pay(buildPaymentRequest(order, summary))
+  }
+
+  async function placeWalletOrder(input: CreateOrderInput): Promise<PaymentResult> {
+    try {
+      const order = await createOrder({
+        ...input,
+        paymentMethodId: 'wallet',
+      })
+
+      if (isCardOrderResponse(order)) {
+        return createFailureResult('', '', 'Unexpected payment response')
+      }
+
+      return createSuccessResult('', '', order.message)
+    } catch (error) {
+      const apiError = handleError(error, false)
+      return createFailureResult(
+        '',
+        '',
+        getApiErrorMessage(apiError),
+        getApiFieldErrors(apiError),
+      )
+    }
   }
 
   async function placeCardOrder(
@@ -46,18 +78,22 @@ export function useCheckoutOrder() {
       }
 
       const order = await createOrder(input)
+
+      if (!isCardOrderResponse(order)) {
+        return createFailureResult('', '', order.message || 'Unexpected payment response')
+      }
+
       return await payWithHyperPay(order, summary)
     } catch (error) {
       clearCheckoutCartSnapshot()
       payment.close()
       const apiError = handleError(error, false)
-      return {
-        success: false,
-        status: 'failed',
-        transactionId: '',
-        orderId: '',
-        message: apiError.message,
-      }
+      return createFailureResult(
+        '',
+        '',
+        getApiErrorMessage(apiError),
+        getApiFieldErrors(apiError),
+      )
     }
   }
 
@@ -66,5 +102,6 @@ export function useCheckoutOrder() {
     buildPaymentRequest,
     payWithHyperPay,
     placeCardOrder,
+    placeWalletOrder,
   }
 }

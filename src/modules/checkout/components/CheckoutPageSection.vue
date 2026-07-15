@@ -4,6 +4,7 @@ import CheckoutAddressFormModal from '@modules/checkout/components/CheckoutAddre
 import CheckoutDiscountCode from '@modules/checkout/components/CheckoutDiscountCode.vue'
 import CheckoutOrderSummary from '@modules/checkout/components/CheckoutOrderSummary.vue'
 import CheckoutPaymentMethods from '@modules/checkout/components/CheckoutPaymentMethods.vue'
+import CheckoutWalletPinModal from '@modules/checkout/components/CheckoutWalletPinModal.vue'
 import MarketplaceFetchLoader from '@shared/components/site/MarketplaceFetchLoader.vue'
 import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
@@ -47,16 +48,19 @@ const {
 } = useCheckoutAddresses()
 
 const { countries, cities } = useCheckoutGeo()
-const { primaryWallet, isLoading: walletsLoading } = useCheckoutWallets()
-const { placeCardOrder } = useCheckoutOrder()
+const { primaryWallet, isLoading: walletsLoading, refetch: refetchWallets } = useCheckoutWallets()
+const { placeCardOrder, placeWalletOrder } = useCheckoutOrder()
 const { restoreOutcome } = usePayment()
 
 const paymentMethod = ref<PaymentMethodId>('card')
 const discountCode = ref('')
+const appliedDiscountCode = ref('')
 const discountApplied = ref(false)
 const formOpen = ref(false)
 const editingAddress = ref<CustomerAddress | null>(null)
 const placingOrder = ref(false)
+const pinModalOpen = ref(false)
+const pinServerError = ref('')
 
 const storeIdQuery = computed(() => {
   const raw = route.query.storeId
@@ -103,13 +107,23 @@ const showMissingStore = computed(
     !checkoutStore.value,
 )
 
+const storeTotal = computed(() =>
+  checkoutStore.value ? getStoreSubtotal(checkoutStore.value) : 0,
+)
+
+const walletDisabled = computed(() => {
+  if (walletsLoading.value || !primaryWallet.value) return true
+  return primaryWallet.value.balance < storeTotal.value
+})
+
 const canSubmit = computed(
   () =>
     Boolean(selectedAddress.value && checkoutStore.value && paymentMethod.value) &&
     cartFetched.value &&
     !cartLoading.value &&
     !isCartSyncing.value &&
-    (checkoutStore.value?.products.length ?? 0) > 0,
+    (checkoutStore.value?.products.length ?? 0) > 0 &&
+    (paymentMethod.value !== 'wallet' || !walletDisabled.value),
 )
 
 async function ensureCheckoutCartReady(storeId: string): Promise<boolean> {
@@ -124,10 +138,6 @@ async function ensureCheckoutCartReady(storeId: string): Promise<boolean> {
 
   return true
 }
-
-const storeTotal = computed(() =>
-  checkoutStore.value ? getStoreSubtotal(checkoutStore.value) : 0,
-)
 
 async function goToLogin() {
   await navigateTo({
@@ -160,7 +170,14 @@ function onApplyDiscount() {
   const code = discountCode.value.trim()
   if (!code) return
   discountApplied.value = false
+  appliedDiscountCode.value = ''
   toast.info(t('site.commerce.checkout.discountSoon'))
+}
+
+function resolveOrderCouponCode(): string | undefined {
+  if (!discountApplied.value) return undefined
+  const code = appliedDiscountCode.value.trim()
+  return code || undefined
 }
 
 async function tryRestoreCheckoutCart(snapshot: CartStoreGroup): Promise<void> {
@@ -189,16 +206,27 @@ async function onPlaceOrder() {
     return
   }
 
-  if (paymentMethod.value === 'wallet') {
-    toast.info(t('site.commerce.checkout.walletPaymentSoon'))
-    return
-  }
-
   if (!(await ensureCheckoutCartReady(store.storeId))) {
     return
   }
 
-  const address = selectedAddress.value
+  if (paymentMethod.value === 'wallet') {
+    if (walletDisabled.value) {
+      toast.warning(t('site.commerce.checkout.walletInsufficientBalance'))
+      return
+    }
+    pinServerError.value = ''
+    pinModalOpen.value = true
+    return
+  }
+
+  await submitCardOrder(store, selectedAddress.value)
+}
+
+async function submitCardOrder(
+  store: CartStoreGroup,
+  address: CustomerAddress,
+) {
   placingOrder.value = true
   let checkoutSnapshot: CartStoreGroup | null = null
 
@@ -218,8 +246,8 @@ async function onPlaceOrder() {
       {
         addressId: address.id,
         storeId: store.storeId,
-        paymentMethodId: paymentMethod.value,
-        couponCode: discountCode.value.trim(),
+        paymentMethodId: 'card',
+        couponCode: resolveOrderCouponCode(),
       },
       paymentSummary,
       checkoutSnapshot,
@@ -246,6 +274,57 @@ async function onPlaceOrder() {
     placingOrder.value = false
   }
 }
+
+async function onWalletPinSubmit(pinCode: string) {
+  const store = checkoutStore.value
+  const address = selectedAddress.value
+  if (!store || !address) return
+
+  placingOrder.value = true
+  pinServerError.value = ''
+
+  try {
+    const result = await placeWalletOrder({
+      addressId: address.id,
+      storeId: store.storeId,
+      paymentMethodId: 'wallet',
+      pinCode,
+      couponCode: resolveOrderCouponCode(),
+    })
+
+    if (result.success) {
+      pinModalOpen.value = false
+      toast.success(result.message || t('site.commerce.checkout.orderSuccess'))
+      await Promise.all([refetchCart(), refetchWallets()])
+      await navigateTo(localePath(ROUTES.HOME))
+      return
+    }
+
+    const pinError =
+      result.fieldErrors?.PIN_code?.[0]
+      ?? result.fieldErrors?.pin_code?.[0]
+
+    if (pinError) {
+      pinServerError.value = pinError
+      return
+    }
+
+    toast.error(result.message || t('site.commerce.checkout.orderFailed'))
+  } catch {
+    toast.error(t('site.commerce.checkout.orderFailed'))
+  } finally {
+    placingOrder.value = false
+  }
+}
+
+watch(
+  () => walletDisabled.value,
+  (disabled) => {
+    if (disabled && paymentMethod.value === 'wallet') {
+      paymentMethod.value = 'card'
+    }
+  },
+)
 
 watch(
   () => [cartFetched.value, cart.value.stores, storeIdQuery.value] as const,
@@ -438,6 +517,7 @@ onMounted(() => {
             v-model="paymentMethod"
             :wallet="primaryWallet"
             :wallet-loading="walletsLoading"
+            :wallet-disabled="walletDisabled"
           />
 
           <div class="hidden lg:block">
@@ -506,6 +586,14 @@ onMounted(() => {
       :cities="cities"
       :saving="isSaving"
       @submit="onAddressSubmit"
+    />
+
+    <CheckoutWalletPinModal
+      v-model:open="pinModalOpen"
+      :total="storeTotal"
+      :submitting="placingOrder"
+      :server-error="pinServerError"
+      @submit="onWalletPinSubmit"
     />
   </section>
 </template>

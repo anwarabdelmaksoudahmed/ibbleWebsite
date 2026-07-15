@@ -33,6 +33,8 @@ const draft = computed({
       <input
         v-model="draft"
         type="text"
+        autocomplete="off"
+        name="checkout-discount-code"
         class="min-w-0 flex-1 rounded-xl border border-ibbil-green/15 bg-[#fafbfa] px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-foreground-muted focus:border-ibbil-green/40 focus:ring-2 focus:ring-ibbil-green/15 dark:bg-surface-muted"
         :placeholder="t('site.commerce.checkout.discountPlaceholder')"
         :disabled="applying"

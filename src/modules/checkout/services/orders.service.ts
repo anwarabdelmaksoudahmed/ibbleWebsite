@@ -1,8 +1,25 @@
 import { OrdersApi } from '@modules/checkout/api/orders.api'
 import { CHECKOUT_PAYMENT_METHOD_IDS } from '@modules/checkout/constants/payment-methods'
 import type { CreateOrderInput } from '@modules/checkout/types'
-import type { CreateOrderApiRequest, CreateOrderApiResponse } from '@modules/checkout/types/api.types'
+import type {
+  CardOrderApiResponse,
+  CreateOrderApiRequest,
+  CreateOrderApiResponse,
+  WalletOrderApiResponse,
+} from '@modules/checkout/types/api.types'
 import type { InitiatePaymentApiRequest } from '@shared/payment/types/api.types'
+
+export function isCardOrderResponse(
+  order: CreateOrderApiResponse,
+): order is CardOrderApiResponse {
+  return 'merchant_transaction_id' in order && order.merchant_transaction_id != null
+}
+
+export function isWalletOrderResponse(
+  order: CreateOrderApiResponse,
+): order is WalletOrderApiResponse {
+  return !isCardOrderResponse(order)
+}
 
 function unwrapOrderResponse(payload: unknown): CreateOrderApiResponse {
   if (!payload || typeof payload !== 'object') {
@@ -29,8 +46,16 @@ export class OrdersService {
       address_id: input.addressId,
       store_id: input.storeId,
       payment_method_id: CHECKOUT_PAYMENT_METHOD_IDS[input.paymentMethodId],
-      PIN_code: input.pinCode?.trim() ?? '',
-      coupon_code: input.couponCode?.trim() ?? '',
+    }
+
+    const pinCode = input.pinCode?.trim()
+    if (pinCode) {
+      payload.PIN_code = pinCode
+    }
+
+    const couponCode = input.couponCode?.trim()
+    if (couponCode) {
+      payload.coupon_code = couponCode
     }
 
     const response = await this.api.create(payload)
@@ -38,7 +63,7 @@ export class OrdersService {
   }
 }
 
-export function toInitiatePayload(order: CreateOrderApiResponse): InitiatePaymentApiRequest {
+export function toInitiatePayload(order: CardOrderApiResponse): InitiatePaymentApiRequest {
   return {
     message: order.message,
     amount: order.amount,

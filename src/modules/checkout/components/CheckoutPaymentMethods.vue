@@ -5,6 +5,7 @@ const props = defineProps<{
   modelValue: PaymentMethodId
   wallet: UserWallet | null
   walletLoading?: boolean
+  walletDisabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -19,19 +20,29 @@ const methods = computed(() => [
     title: t('site.commerce.checkout.payment.card'),
     description: t('site.commerce.checkout.payment.cardHint'),
     icon: 'lucide:credit-card',
+    disabled: false,
   },
   {
     id: 'wallet' as const,
     title: t('site.commerce.checkout.payment.wallet'),
-    description: props.wallet
-      ? t('site.commerce.checkout.payment.walletBalance', {
-          balance: n(props.wallet.balance),
-          currency: t('site.stores.profile.currency'),
-        })
-      : t('site.commerce.checkout.payment.walletHint'),
+    description: props.walletDisabled
+      ? t('site.commerce.checkout.payment.walletInsufficient')
+      : props.wallet
+        ? t('site.commerce.checkout.payment.walletBalance', {
+            balance: n(props.wallet.balance),
+            currency: t('site.stores.profile.currency'),
+          })
+        : t('site.commerce.checkout.payment.walletHint'),
     icon: 'lucide:wallet',
+    disabled: props.walletDisabled,
   },
 ])
+
+function selectMethod(id: PaymentMethodId) {
+  const method = methods.value.find((entry) => entry.id === id)
+  if (method?.disabled) return
+  emit('update:modelValue', id)
+}
 </script>
 
 <template>
@@ -59,10 +70,13 @@ const methods = computed(() => [
         :class="
           modelValue === method.id
             ? 'border-ibbil-green bg-ibbil-green/[0.05] shadow-[0_10px_24px_-18px_rgba(45,83,61,0.4)] ring-1 ring-ibbil-green/15'
-            : 'border-ibbil-green/10 bg-[#fafbfa] hover:border-ibbil-green/25 dark:bg-surface-muted/40'
+            : method.disabled
+              ? 'cursor-not-allowed border-ibbil-green/10 bg-[#fafbfa] opacity-60 dark:bg-surface-muted/40'
+              : 'border-ibbil-green/10 bg-[#fafbfa] hover:border-ibbil-green/25 dark:bg-surface-muted/40'
         "
+        :disabled="method.disabled"
         :aria-pressed="modelValue === method.id"
-        @click="emit('update:modelValue', method.id)"
+        @click="selectMethod(method.id)"
       >
         <span
           class="absolute end-3 top-3 size-2.5 rounded-full transition-colors"

@@ -372,7 +372,8 @@
           "wallet": "E-wallet",
           "walletHint": "Pay using your Ibbil wallet balance.",
           "walletBalance": "Available balance: {balance} {currency}",
-          "walletLoading": "Loading wallet balance..."
+          "walletLoading": "Loading wallet balance...",
+          "walletInsufficient": "Insufficient balance for this order"
         },
         "discountTitle": "Discount code",
         "discountPlaceholder": "Enter discount code",
@@ -391,7 +392,16 @@
         "orderFailed": "We could not complete your order. Please try again.",
         "cartNotReady": "Your cart is not ready to checkout. Please refresh the page and try again.",
         "cartRestoreFailed": "Payment was not completed and we could not restore your cart automatically. Please add your items again.",
-        "walletPaymentSoon": "Wallet payment is coming soon. Please choose card to complete checkout.",
+        "walletInsufficientBalance": "Your wallet balance is not enough to complete this order.",
+        "walletPin": {
+          "title": "Confirm wallet payment",
+          "description": "Enter your wallet PIN to complete payment.",
+          "label": "PIN code",
+          "placeholder": "•••••",
+          "confirm": "Confirm payment",
+          "validation": "PIN code is required",
+          "maxLength": "PIN code must be at most {max} digits"
+        },
         "secureNote": "Your data is protected and used only to complete delivery and payment."
       },
       "wishlist": {

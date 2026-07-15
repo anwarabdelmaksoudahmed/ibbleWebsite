@@ -80,11 +80,16 @@ export type CreateOrderApiRequest = {
   address_id: string
   store_id: string
   payment_method_id: string
-  PIN_code: string
-  coupon_code: string
+  PIN_code?: string
+  coupon_code?: string
 }
 
-export type CreateOrderApiResponse = {
+export type WalletOrderApiResponse = {
+  message: string
+  invoice?: unknown | null
+}
+
+export type CardOrderApiResponse = {
   message: string
   amount: number
   currency: string
@@ -104,3 +109,6 @@ export type CreateOrderApiResponse = {
   }
   invoice?: unknown | null
 }
+
+/** Card checkout returns HyperPay fields; wallet checkout returns message + invoice only. */
+export type CreateOrderApiResponse = CardOrderApiResponse | WalletOrderApiResponse

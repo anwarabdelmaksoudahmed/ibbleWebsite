@@ -1,5 +1,5 @@
 import { getHttpClient } from '@core/api/http/client'
-import { normalizeApiError } from '@core/api/http/errors'
+import { getApiErrorMessage, normalizeApiError } from '@core/api/http/errors'
 import type { ApiError } from '@core/api/http/errors'
 
 export function useApi() {
@@ -9,7 +9,7 @@ export function useApi() {
   function handleError(error: unknown, showToast = true): ApiError {
     const apiError = normalizeApiError(error)
     if (showToast && import.meta.client) {
-      toast.error(apiError.message)
+      toast.error(getApiErrorMessage(apiError))
     }
     return apiError
   }
