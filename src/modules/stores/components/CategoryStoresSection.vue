@@ -73,41 +73,7 @@ function clearFiltersAndSearch() {
     <div class="relative mx-auto max-w-7xl px-4 py-[12px] ">
       <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
-      <header class="mb-6 flex items-start gap-4 sm:mb-8 sm:gap-5">
-        <div
-          class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white shadow-sm sm:h-20 sm:w-20"
-        >
-          <img
-            v-if="category.logo"
-            :src="category.logo"
-            :alt="category.name"
-            class="h-[72%] w-[72%] object-contain"
-            width="80"
-            height="80"
-          >
-          <Icon
-            v-else
-            name="lucide:store"
-            class="h-8 w-8 text-ibbil-green/60"
-            aria-hidden="true"
-          />
-        </div>
-
-        <div class="min-w-0 flex-1">
-          <h1 class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl">
-            {{ category.name }}
-          </h1>
-          <p
-            v-if="category.description || category.content"
-            class="mt-2 max-w-2xl text-sm leading-relaxed text-foreground-muted sm:text-base"
-          >
-            {{ category.description || category.content }}
-          </p>
-          <p v-else class="mt-2 text-sm text-foreground-muted">
-            {{ t('site.stores.categorySubtitle') }}
-          </p>
-        </div>
-      </header>
+    
 
       <StoresToolbar
         v-model:view="view"

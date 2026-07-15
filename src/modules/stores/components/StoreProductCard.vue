@@ -64,6 +64,10 @@ const cartTooltip = computed(() =>
 
 const heartPulse = ref(false)
 
+function customizeHeartFill(content: string) {
+  return content.replaceAll('fill="none"', 'fill="currentColor"')
+}
+
 async function onToggleWishlist() {
   const wasFavourite = favourite.value
   await toggleWishlist(props.product.id)
@@ -145,8 +149,7 @@ async function onAddToCart() {
             type="button"
             class="store-product-fab inline-flex size-9 items-center justify-center rounded-full border border-ibbil-green/10 bg-white/95 text-ibbil-green shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:border-ibbil-gold/40 hover:text-ibbil-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-gold focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 dark:border-ibbil-green/20 dark:bg-surface-elevated/95"
             :class="favourite ? 'text-red-500 hover:text-red-500' : undefined"
-            :aria-label="wishlistTooltip"
-            :aria-pressed="favourite"
+         
             :disabled="wishlistLoading"
             :aria-busy="wishlistLoading"
             @click.stop="onToggleWishlist"
@@ -154,37 +157,21 @@ async function onAddToCart() {
             <BaseLoader v-if="wishlistLoading" size="xs" class="!gap-0 text-current" />
             <Icon
               v-else
+              :key="favourite ? 'heart-filled' : 'heart-outline'"
               name="lucide:heart"
+              mode="svg"
               class="size-4 transition-transform duration-300"
               :class="[
-                favourite ? 'fill-current text-red-500' : 'fill-none',
+                favourite ? 'text-red-500' : 'text-current',
                 heartPulse ? 'store-heart-pulse' : '',
               ]"
+              :customize="favourite ? customizeHeartFill : false"
               aria-hidden="true"
             />
           </button>
         </BaseTooltip>
 
-        <BaseTooltip :text="cartTooltip">
-          <button
-            type="button"
-            class="store-product-fab inline-flex size-9 items-center justify-center rounded-full border border-ibbil-green/10 bg-white/95 text-ibbil-green shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:border-ibbil-gold/40 hover:text-ibbil-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-gold focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 dark:border-ibbil-green/20 dark:bg-surface-elevated/95"
-            :class="inCart ? 'border-ibbil-green/30 bg-ibbil-green text-white hover:border-ibbil-green hover:text-white' : undefined"
-            :aria-label="cartTooltip"
-            :aria-pressed="inCart"
-            :disabled="cartLoading || inCart || !resolvedStoreId"
-            :aria-busy="cartLoading"
-            @click.stop="onAddToCart"
-          >
-            <BaseLoader v-if="cartLoading" size="xs" class="!gap-0 text-current" />
-            <Icon
-              v-else
-              :name="inCart ? 'lucide:check' : 'lucide:shopping-cart'"
-              class="size-4"
-              aria-hidden="true"
-            />
-          </button>
-        </BaseTooltip>
+
       </div>
     </div>
 

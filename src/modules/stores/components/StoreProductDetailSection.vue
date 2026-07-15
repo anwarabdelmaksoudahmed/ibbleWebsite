@@ -104,6 +104,10 @@ const wishlistLabel = computed(() =>
 
 const heartPulse = ref(false)
 
+function customizeHeartFill(content: string) {
+  return content.replaceAll('fill="none"', 'fill="currentColor"')
+}
+
 function toggleDescription() {
   descriptionExpanded.value = !descriptionExpanded.value
 }
@@ -282,12 +286,15 @@ async function onAddToCart() {
                 @click="onToggleWishlist"
               >
                 <Icon
+                  :key="favourite ? 'heart-filled' : 'heart-outline'"
                   name="lucide:heart"
+                  mode="svg"
                   class="size-5 transition-transform duration-300"
                   :class="[
-                    favourite ? 'fill-red-500 text-red-500' : 'fill-none',
+                    favourite ? 'text-red-500' : 'text-current',
                     heartPulse ? 'store-heart-pulse' : '',
                   ]"
+                  :customize="favourite ? customizeHeartFill : false"
                   aria-hidden="true"
                 />
                 {{ wishlistLabel }}
@@ -297,7 +304,7 @@ async function onAddToCart() {
         </div>
       </div>
 
-      <section
+      <!-- <section
         v-if="product.content"
         class="overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white p-5 shadow-[0_8px_28px_-18px_rgba(45,83,61,0.25)] dark:border-ibbil-green/20 dark:bg-surface-elevated sm:p-6"
         :aria-label="t('site.stores.productDetail.specifications')"
@@ -310,7 +317,7 @@ async function onAddToCart() {
             {{ product.content }}
           </p>
         </div>
-      </section>
+      </section> -->
 
       <section
         v-if="showRelatedProducts"

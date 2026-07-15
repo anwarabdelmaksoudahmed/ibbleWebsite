@@ -41,6 +41,10 @@ const wishlistTooltip = computed(() =>
   favourite.value ? t('site.commerce.wishlist.remove') : t('site.commerce.wishlist.add'),
 )
 
+function customizeHeartFill(content: string) {
+  return content.replaceAll('fill="none"', 'fill="currentColor"')
+}
+
 async function onIncrease() {
   if (mutating.value) return
   await increaseQuantity({ storeId: props.storeId, productId: props.product.id })
@@ -166,9 +170,12 @@ async function onToggleWishlist() {
           @click="onToggleWishlist"
         >
           <Icon
+            :key="favourite ? 'heart-filled' : 'heart-outline'"
             name="lucide:heart"
-            class="size-4"
-            :class="favourite ? 'fill-current text-red-500' : 'fill-none'"
+            mode="svg"
+            class="size-4 transition-colors duration-300"
+            :class="favourite ? 'text-red-500' : 'text-current'"
+            :customize="favourite ? customizeHeartFill : false"
             aria-hidden="true"
           />
         </button>

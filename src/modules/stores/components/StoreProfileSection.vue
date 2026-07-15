@@ -80,17 +80,18 @@ function onCategoryUpdate(id: string) {
     <StoreHero :store="store" />
 
     <div class="relative mx-auto max-w-7xl space-y-6 px-4 pb-10 pt-2 sm:space-y-8 sm:px-6 sm:pb-12 sm:pt-3 lg:px-6 lg:pb-14">
-      <StoreStats :store="store" />
-      <StoreAbout :store="store" />
+      <!-- <StoreStats :store="store" />
+      <StoreAbout :store="store" /> -->
 
       <StoreProductCategories
+      v-if="categories && categories.length > 0"
         :categories="categories ?? []"
         :model-value="categoryId"
         :loading="categoriesLoading"
         @update:model-value="onCategoryUpdate"
       />
 
-      <div
+      <!-- <div
         v-if="categoriesError"
         class="rounded-2xl border border-ibbil-green/10 bg-white dark:border-ibbil-green/20 dark:bg-surface-elevated"
       >
@@ -101,7 +102,7 @@ function onCategoryUpdate(id: string) {
           :retryable="true"
           @retry="refreshCategories()"
         />
-      </div>
+      </div> -->
 
       <section :aria-label="t('site.stores.profile.productsTitle')">
         <div class="mb-4 flex items-end justify-between gap-3 sm:mb-5">
