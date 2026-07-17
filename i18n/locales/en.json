@@ -344,7 +344,53 @@
         }
       },
       "footerTitle": "Camel Transport Insurance",
-      "footerDescription": "After completing the form, your policy price is shown and you are redirected to secure checkout. Once payment is complete, your invoice and policy are issued electronically."
+      "footerDescription": "After completing the form, your policy price is shown and you are redirected to secure checkout. Once payment is complete, your invoice and policy are issued electronically.",
+      "register": {
+        "seoTitle": "Camel Transport Insurance Request | Ibbil",
+        "seoDescription": "Complete your camel transport insurance request in clear steps: customer details, shipment info, pricing, and payment.",
+        "breadcrumb": "Insurance request",
+        "title": "Camel Transport Insurance Request",
+        "subtitle": "Enter your details and follow the steps to issue your policy easily and securely.",
+        "progressLabel": "Insurance request steps",
+        "next": "Next",
+        "prev": "Back",
+        "steps": {
+          "customer": "Customer details",
+          "shipment": "Shipment information",
+          "pricing": "Pricing",
+          "payment": "Payment"
+        },
+        "form": {
+          "nationalId": "National ID",
+          "nationalIdPlaceholder": "Enter national ID",
+          "name": "Full name",
+          "namePlaceholder": "Enter full name",
+          "phone": "Mobile number",
+          "phonePlaceholder": "Enter mobile number",
+          "countryCode": "Country code",
+          "email": "Email",
+          "emailPlaceholder": "example{'@'}email.com",
+          "address": "Address",
+          "addressPlaceholder": "Saudi Arabia, Riyadh, Al Malqa"
+        },
+        "validation": {
+          "address": "Enter a valid address (at least 5 characters)"
+        },
+        "placeholders": {
+          "shipment": {
+            "title": "Shipment information",
+            "description": "This step is under development. You will soon be able to enter shipment and destination details."
+          },
+          "pricing": {
+            "title": "Pricing",
+            "description": "This step is under development. Available pricing options and policies will appear here."
+          },
+          "payment": {
+            "title": "Payment",
+            "description": "This step is under development. You will soon be able to complete payment and receive your policy."
+          }
+        }
+      }
     },
     "stores": {
       "seoTitle": "Stores | Ibbil",
