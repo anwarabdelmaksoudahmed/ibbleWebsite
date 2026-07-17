@@ -43,14 +43,14 @@ function isConnectorAfterFilled(index: number): boolean {
     class="stepper w-full"
     :class="{ 'stepper--animated': connectorsAnimated }"
   >
-    <ol role="list" class="flex w-full items-start">
+    <ol role="list" class="flex w-full items-start overflow-visible">
       <li
         v-for="(step, index) in steps"
         :key="step.key"
-        class="stepper-item flex min-w-0 flex-1 flex-col items-center"
+        class="stepper-item min-w-0 flex-1"
         :aria-current="index === currentStep ? 'step' : undefined"
       >
-        <div class="flex w-full items-center">
+        <div class="flex w-full items-start overflow-visible">
           <div
             v-if="index > 0"
             class="stepper-connector"
@@ -62,20 +62,30 @@ function isConnectorAfterFilled(index: number): boolean {
             />
           </div>
 
-          <div
-            class="stepper-circle relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold sm:h-10 sm:w-10"
-            :data-state="stepState(index)"
-          >
-            <Transition name="stepper-mark" mode="out-in">
-              <Icon
-                v-if="stepState(index) === 'complete'"
-                key="check"
-                name="lucide:check"
-                class="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem]"
-                aria-hidden="true"
-              />
-              <span v-else :key="`step-${index + 1}`">{{ index + 1 }}</span>
-            </Transition>
+          <!-- Circle + label share one column so the label stays under the circle on first/last steps -->
+          <div class="relative z-[1] flex shrink-0 flex-col items-center">
+            <div
+              class="stepper-circle relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold sm:h-10 sm:w-10"
+              :data-state="stepState(index)"
+            >
+              <Transition name="stepper-mark" mode="out-in">
+                <Icon
+                  v-if="stepState(index) === 'complete'"
+                  key="check"
+                  name="lucide:check"
+                  class="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem]"
+                  aria-hidden="true"
+                />
+                <span v-else :key="`step-${index + 1}`">{{ index + 1 }}</span>
+              </Transition>
+            </div>
+
+            <p
+              class="stepper-label mt-2 w-max max-w-[5.5rem] text-center text-xs font-semibold leading-snug sm:max-w-[7.5rem] sm:text-sm"
+              :data-state="stepState(index)"
+            >
+              {{ step.label }}
+            </p>
           </div>
 
           <div
@@ -89,13 +99,6 @@ function isConnectorAfterFilled(index: number): boolean {
             />
           </div>
         </div>
-
-        <p
-          class="stepper-label mt-2 max-w-[5.5rem] text-center text-xs font-semibold leading-snug sm:max-w-none sm:text-sm"
-          :data-state="stepState(index)"
-        >
-          {{ step.label }}
-        </p>
       </li>
     </ol>
   </nav>
@@ -104,12 +107,20 @@ function isConnectorAfterFilled(index: number): boolean {
 <style scoped>
 .stepper-connector {
   position: relative;
+  /* Align the 2px line with the vertical center of the h-9 / sm:h-10 circle */
+  margin-top: calc((2.25rem - 2px) / 2);
   height: 2px;
   min-width: 0.5rem;
   flex: 1 1 0%;
   overflow: hidden;
   border-radius: 9999px;
   background-color: var(--color-border-muted);
+}
+
+@media (min-width: 640px) {
+  .stepper-connector {
+    margin-top: calc((2.5rem - 2px) / 2);
+  }
 }
 
 .stepper-connector__fill {
