@@ -35,7 +35,14 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n()
 
-const today = computed(() => new Date().toISOString().slice(0, 10))
+/** Local calendar date (avoid UTC shift from `toISOString()` which breaks `min`). */
+const today = computed(() => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+})
 
 const statusToneClass = computed(() => {
   switch (props.chipDraftStatus) {
@@ -65,11 +72,6 @@ const formattedTotal = computed(() => formatMoney(props.totalCargoValue))
 
 function cargoValueLabel(item: InsuranceCargoItem) {
   return formatMoney(Number(item.cargoValue))
-}
-
-function onTransportDateChange(value: string) {
-  props.model.transportDate = value
-  emit('trip-field-blur', 'transportDate')
 }
 </script>
 
@@ -215,17 +217,8 @@ function onTransportDateChange(value: string) {
         {{ cargoItemsError }}
       </p>
 
-      <!-- <BaseEmptyState
-        v-if="!model.items.length"
-        variant="brand"
-        icon="lucide:package-open"
-        :title="t('site.insurance.register.empty.cargoTitle')"
-        :description="t('site.insurance.register.empty.cargoDescription')"
-        class="!py-10"
-      /> -->
-
       <ul
-        v-else
+        v-if="model.items.length"
         class="space-y-3"
         :aria-label="t('site.insurance.register.sections.cargoList')"
       >
@@ -307,7 +300,9 @@ function onTransportDateChange(value: string) {
           :hint="t('site.insurance.register.hints.transportDate')"
           :error="tripErrors.transportDate"
           :min="today"
-          @update:model-value="onTransportDateChange"
+          required
+          @update:model-value="model.transportDate = $event"
+          @blur="emit('trip-field-blur', 'transportDate')"
         />
 
         <TripRoutePicker

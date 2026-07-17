@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'site',
+  // Client-only: wizard draft lives in sessionStorage (avoids SSR hydration mismatch).
+  ssr: false,
 })
 
 const { t } = useI18n()

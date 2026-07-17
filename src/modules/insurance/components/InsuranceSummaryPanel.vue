@@ -6,6 +6,8 @@ export type InsuranceSummaryField = {
   highlight?: boolean
   /** Force LTR for phone / email / numeric values. */
   dir?: 'ltr' | 'rtl' | 'auto'
+  /** Span extra columns on wider breakpoints (long labels / addresses). */
+  wide?: boolean
 }
 
 const props = withDefaults(
@@ -56,21 +58,24 @@ function toggle() {
       :class="open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
     >
       <div class="overflow-hidden">
-        <dl class="grid gap-4 p-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-5 sm:p-5 lg:grid-cols-3">
+        <dl
+          class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-5 sm:p-5 lg:grid-cols-3"
+        >
           <div
             v-for="(field, index) in fields"
             :key="`${field.label}-${index}`"
-            class="min-w-0"
+            class="flex min-w-0 flex-col gap-1"
+            :class="field.wide ? 'sm:col-span-2 lg:col-span-2' : undefined"
           >
             <dt class="text-xs font-medium text-foreground-muted sm:text-sm">
               {{ field.label }}
             </dt>
             <dd
-              class="mt-1 break-words text-sm font-bold text-foreground sm:text-base"
+              class="m-0 break-words text-sm font-bold text-foreground [overflow-wrap:anywhere] sm:text-base"
               :class="field.highlight ? 'text-ibbil-gold' : undefined"
-              :dir="field.dir"
             >
-              {{ field.value || '—' }}
+              <bdi v-if="field.dir" :dir="field.dir">{{ field.value || '—' }}</bdi>
+              <template v-else>{{ field.value || '—' }}</template>
             </dd>
           </div>
         </dl>

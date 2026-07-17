@@ -92,6 +92,7 @@ const customerFields = computed(() => [
   {
     label: t('site.insurance.register.form.address'),
     value: props.customer.address,
+    wide: true,
   },
 ])
 
@@ -117,6 +118,7 @@ const shipmentFields = computed(() => [
     label: t('site.insurance.register.form.totalCargoValue'),
     value: formattedInsuredTotal.value,
     highlight: true,
+    wide: true,
   },
 ])
 

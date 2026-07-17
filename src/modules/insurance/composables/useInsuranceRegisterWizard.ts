@@ -1,5 +1,7 @@
 import { normalizeApiError } from '@core/api/http/errors'
+import { APP_CONFIG } from '@shared/constants/app-config'
 import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
+import { debounce } from '@shared/utils/debounce'
 import { createId } from '@shared/utils/id'
 import {
   insuranceCustomerSchema,
@@ -19,6 +21,12 @@ import {
 } from '@modules/insurance/constants/routes'
 import { getInsuranceService } from '@modules/insurance/services/insurance.service'
 import type { InsuranceServiceProvider } from '@modules/insurance/types'
+import {
+  clearRegisterDraft,
+  readRegisterDraft,
+  saveRegisterDraft,
+  type InsuranceRegisterDraft,
+} from '@modules/insurance/utils/register-draft-storage'
 
 const CUSTOMER_FIELDS = [
   'nationalId',
@@ -154,17 +162,95 @@ export function useInsuranceRegisterWizard() {
   function prefillFromUser() {
     if (!user.value) return
 
-    customer.nationalId = user.value.nationalId ?? customer.nationalId
-    customer.name = user.value.name ?? customer.name
-    customer.phone = user.value.phone ?? customer.phone
-    customer.countryCode = user.value.countryCode ?? customer.countryCode
-    customer.email = user.value.email ?? customer.email
-    customer.address = user.value.address ?? customer.address
+    // Only fill blanks so a restored draft (or user edits) always win.
+    if (!customer.nationalId.trim()) customer.nationalId = user.value.nationalId ?? ''
+    if (!customer.name.trim()) customer.name = user.value.name ?? ''
+    if (!customer.phone.trim()) customer.phone = user.value.phone ?? ''
+    if (!customer.countryCode.trim()) {
+      customer.countryCode = user.value.countryCode || DEFAULT_COUNTRY_CODE.apiCode
+    }
+    if (!customer.email.trim()) customer.email = user.value.email ?? ''
+    if (!customer.address.trim()) customer.address = user.value.address ?? ''
+  }
+
+  function applyDraft(draft: InsuranceRegisterDraft) {
+    currentStep.value = draft.currentStep
+    Object.assign(customer, draft.customer)
+    shipment.items = draft.shipment.items.map((item) => ({ ...item }))
+    shipment.transportDate = draft.shipment.transportDate
+    shipment.origin = draft.shipment.origin
+    shipment.destination = draft.shipment.destination
+    shipment.distanceKm = draft.shipment.distanceKm
+    Object.assign(cargoDraft, draft.cargoDraft)
+    editingCargoId.value = draft.editingCargoId
+    selectedProviderId.value = draft.selectedProviderId
+
+    // Native date inputs ignore/break when value is before `min` (today).
+    const todayLocal = formatLocalDate(new Date())
+    if (shipment.transportDate && shipment.transportDate < todayLocal) {
+      shipment.transportDate = ''
+    }
+  }
+
+  function formatLocalDate(date: Date): string {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  function buildDraftSnapshot(): Omit<InsuranceRegisterDraft, 'version' | 'savedAt'> {
+    return {
+      currentStep: currentStep.value,
+      customer: { ...customer },
+      shipment: {
+        items: shipment.items.map((item) => ({ ...item })),
+        transportDate: shipment.transportDate,
+        origin: shipment.origin,
+        destination: shipment.destination,
+        distanceKm: shipment.distanceKm,
+      },
+      cargoDraft: { ...cargoDraft },
+      editingCargoId: editingCargoId.value,
+      selectedProviderId: selectedProviderId.value,
+    }
+  }
+
+  const persistDraft = debounce(() => {
+    saveRegisterDraft(buildDraftSnapshot())
+  }, APP_CONFIG.DEBOUNCE_MS)
+
+  function flushDraftPersistence() {
+    persistDraft.flush()
+  }
+
+  function clearPersistedDraft() {
+    persistDraft.cancel()
+    clearRegisterDraft()
+  }
+
+  if (import.meta.client) {
+    const draft = readRegisterDraft()
+    if (draft) applyDraft(draft)
   }
 
   onMounted(prefillFromUser)
+  onBeforeUnmount(() => {
+    flushDraftPersistence()
+    persistDraft.cancel()
+  })
+
+  if (import.meta.client) {
+    useEventListener(window, 'pagehide', flushDraftPersistence)
+  }
 
   watch(user, prefillFromUser)
+
+  watch(
+    [currentStep, customer, shipment, cargoDraft, editingCargoId, selectedProviderId],
+    () => persistDraft(),
+    { deep: true },
+  )
 
   function validateCustomerField(field: keyof InsuranceCustomerFormValues) {
     const result = insuranceCustomerSchema.shape[field].safeParse(customer[field])
@@ -504,9 +590,13 @@ export function useInsuranceRegisterWizard() {
     if (!isFirstStep.value) currentStep.value -= 1
   }
 
-  watch(activeStep, (step) => {
-    if (step === 'pricing') void loadProviders()
-  })
+  watch(
+    activeStep,
+    (step) => {
+      if (step === 'pricing') void loadProviders()
+    },
+    { immediate: true },
+  )
 
   function setNationalId(value: string | number) {
     customer.nationalId = String(value).replace(/\D/g, '').slice(0, 14)
@@ -567,5 +657,6 @@ export function useInsuranceRegisterWizard() {
     editCargoItem,
     removeCargoItem,
     resetCargoDraft,
+    clearPersistedDraft,
   }
 }

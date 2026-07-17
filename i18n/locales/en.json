@@ -26,6 +26,11 @@
     "imageGallery": {
       "thumbnails": "Image gallery",
       "selectImage": "View image {index}"
+    },
+    "datePicker": {
+      "placeholder": "Select a date",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month"
     }
   },
   "maps": {

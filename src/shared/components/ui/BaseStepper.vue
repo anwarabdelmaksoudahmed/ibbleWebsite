@@ -10,6 +10,18 @@ const props = defineProps<{
   ariaLabel?: string
 }>()
 
+/**
+ * Enable grow transitions only after the first paint so a restored
+ * `currentStep` shows filled connectors immediately (no stuck scaleX(0)).
+ */
+const connectorsAnimated = ref(false)
+
+onMounted(() => {
+  requestAnimationFrame(() => {
+    connectorsAnimated.value = true
+  })
+})
+
 function stepState(index: number): 'complete' | 'current' | 'upcoming' {
   if (index < props.currentStep) return 'complete'
   if (index === props.currentStep) return 'current'
@@ -26,7 +38,11 @@ function isConnectorAfterFilled(index: number): boolean {
 </script>
 
 <template>
-  <nav :aria-label="ariaLabel" class="stepper w-full">
+  <nav
+    :aria-label="ariaLabel"
+    class="stepper w-full"
+    :class="{ 'stepper--animated': connectorsAnimated }"
+  >
     <ol role="list" class="flex w-full items-start">
       <li
         v-for="(step, index) in steps"
@@ -37,12 +53,12 @@ function isConnectorAfterFilled(index: number): boolean {
         <div class="flex w-full items-center">
           <div
             v-if="index > 0"
-            class="stepper-connector relative h-0.5 min-w-2 flex-1 overflow-hidden rounded-full bg-border-muted"
+            class="stepper-connector"
             aria-hidden="true"
           >
-            <div
-              class="stepper-connector__fill absolute inset-0 rounded-full bg-ibbil-green"
-              :class="{ 'stepper-connector__fill--active': isConnectorBeforeFilled(index) }"
+            <span
+              class="stepper-connector__fill"
+              :data-filled="isConnectorBeforeFilled(index) ? 'true' : 'false'"
             />
           </div>
 
@@ -64,12 +80,12 @@ function isConnectorAfterFilled(index: number): boolean {
 
           <div
             v-if="index < steps.length - 1"
-            class="stepper-connector relative h-0.5 min-w-2 flex-1 overflow-hidden rounded-full bg-border-muted"
+            class="stepper-connector"
             aria-hidden="true"
           >
-            <div
-              class="stepper-connector__fill absolute inset-0 rounded-full bg-ibbil-green"
-              :class="{ 'stepper-connector__fill--active': isConnectorAfterFilled(index) }"
+            <span
+              class="stepper-connector__fill"
+              :data-filled="isConnectorAfterFilled(index) ? 'true' : 'false'"
             />
           </div>
         </div>
@@ -86,18 +102,35 @@ function isConnectorAfterFilled(index: number): boolean {
 </template>
 
 <style scoped>
+.stepper-connector {
+  position: relative;
+  height: 2px;
+  min-width: 0.5rem;
+  flex: 1 1 0%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: var(--color-border-muted);
+}
+
 .stepper-connector__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--color-ibbil-green);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :dir(rtl) .stepper-connector__fill {
   transform-origin: right center;
 }
 
-.stepper-connector__fill--active {
+.stepper-connector__fill[data-filled='true'] {
   transform: scaleX(1);
+}
+
+.stepper--animated .stepper-connector__fill {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .stepper-circle {
@@ -200,13 +233,8 @@ function isConnectorAfterFilled(index: number): boolean {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stepper-connector__fill {
+  .stepper--animated .stepper-connector__fill {
     transition: none;
-    transform: scaleX(1);
-  }
-
-  .stepper-connector__fill:not(.stepper-connector__fill--active) {
-    transform: scaleX(0);
   }
 
   .stepper-circle,

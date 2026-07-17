@@ -26,6 +26,11 @@
     "imageGallery": {
       "thumbnails": "معرض الصور",
       "selectImage": "عرض الصورة {index}"
+    },
+    "datePicker": {
+      "placeholder": "اختر تاريخاً",
+      "prevMonth": "الشهر السابق",
+      "nextMonth": "الشهر التالي"
     }
   },
   "maps": {
