@@ -300,6 +300,52 @@
       "title": "Coming Soon",
       "description": "This page is under development and will be available soon with a better experience."
     },
+    "insurance": {
+      "seoTitle": "Camel Insurance | Ibbil",
+      "seoDescription": "Request a camel transport insurance policy in Saudi Arabia through clear steps and secure payment.",
+      "heroTitle": "The first specialized camel transport insurance in the Kingdom",
+      "heroSubtitle": "Choose the right policy, submit your request in minutes, and pay securely to receive your insurance policy quickly.",
+      "ctaPrimary": "Insure now",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "Camel transport truck with digital insurance protection in the Saudi desert",
+        "policyReview": "Reviewing a camel transport insurance policy and comparing plan options",
+        "howToApply": "Submitting a camel transport insurance request through the Ibbil platform",
+        "payment": "Secure payment for camel transport insurance with approved payment methods"
+      },
+      "benefits": {
+        "owners": {
+          "title": "Who can benefit",
+          "description": "All camel owners in Saudi Arabia can issue a policy that covers transport between regions."
+        },
+        "transport": {
+          "title": "Camel transport coverage",
+          "description": "Purpose-built coverage to protect camels during transport with clear terms and a smooth request flow."
+        },
+        "bestPlans": {
+          "title": "Choose the right plan",
+          "description": "Compare available options and select the policy that matches your transport needs."
+        }
+      },
+      "howTitle": "How does it work?",
+      "howDescription": "Start your request from anywhere in the Kingdom, fill in the required details, then submit for review and issuance.",
+      "steps": {
+        "request": {
+          "title": "1) Submit request",
+          "description": "Enter the key transport details and provide camel and destination information."
+        },
+        "review": {
+          "title": "2) Review and approval",
+          "description": "The request is validated and reviewed to ensure accurate policy issuance."
+        },
+        "issue": {
+          "title": "3) Pay and issue policy",
+          "description": "Pay using approved methods, then receive your invoice and insurance policy instantly."
+        }
+      },
+      "footerTitle": "Camel Transport Insurance",
+      "footerDescription": "After completing the form, your policy price is shown and you are redirected to secure checkout. Once payment is complete, your invoice and policy are issued electronically."
+    },
     "stores": {
       "seoTitle": "Stores | Ibbil",
       "seoDescription": "Browse camel, fodder, supplies, and product store categories on the Ibbil platform.",

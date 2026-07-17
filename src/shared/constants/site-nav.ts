@@ -14,7 +14,7 @@ export const SITE_TOP_LINKS: SiteNavItem[] = [
 
 export const SITE_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
-  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
   { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
@@ -25,7 +25,7 @@ export const SITE_SERVICE_LINKS: SiteNavItem[] = [
 /** Core services shown on the home page (avoids redundant “all services” entry). */
 export const HOME_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
-  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
   { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
@@ -41,7 +41,7 @@ export const SITE_FOOTER_STORES = [
 
 export const SITE_FOOTER_SERVICES = [
   { key: 'site.nav.permits', to: '/services/permits' },
-  { key: 'site.nav.insurance', to: '/services/insurance' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE },
   { key: 'site.nav.transport', to: '/services/transport' },
   { key: 'site.nav.veterinary', to: '/services/veterinary' },
 ]

@@ -1,7 +1,3 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'site' })
+await navigateTo('/insurance', { redirectCode: 301 })
 </script>
-
-<template>
-  <ComingSoonSection title-key="site.nav.insurance" />
-</template>
