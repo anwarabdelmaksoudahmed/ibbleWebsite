@@ -57,12 +57,12 @@ useIntersectionObserver(
 
             <div class="relative aspect-square overflow-hidden bg-[#faf9f6]">
               <img
-                src="/images/market/camel.png"
+                src="/images/hero/ibbil-hero-03.png"
                 :alt="t('site.home.about.imageAlt')"
-                class="absolute inset-0 h-full w-full object-contain p-4 sm:p-6"
+                class="absolute inset-0 h-full w-full object-cover object-[22%_center]"
                 :class="isVisible ? 'about-media-image' : 'opacity-0'"
-                width="392"
-                height="392"
+                width="1024"
+                height="341"
                 loading="lazy"
                 decoding="async"
               >
