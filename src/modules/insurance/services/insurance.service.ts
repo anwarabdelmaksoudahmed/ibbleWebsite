@@ -1,4 +1,7 @@
 import { InsuranceApi } from '@modules/insurance/api/insurance.api'
+import type { InsuranceServiceProvider } from '@modules/insurance/types'
+import { mapInsuranceServiceProviders } from '@modules/insurance/utils/mappers'
+import { distanceKmToMeters } from '@modules/insurance/utils/pricing'
 
 export class InsuranceService {
   private readonly api: InsuranceApi
@@ -21,6 +24,20 @@ export class InsuranceService {
   async checkChipNumber(serial: string): Promise<boolean> {
     const response = await this.api.checkChipNumber(serial.trim())
     return response.data === true
+  }
+
+  async listServiceProviders(input: {
+    distanceKm: string | number
+    totalPrice: number
+    limit?: number
+  }): Promise<InsuranceServiceProvider[]> {
+    const response = await this.api.listServiceProviders({
+      limit: input.limit ?? 100,
+      distance: distanceKmToMeters(input.distanceKm),
+      totalPrice: input.totalPrice,
+    })
+
+    return mapInsuranceServiceProviders(response.data ?? [], input.totalPrice)
   }
 }
 

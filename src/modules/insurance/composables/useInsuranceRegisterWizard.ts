@@ -1,3 +1,4 @@
+import { normalizeApiError } from '@core/api/http/errors'
 import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
 import { createId } from '@shared/utils/id'
 import {
@@ -17,6 +18,7 @@ import {
   type InsuranceRegisterStep,
 } from '@modules/insurance/constants/routes'
 import { getInsuranceService } from '@modules/insurance/services/insurance.service'
+import type { InsuranceServiceProvider } from '@modules/insurance/types'
 
 const CUSTOMER_FIELDS = [
   'nationalId',
@@ -95,6 +97,13 @@ export function useInsuranceRegisterWizard() {
   const chipDraftStatus = ref<ChipDraftStatus>('idle')
   const isCheckingChip = ref(false)
 
+  const providers = ref<InsuranceServiceProvider[]>([])
+  const providersLoading = ref(false)
+  const providersError = ref<string | null>(null)
+  const selectedProviderId = ref<number | null>(null)
+  const providerSelectionError = ref<string | undefined>()
+  const lastProvidersQueryKey = ref('')
+
   const steps = computed(() =>
     INSURANCE_REGISTER_STEPS.map((key) => ({
       key,
@@ -111,6 +120,14 @@ export function useInsuranceRegisterWizard() {
 
   const totalCargoValue = computed(() =>
     shipment.items.reduce((sum, item) => sum + Number(item.cargoValue), 0),
+  )
+
+  const selectedProvider = computed(
+    () => providers.value.find((provider) => provider.id === selectedProviderId.value) ?? null,
+  )
+
+  const providersQueryKey = computed(
+    () => `${shipment.distanceKm}|${totalCargoValue.value}`,
   )
 
   const isEditingCargo = computed(() => editingCargoId.value !== null)
@@ -330,18 +347,25 @@ export function useInsuranceRegisterWizard() {
   /** Save: validate + verify chip, then upsert into the cargo list (keeps draft). */
   async function saveCargoDraft(): Promise<boolean> {
     if (isCheckingChip.value) return false
-    if (!validateAllCargoDraftFields()) return false
+    if (!validateAllCargoDraftFields()) {
+      await goToFirstError({ root: '[data-form-wizard-step]' })
+      return false
+    }
 
     const serialNumber = cargoDraft.serialNumber.trim()
     const cargoValue = cargoDraft.cargoValue.trim()
 
     if (isDuplicateSerial(serialNumber)) {
       chipDraftStatus.value = 'duplicated'
+      await goToFirstError({ root: '[data-form-wizard-step]' })
       return false
     }
 
     const exists = await verifyChipNumber(serialNumber)
-    if (!exists) return false
+    if (!exists) {
+      await goToFirstError({ root: '[data-form-wizard-step]' })
+      return false
+    }
 
     upsertCargoItem(serialNumber, cargoValue)
     cargoItemsError.value = undefined
@@ -362,6 +386,7 @@ export function useInsuranceRegisterWizard() {
       if (shipment.items.length === 0) {
         cargoItemsError.value = t('site.insurance.register.validation.cargoItemsRequired')
         validateAllCargoDraftFields()
+        await goToFirstError({ root: '[data-form-wizard-step]' })
         return false
       }
       resetCargoDraft()
@@ -406,14 +431,71 @@ export function useInsuranceRegisterWizard() {
     shipment.distanceKm = String(value).replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1')
   }
 
+  function selectProvider(id: number) {
+    selectedProviderId.value = id
+    providerSelectionError.value = undefined
+  }
+
+  async function loadProviders(force = false): Promise<boolean> {
+    const queryKey = providersQueryKey.value
+    if (!force && queryKey === lastProvidersQueryKey.value && providers.value.length > 0) {
+      return true
+    }
+
+    providersLoading.value = true
+    providersError.value = null
+
+    try {
+      const list = await getInsuranceService().listServiceProviders({
+        distanceKm: shipment.distanceKm,
+        totalPrice: totalCargoValue.value,
+      })
+
+      providers.value = list
+      lastProvidersQueryKey.value = queryKey
+
+      if (selectedProviderId.value != null) {
+        const stillAvailable = list.some((provider) => provider.id === selectedProviderId.value)
+        if (!stillAvailable) selectedProviderId.value = null
+      }
+
+      if (list.length === 1 && selectedProviderId.value == null) {
+        selectedProviderId.value = list[0]!.id
+      }
+
+      return true
+    } catch (error) {
+      providers.value = []
+      selectedProviderId.value = null
+      lastProvidersQueryKey.value = ''
+      providersError.value = normalizeApiError(error).message
+      return false
+    } finally {
+      providersLoading.value = false
+    }
+  }
+
+  function validateProviderSelection(): boolean {
+    if (selectedProviderId.value == null) {
+      providerSelectionError.value = t('site.insurance.register.validation.providerRequired')
+      return false
+    }
+    providerSelectionError.value = undefined
+    return true
+  }
+
   async function validateCurrentStep(): Promise<boolean> {
     if (activeStep.value === 'customer') return validateAllCustomerFields()
     if (activeStep.value === 'shipment') return validateAllShipmentFields()
+    if (activeStep.value === 'pricing') return validateProviderSelection()
     return true
   }
 
   async function next() {
-    if (!(await validateCurrentStep())) return false
+    if (!(await validateCurrentStep())) {
+      await goToFirstError({ root: '[data-form-wizard-step]' })
+      return false
+    }
     if (!isLastStep.value) currentStep.value += 1
     return true
   }
@@ -421,6 +503,10 @@ export function useInsuranceRegisterWizard() {
   function prev() {
     if (!isFirstStep.value) currentStep.value -= 1
   }
+
+  watch(activeStep, (step) => {
+    if (step === 'pricing') void loadProviders()
+  })
 
   function setNationalId(value: string | number) {
     customer.nationalId = String(value).replace(/\D/g, '').slice(0, 14)
@@ -458,6 +544,12 @@ export function useInsuranceRegisterWizard() {
     totalCargoValue,
     isEditingCargo,
     editingCargoId,
+    providers,
+    providersLoading,
+    providersError,
+    selectedProviderId,
+    selectedProvider,
+    providerSelectionError,
     isFirstStep,
     isLastStep,
     next,
@@ -468,6 +560,8 @@ export function useInsuranceRegisterWizard() {
     touchShipmentTripField,
     setCargoValue,
     setDistanceKm,
+    selectProvider,
+    loadProviders,
     saveCargoDraft,
     startNewCargo,
     editCargoItem,

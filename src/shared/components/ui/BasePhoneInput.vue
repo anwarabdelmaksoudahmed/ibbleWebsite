@@ -392,7 +392,13 @@ const resolvedCountryAriaLabel = computed(
     <p v-if="error" :id="`${inputId}-error`" class="text-xs text-danger" role="alert">
       {{ error }}
     </p>
-    <p v-else-if="countryError" class="text-xs text-danger" role="alert">
+    <p
+      v-else-if="countryError"
+      :id="`${inputId}-country-error`"
+      class="text-xs text-danger"
+      role="alert"
+      data-validation-error
+    >
       {{ countryError }}
     </p>
     <p

@@ -24,7 +24,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl">
+  <div class="mx-auto w-full max-w-4xl" data-form-wizard>
     <BaseStepper
       :steps="steps"
       :current-step="currentStep"
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 
     <div class="rounded-2xl border border-ibbil-green/10 bg-white p-5 shadow-sm sm:p-8">
       <Transition name="wizard-step" mode="out-in">
-        <div :key="currentStep">
+        <div :key="currentStep" data-form-wizard-step>
           <slot />
         </div>
       </Transition>

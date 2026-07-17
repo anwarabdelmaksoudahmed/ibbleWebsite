@@ -1,7 +1,11 @@
 import type { AxiosInstance } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { INSURANCE_ENDPOINTS } from '@modules/insurance/constants/endpoints'
-import type { CheckChipNumberApiResponse } from '@modules/insurance/types/api.types'
+import type {
+  CheckChipNumberApiResponse,
+  InsuranceServiceProvidersApiResponse,
+  InsuranceServiceProvidersQueryParams,
+} from '@modules/insurance/types/api.types'
 
 export class InsuranceApi {
   private readonly client: AxiosInstance
@@ -16,6 +20,22 @@ export class InsuranceApi {
     return this.client
       .get<CheckChipNumberApiResponse>(INSURANCE_ENDPOINTS.FIND_BY_CHIP_NUMBER(serial), {
         baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  listServiceProviders(
+    params: InsuranceServiceProvidersQueryParams,
+  ): Promise<InsuranceServiceProvidersApiResponse> {
+    return this.client
+      .get<InsuranceServiceProvidersApiResponse>(INSURANCE_ENDPOINTS.SERVICE_PROVIDERS, {
+        baseURL: this.baseUrl,
+        params: {
+          limit: params.limit ?? 100,
+          distance: params.distance,
+          totalPrice: params.totalPrice,
+        },
         skipErrorToast: true,
       })
       .then((response) => response.data)

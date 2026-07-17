@@ -41,6 +41,7 @@ const displayValue = computed(() => {
       :min="min"
       :max="max"
       :aria-invalid="!!error"
+      :aria-describedby="error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined"
       :title="displayValue"
       :class="cn(
         'w-full rounded-lg border bg-surface text-foreground',
@@ -51,7 +52,7 @@ const displayValue = computed(() => {
       )"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     >
-    <p v-if="hint && !error" class="text-xs text-foreground-muted">{{ hint }}</p>
-    <p v-if="error" class="text-xs text-danger" role="alert">{{ error }}</p>
+    <p v-if="hint && !error" :id="`${inputId}-hint`" class="text-xs text-foreground-muted">{{ hint }}</p>
+    <p v-if="error" :id="`${inputId}-error`" class="text-xs text-danger" role="alert">{{ error }}</p>
   </div>
 </template>

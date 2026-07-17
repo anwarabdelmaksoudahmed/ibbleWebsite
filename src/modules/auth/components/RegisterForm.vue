@@ -113,16 +113,6 @@ function mapApiFieldErrors(apiFieldErrors: Record<string, string[]>) {
   })
 }
 
-function scrollToFirstError() {
-  const firstErrorField = Object.keys(fieldErrors).find((key) => fieldErrors[key])
-  if (!firstErrorField) return
-  const el = document.getElementById(
-    `register-${firstErrorField === 'confirmPassword' ? 'confirm' : firstErrorField === 'nationalId' ? 'national-id' : firstErrorField}`,
-  )
-  el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  el?.focus()
-}
-
 async function goToOtp() {
   toast.success(t('auth.registerOtpSent'))
   await navigateTo(localePath(ROUTES.AUTH.OTP))
@@ -137,8 +127,7 @@ async function handleSubmit() {
   const validation = phoneRegisterSchema.safeParse(form)
   if (!validation.success) {
     applyValidationErrors(validation.error.issues)
-    await nextTick()
-    scrollToFirstError()
+    await goToFirstError({ root: '[data-validation-form]' })
     return
   }
 
@@ -168,13 +157,13 @@ async function handleSubmit() {
       formError.value = error.message
       if (error.fieldErrors) {
         mapApiFieldErrors(error.fieldErrors)
-        await nextTick()
-        scrollToFirstError()
       }
+      await goToFirstError({ root: '[data-validation-form]' })
       return
     }
 
     formError.value = t('errors.generic')
+    await goToFirstError({ root: '[data-validation-form]' })
   }
 }
 </script>
@@ -192,7 +181,7 @@ async function handleSubmit() {
       <p class="mt-1 text-sm text-foreground-muted">{{ t('auth.registerSubtitle') }}</p>
     </div>
 
-    <form class="space-y-6 px-6 py-6 sm:px-8 sm:py-7" novalidate @submit.prevent="handleSubmit">
+    <form class="space-y-6 px-6 py-6 sm:px-8 sm:py-7" data-validation-form novalidate @submit.prevent="handleSubmit">
       <Transition
         enter-active-class="transition duration-200 ease-out"
         enter-from-class="opacity-0 -translate-y-1"
@@ -202,6 +191,8 @@ async function handleSubmit() {
           v-if="formError"
           class="rounded-xl border border-danger/25 bg-danger/5 px-3.5 py-2.5 text-sm text-danger"
           role="alert"
+          data-validation-error
+          tabindex="-1"
         >
           {{ formError }}
         </div>

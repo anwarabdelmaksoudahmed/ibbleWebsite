@@ -34,6 +34,21 @@ Nuxt maps `NUXT_PUBLIC_*` into `useRuntimeConfig().public`.
 | `NUXT_PUBLIC_API_BASE_URL` | Marketplace API base URL |
 | `NUXT_PUBLIC_AUTH_BASE_URL` | Auth service base URL |
 | `NUXT_PUBLIC_WHATSAPP_NUMBER` | WhatsApp number without `+` |
+| `NUXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps browser key (Places + Directions) |
+
+### Shared Google Maps (`src/shared/maps`)
+
+Reusable, framework-lean Maps layer (same idea as `shared/payment`):
+
+- **Service** — `GoogleMapsService` (no Nuxt/Vue; portable to other projects)
+- **Composable** — `useGoogleMaps()` wires `runtimeConfig` + locale
+- **UI** — `PlaceAutocomplete`, `TripRoutePicker`
+
+```ts
+import { useGoogleMaps, createGoogleMapsService } from '@shared/maps'
+// or components: <TripRoutePicker ... />
+```
+
 
 ## Scripts
 

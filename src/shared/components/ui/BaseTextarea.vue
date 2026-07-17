@@ -42,6 +42,7 @@ const inputId = computed(() => props.id ?? useId())
       :disabled="disabled || loading"
       :required="required"
       :aria-invalid="!!error"
+      :aria-describedby="error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined"
       :class="cn(
         'w-full rounded-lg border bg-surface px-3 py-2 text-sm text-foreground',
         'placeholder:text-foreground-muted focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none',
@@ -50,7 +51,7 @@ const inputId = computed(() => props.id ?? useId())
       )"
       @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
     />
-    <p v-if="hint && !error" class="text-xs text-foreground-muted">{{ hint }}</p>
-    <p v-if="error" class="text-xs text-danger" role="alert">{{ error }}</p>
+    <p v-if="hint && !error" :id="`${inputId}-hint`" class="text-xs text-foreground-muted">{{ hint }}</p>
+    <p v-if="error" :id="`${inputId}-error`" class="text-xs text-danger" role="alert">{{ error }}</p>
   </div>
 </template>

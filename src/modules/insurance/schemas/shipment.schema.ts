@@ -38,12 +38,12 @@ export const insuranceShipmentSchema = z.object({
     .string()
     .trim()
     .min(2, 'site.insurance.register.validation.originMin')
-    .max(100, 'site.insurance.register.validation.originMax'),
+    .max(255, 'site.insurance.register.validation.originMax'),
   destination: z
     .string()
     .trim()
     .min(2, 'site.insurance.register.validation.destinationMin')
-    .max(100, 'site.insurance.register.validation.destinationMax'),
+    .max(255, 'site.insurance.register.validation.destinationMax'),
   distanceKm: z
     .string()
     .trim()

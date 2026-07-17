@@ -86,7 +86,10 @@ function validate(): boolean {
 }
 
 function onSubmit() {
-  if (!validate()) return
+  if (!validate()) {
+    void goToFirstError({ root: '[data-validation-form]' })
+    return
+  }
   emit('submit', { ...form })
 }
 </script>
@@ -98,7 +101,7 @@ function onSubmit() {
     size="lg"
     @update:open="emit('update:open', $event)"
   >
-    <form class="space-y-4" @submit.prevent="onSubmit">
+    <form class="space-y-4" data-validation-form @submit.prevent="onSubmit">
       <BaseInput
         v-model="form.name"
         :label="t('site.commerce.checkout.form.name')"

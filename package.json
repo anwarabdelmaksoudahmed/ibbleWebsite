@@ -52,6 +52,7 @@
     "@nuxt/test-utils": "^4.0.3",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.3.2",
+    "@types/google.maps": "^3.65.2",
     "@types/lodash-es": "^4.17.12",
     "@vue/test-utils": "^2.4.11",
     "happy-dom": "^20.10.6",

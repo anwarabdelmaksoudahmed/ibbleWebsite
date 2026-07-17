@@ -28,6 +28,24 @@
       "selectImage": "View image {index}"
     }
   },
+  "maps": {
+    "origin": "Departure point",
+    "destination": "Arrival point",
+    "distance": "Trip distance",
+    "originPlaceholder": "Search for a city or location…",
+    "destinationPlaceholder": "Search for a city or location…",
+    "distancePlaceholder": "Calculated automatically from the map",
+    "originHint": "Pick a result from the suggestions for accurate distance",
+    "destinationHint": "Pick a result from the suggestions for accurate distance",
+    "distanceHint": "You can adjust the distance manually if needed",
+    "autoDistance": "Auto-calculated from Google Maps (editable)",
+    "mapLabel": "Trip route",
+    "calculating": "Calculating route…",
+    "swap": "Swap",
+    "loadError": "Could not load the map. You can enter locations and distance manually.",
+    "noRoute": "No driving route found between these points. Try other places or enter the distance manually.",
+    "kmUnit": "km"
+  },
   "crud": {
     "createTitle": "Create",
     "editTitle": "Edit",
@@ -388,11 +406,11 @@
           "cargoCount": "{count} cargo item(s)",
           "transportDate": "Transport date",
           "origin": "Departure point",
-          "originPlaceholder": "Enter departure point",
+          "originPlaceholder": "Search for a city or location…",
           "destination": "Arrival point",
-          "destinationPlaceholder": "Enter arrival point",
+          "destinationPlaceholder": "Search for a city or location…",
           "distanceKm": "Trip distance",
-          "distanceKmPlaceholder": "Enter distance in kilometers",
+          "distanceKmPlaceholder": "Calculated automatically from the map",
           "kmUnit": "km",
           "currency": "SAR",
           "totalCargoValue": "Total insured cargo value"
@@ -402,13 +420,46 @@
           "cargoHint": "Add each cargo item with its serial number and value, then continue with trip details.",
           "cargoList": "Added cargo items",
           "trip": "Trip details",
-          "tripHint": "Provide the transport date, route, and distance for this shipment."
+          "tripHint": "Set the transport date, then pick departure and arrival on the map to calculate distance automatically.",
+          "pricing": "Choose an insurance provider",
+          "pricingHint": "Compare available offers and select the provider that best fits your shipment."
+        },
+        "pricing": {
+          "loading": "Loading insurance offers…",
+          "errorTitle": "Could not load insurance providers",
+          "emptyTitle": "No providers available",
+          "emptyDescription": "No insurance offers were found for this shipment. Try adjusting the cargo value or trip details.",
+          "insuredSummary": "Insured amount: {amount}",
+          "insuredAmount": "Insured amount",
+          "certificateFees": "Certificate fees",
+          "coverage": "Land transport coverage",
+          "vat": "VAT {percent}%",
+          "total": "Total insurance amount",
+          "deductibleNote": "Deductible is {percent}% of the insured amount for any loss on a cargo item (minimum {min}).",
+          "providerHint": "Shariah-compliant transport insurance coverage",
+          "select": "Select",
+          "selected": "Selected",
+          "selectProviderAria": "Select {name}",
+          "termsLink": "Terms and conditions",
+          "termsTitle": "Terms and conditions — {name}",
+          "termsEmpty": "No terms and conditions are available for this provider.",
+          "termsClose": "Close"
         },
         "hints": {
           "serialNumber": "Use the chip or serial number associated with the cargo",
           "cargoValue": "Enter the insured value in Saudi Riyals",
           "transportDate": "Select the planned transport date",
-          "distanceKm": "Approximate distance between departure and arrival"
+          "origin": "Pick a result from the suggestions for accurate distance",
+          "destination": "Pick a result from the suggestions for accurate distance",
+          "distanceKm": "You can adjust the distance manually if needed"
+        },
+        "route": {
+          "mapLabel": "Trip route",
+          "calculating": "Calculating route…",
+          "autoDistance": "Auto-calculated from Google Maps (editable)",
+          "swap": "Swap",
+          "loadError": "Could not load the map. You can enter locations and distance manually.",
+          "noRoute": "No driving route found between these points. Try other places or enter the distance manually."
         },
         "actions": {
           "saveCargo": "Save",
@@ -432,17 +483,14 @@
           "transportDateRequired": "Transport date is required",
           "transportDateInvalid": "Enter a valid transport date",
           "originMin": "Departure point must be at least 2 characters",
-          "originMax": "Departure point must be at most 100 characters",
+          "originMax": "Departure point must be at most 255 characters",
           "destinationMin": "Arrival point must be at least 2 characters",
-          "destinationMax": "Arrival point must be at most 100 characters",
+          "destinationMax": "Arrival point must be at most 255 characters",
           "distanceRequired": "Trip distance is required",
-          "distanceInvalid": "Enter a valid distance greater than zero"
+          "distanceInvalid": "Enter a valid distance greater than zero",
+          "providerRequired": "Select an insurance provider to continue"
         },
         "placeholders": {
-          "pricing": {
-            "title": "Pricing",
-            "description": "This step is under development. Available pricing options and policies will appear here."
-          },
           "payment": {
             "title": "Payment",
             "description": "This step is under development. You will soon be able to complete payment and receive your policy."

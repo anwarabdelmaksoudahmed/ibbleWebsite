@@ -5,6 +5,7 @@ import type {
   InsuranceShipmentFormValues,
   InsuranceShipmentTripField,
 } from '@modules/insurance/schemas/shipment.schema'
+import TripRoutePicker from '@shared/maps/components/TripRoutePicker.vue'
 
 const props = defineProps<{
   model: InsuranceShipmentFormValues
@@ -137,6 +138,9 @@ function onTransportDateChange(value: string) {
               :class="statusToneClass"
               role="status"
               aria-live="polite"
+              :data-validation-error="
+                chipDraftStatus === 'not_exists' || chipDraftStatus === 'duplicated' ? '' : undefined
+              "
             >
               <BaseLoader v-if="isCheckingChip" size="sm" class="text-current" />
               <Icon
@@ -205,18 +209,20 @@ function onTransportDateChange(value: string) {
         v-if="cargoItemsError"
         class="text-sm text-danger"
         role="alert"
+        data-validation-error
+        tabindex="-1"
       >
         {{ cargoItemsError }}
       </p>
 
-      <BaseEmptyState
+      <!-- <BaseEmptyState
         v-if="!model.items.length"
         variant="brand"
         icon="lucide:package-open"
         :title="t('site.insurance.register.empty.cargoTitle')"
         :description="t('site.insurance.register.empty.cargoDescription')"
         class="!py-10"
-      />
+      /> -->
 
       <ul
         v-else
@@ -304,46 +310,36 @@ function onTransportDateChange(value: string) {
           @update:model-value="onTransportDateChange"
         />
 
-        <div class="grid gap-4 sm:grid-cols-2">
-          <BaseInput
-            v-model="model.origin"
-            autocomplete="address-level2"
-            :label="t('site.insurance.register.form.origin')"
-            :placeholder="t('site.insurance.register.form.originPlaceholder')"
-            :error="tripErrors.origin"
-            required
-            @blur="emit('trip-field-blur', 'origin')"
-          />
-
-          <BaseInput
-            v-model="model.destination"
-            autocomplete="address-level2"
-            :label="t('site.insurance.register.form.destination')"
-            :placeholder="t('site.insurance.register.form.destinationPlaceholder')"
-            :error="tripErrors.destination"
-            required
-            @blur="emit('trip-field-blur', 'destination')"
-          />
-        </div>
-
-        <BaseInput
-          :model-value="model.distanceKm"
-          inputmode="decimal"
-          autocomplete="off"
-          :label="t('site.insurance.register.form.distanceKm')"
-          :placeholder="t('site.insurance.register.form.distanceKmPlaceholder')"
-          :hint="t('site.insurance.register.hints.distanceKm')"
-          :error="tripErrors.distanceKm"
-          required
-          @update:model-value="emit('update:distanceKm', $event)"
-          @blur="emit('trip-field-blur', 'distanceKm')"
-        >
-          <template #suffix>
-            <span class="text-xs font-semibold text-foreground-muted">
-              {{ t('site.insurance.register.form.kmUnit') }}
-            </span>
-          </template>
-        </BaseInput>
+        <TripRoutePicker
+          :origin="model.origin"
+          :destination="model.destination"
+          :distance-km="model.distanceKm"
+          :origin-error="tripErrors.origin"
+          :destination-error="tripErrors.destination"
+          :distance-error="tripErrors.distanceKm"
+          :origin-label="t('site.insurance.register.form.origin')"
+          :destination-label="t('site.insurance.register.form.destination')"
+          :distance-label="t('site.insurance.register.form.distanceKm')"
+          :origin-placeholder="t('site.insurance.register.form.originPlaceholder')"
+          :destination-placeholder="t('site.insurance.register.form.destinationPlaceholder')"
+          :distance-placeholder="t('site.insurance.register.form.distanceKmPlaceholder')"
+          :origin-hint="t('site.insurance.register.hints.origin')"
+          :destination-hint="t('site.insurance.register.hints.destination')"
+          :distance-hint="t('site.insurance.register.hints.distanceKm')"
+          :auto-distance-hint="t('site.insurance.register.route.autoDistance')"
+          :map-label="t('site.insurance.register.route.mapLabel')"
+          :calculating-label="t('site.insurance.register.route.calculating')"
+          :swap-label="t('site.insurance.register.route.swap')"
+          :load-error-label="t('site.insurance.register.route.loadError')"
+          :no-route-label="t('site.insurance.register.route.noRoute')"
+          :km-unit="t('site.insurance.register.form.kmUnit')"
+          @update:origin="model.origin = $event"
+          @update:destination="model.destination = $event"
+          @update:distance-km="emit('update:distanceKm', $event)"
+          @origin-blur="emit('trip-field-blur', 'origin')"
+          @destination-blur="emit('trip-field-blur', 'destination')"
+          @distance-blur="emit('trip-field-blur', 'distanceKm')"
+        />
       </div>
     </section>
 

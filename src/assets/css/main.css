@@ -131,6 +131,48 @@
   html.locale-switching .locale-shell {
     pointer-events: none;
   }
+
+  /* Google Places Autocomplete dropdown — match Ibbil form controls */
+  .pac-container {
+    z-index: 10000 !important;
+    margin-top: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 30px rgb(45 83 61 / 0.12);
+    font-family: inherit;
+    overflow: hidden;
+  }
+
+  .pac-item {
+    padding: 0.65rem 0.85rem;
+    line-height: 1.35;
+    border-top: 1px solid var(--color-border-muted);
+    cursor: pointer;
+  }
+
+  .pac-item:first-child {
+    border-top: none;
+  }
+
+  .pac-item:hover,
+  .pac-item-selected,
+  .pac-item-selected:hover {
+    background-color: color-mix(in oklab, var(--color-ibbil-green) 8%, white);
+  }
+
+  .pac-item-query {
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+  }
+
+  .pac-matched {
+    font-weight: 700;
+    color: var(--color-ibbil-green);
+  }
+
+  .pac-icon {
+    margin-top: 4px;
+  }
 }
 
 @layer components {

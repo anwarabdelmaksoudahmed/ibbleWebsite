@@ -53,6 +53,7 @@ export default defineNuxtConfig({
     dirs: [
       'shared/composables',
       'shared/payment/composables',
+      'shared/maps/composables',
       'shared/utils',
       'core/helpers',
       'modules/**/composables',
@@ -62,6 +63,7 @@ export default defineNuxtConfig({
   components: [
     { path: '~/shared/components', pathPrefix: false },
     { path: '~/shared/payment/components', pathPrefix: false },
+    { path: '~/shared/maps/components', pathPrefix: false },
     {
       path: '~/modules',
       pathPrefix: false,
@@ -93,6 +95,7 @@ export default defineNuxtConfig({
       hyperPayWidgetBaseUrl:
         process.env.NUXT_PUBLIC_HYPERPAY_WIDGET_BASE_URL
         || 'https://eu-test.oppwa.com/v1/paymentWidgets.js',
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     },
   },
 
@@ -151,9 +154,24 @@ export default defineNuxtConfig({
       contentSecurityPolicy: {
         'img-src': ["'self'", 'data:', 'https:'],
         'font-src': ["'self'", 'https:', 'data:'],
-        'script-src': ["'self'", "'unsafe-inline'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        'script-src': [
+          "'self'",
+          "'unsafe-inline'",
+          'https://eu-test.oppwa.com',
+          'https://oppwa.com',
+          'https://maps.googleapis.com',
+          'https://maps.gstatic.com',
+        ],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://maps.gstatic.com'],
         'frame-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
-        'connect-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com', 'https:'],
+        'connect-src': [
+          "'self'",
+          'https://eu-test.oppwa.com',
+          'https://oppwa.com',
+          'https://maps.googleapis.com',
+          'https://places.googleapis.com',
+          'https:',
+        ],
         'form-action': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
         // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
         // upgrade CSS/JS/images to HTTPS and they fail to load.
@@ -178,6 +196,11 @@ export default defineNuxtConfig({
     strict: true,
     typeCheck: true,
     shim: false,
+    tsConfig: {
+      compilerOptions: {
+        types: ['@types/google.maps'],
+      },
+    },
   },
 
   nitro: {

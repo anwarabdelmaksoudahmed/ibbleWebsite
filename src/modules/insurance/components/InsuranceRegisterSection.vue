@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InsuranceCustomerStep from '@modules/insurance/components/InsuranceCustomerStep.vue'
+import InsurancePricingStep from '@modules/insurance/components/InsurancePricingStep.vue'
 import InsuranceShipmentStep from '@modules/insurance/components/InsuranceShipmentStep.vue'
 import { INSURANCE_ROUTES } from '@modules/insurance/constants/routes'
 import { useInsuranceRegisterWizard } from '@modules/insurance/composables/useInsuranceRegisterWizard'
@@ -25,6 +26,11 @@ const {
   totalCargoValue,
   isEditingCargo,
   editingCargoId,
+  providers,
+  providersLoading,
+  providersError,
+  selectedProviderId,
+  providerSelectionError,
   isFirstStep,
   isLastStep,
   next,
@@ -35,6 +41,8 @@ const {
   touchShipmentTripField,
   setCargoValue,
   setDistanceKm,
+  selectProvider,
+  loadProviders,
   saveCargoDraft,
   startNewCargo,
   editCargoItem,
@@ -108,6 +116,20 @@ async function onNext() {
           @edit-cargo="editCargoItem"
           @remove-cargo="removeCargoItem"
           @reset-cargo="resetCargoDraft"
+        />
+
+        <InsurancePricingStep
+          v-else-if="activeStep === 'pricing'"
+          :customer="customer"
+          :shipment="shipment"
+          :providers="providers"
+          :selected-id="selectedProviderId"
+          :loading="providersLoading"
+          :error-message="providersError"
+          :selection-error="providerSelectionError"
+          :total-cargo-value="totalCargoValue"
+          @select="selectProvider"
+          @retry="loadProviders(true)"
         />
 
         <div v-else class="py-6 text-center">
