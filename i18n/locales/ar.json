@@ -371,16 +371,74 @@
           "email": "البريد الإلكتروني",
           "emailPlaceholder": "example{'@'}email.com",
           "address": "العنوان",
-          "addressPlaceholder": "السعودية، الرياض، حي الملقا"
+          "addressPlaceholder": "أدخل العنوان",
+          "serialNumber": "الشريحة / الرقم التسلسلي",
+          "serialNumberPlaceholder": "رقم الشريحة",
+          "cargoValue": "قيمة المتن",
+          "cargoValuePlaceholder": "قيمة المتن",
+          "status": "الحالة",
+          "cargoStatusEmpty": "—",
+          "cargoStatusDraft": "مسودة",
+          "cargoStatusEditing": "قيد التعديل",
+          "cargoStatusChecking": "جاري التحقق من رقم الشريحة…",
+          "cargoStatusExists": "رقم الشريحة موجود",
+          "cargoStatusNotExists": "رقم الشريحة غير موجود",
+          "cargoStatusDuplicated": "رقم الشريحة متكرر",
+          "cargoStatusReady": "جاهز",
+          "cargoCount": "{count} متن",
+          "transportDate": "تاريخ النقل",
+          "origin": "جهة الانطلاق",
+          "originPlaceholder": "أدخل جهة الانطلاق",
+          "destination": "جهة الوصول",
+          "destinationPlaceholder": "أدخل جهة الوصول",
+          "distanceKm": "مسافة الرحلة",
+          "distanceKmPlaceholder": "أدخل المسافة بالكيلومتر",
+          "kmUnit": "كم",
+          "currency": "ر.س",
+          "totalCargoValue": "إجمالي قيمة المتن / المتون المؤمنة"
+        },
+        "sections": {
+          "cargo": "المتون المؤمنة",
+          "cargoHint": "أضف كل متن برقمه التسلسلي وقيمته، ثم أكمل تفاصيل الرحلة.",
+          "cargoList": "المتون المضافة",
+          "trip": "تفاصيل الرحلة",
+          "tripHint": "أدخل تاريخ النقل ومسار الرحلة والمسافة لهذه الشحنة."
+        },
+        "hints": {
+          "serialNumber": "استخدم رقم الشريحة أو الرقم التسلسلي المرتبط بالمتن",
+          "cargoValue": "أدخل القيمة المؤمنة بالريال السعودي",
+          "transportDate": "حدد تاريخ النقل المخطط",
+          "distanceKm": "المسافة التقريبية بين جهة الانطلاق وجهة الوصول"
+        },
+        "actions": {
+          "saveCargo": "حفظ",
+          "saveChanges": "حفظ التعديلات",
+          "addCargo": "إضافة متن",
+          "editCargo": "تعديل المتن",
+          "removeCargo": "حذف المتن",
+          "clearDraft": "مسح"
+        },
+        "empty": {
+          "cargoTitle": "لا توجد متون بعد",
+          "cargoDescription": "أدخل الرقم التسلسلي والقيمة ثم احفظ لإضافة أول متن مؤمّن."
         },
         "validation": {
-          "address": "أدخل عنواناً صالحاً (5 أحرف على الأقل)"
+          "address": "أدخل عنواناً صالحاً (5 أحرف على الأقل)",
+          "serialNumberRequired": "الرقم التسلسلي مطلوب",
+          "serialNumberMax": "الرقم التسلسلي يجب ألا يتجاوز 64 حرفاً",
+          "cargoValueRequired": "قيمة المتن مطلوبة",
+          "cargoValueInvalid": "أدخل قيمة متن صحيحة أكبر من صفر",
+          "cargoItemsRequired": "أضف متناً واحداً على الأقل قبل المتابعة",
+          "transportDateRequired": "تاريخ النقل مطلوب",
+          "transportDateInvalid": "أدخل تاريخ نقل صالحاً",
+          "originMin": "جهة الانطلاق يجب أن تكون حرفين على الأقل",
+          "originMax": "جهة الانطلاق يجب ألا تتجاوز 100 حرف",
+          "destinationMin": "جهة الوصول يجب أن تكون حرفين على الأقل",
+          "destinationMax": "جهة الوصول يجب ألا تتجاوز 100 حرف",
+          "distanceRequired": "مسافة الرحلة مطلوبة",
+          "distanceInvalid": "أدخل مسافة صحيحة أكبر من صفر"
         },
         "placeholders": {
-          "shipment": {
-            "title": "معلومات الشحنة",
-            "description": "هذه الخطوة قيد التطوير. ستتمكن قريباً من إدخال تفاصيل الشحنة والوجهة."
-          },
           "pricing": {
             "title": "التسعيرات",
             "description": "هذه الخطوة قيد التطوير. ستظهر هنا خيارات التسعير والوثائق المتاحة."

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InsuranceCustomerStep from '@modules/insurance/components/InsuranceCustomerStep.vue'
+import InsuranceShipmentStep from '@modules/insurance/components/InsuranceShipmentStep.vue'
 import { INSURANCE_ROUTES } from '@modules/insurance/constants/routes'
 import { useInsuranceRegisterWizard } from '@modules/insurance/composables/useInsuranceRegisterWizard'
 import { ROUTES } from '@shared/constants/routes'
@@ -13,12 +14,32 @@ const {
   activeStep,
   customer,
   customerErrors,
+  shipment,
+  shipmentTripErrors,
+  cargoItemsError,
+  cargoDraft,
+  cargoDraftErrors,
+  draftStatusLabel,
+  chipDraftStatus,
+  isCheckingChip,
+  totalCargoValue,
+  isEditingCargo,
+  editingCargoId,
   isFirstStep,
   isLastStep,
   next,
   prev,
   setNationalId,
   touchCustomerField,
+  touchCargoDraftField,
+  touchShipmentTripField,
+  setCargoValue,
+  setDistanceKm,
+  saveCargoDraft,
+  startNewCargo,
+  editCargoItem,
+  removeCargoItem,
+  resetCargoDraft,
 } = useInsuranceRegisterWizard()
 
 const breadcrumbItems = computed(() => [
@@ -27,14 +48,14 @@ const breadcrumbItems = computed(() => [
   { label: t('site.insurance.register.breadcrumb') },
 ])
 
-function onNext() {
+async function onNext() {
   if (isLastStep.value) return
-  next()
+  await next()
 }
 </script>
 
 <template>
-  <section class="bg-[#f4f6f5]">
+  <section class="bg-[#f4f6f5] dark:bg-background">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-6 lg:py-12">
       <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
@@ -63,6 +84,30 @@ function onNext() {
           :errors="customerErrors"
           @field-blur="touchCustomerField"
           @update:national-id="setNationalId"
+        />
+
+        <InsuranceShipmentStep
+          v-else-if="activeStep === 'shipment'"
+          :model="shipment"
+          :trip-errors="shipmentTripErrors"
+          :cargo-draft="cargoDraft"
+          :cargo-draft-errors="cargoDraftErrors"
+          :cargo-items-error="cargoItemsError"
+          :draft-status-label="draftStatusLabel"
+          :chip-draft-status="chipDraftStatus"
+          :total-cargo-value="totalCargoValue"
+          :is-editing-cargo="isEditingCargo"
+          :editing-cargo-id="editingCargoId"
+          :is-checking-chip="isCheckingChip"
+          @update:cargo-value="setCargoValue"
+          @update:distance-km="setDistanceKm"
+          @cargo-field-blur="touchCargoDraftField"
+          @trip-field-blur="touchShipmentTripField"
+          @save-cargo="saveCargoDraft"
+          @add-cargo="startNewCargo"
+          @edit-cargo="editCargoItem"
+          @remove-cargo="removeCargoItem"
+          @reset-cargo="resetCargoDraft"
         />
 
         <div v-else class="py-6 text-center">

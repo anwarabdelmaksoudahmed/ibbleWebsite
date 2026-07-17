@@ -371,16 +371,74 @@
           "email": "Email",
           "emailPlaceholder": "example{'@'}email.com",
           "address": "Address",
-          "addressPlaceholder": "Saudi Arabia, Riyadh, Al Malqa"
+          "addressPlaceholder": "Enter address",
+          "serialNumber": "Chip / serial number",
+          "serialNumberPlaceholder": "Enter chip or serial number",
+          "cargoValue": "Cargo value",
+          "cargoValuePlaceholder": "Enter cargo value",
+          "status": "Status",
+          "cargoStatusEmpty": "—",
+          "cargoStatusDraft": "Draft",
+          "cargoStatusEditing": "Editing",
+          "cargoStatusChecking": "Checking chip number…",
+          "cargoStatusExists": "Chip number exists",
+          "cargoStatusNotExists": "Chip number does not exist",
+          "cargoStatusDuplicated": "Chip number is duplicated",
+          "cargoStatusReady": "Ready",
+          "cargoCount": "{count} cargo item(s)",
+          "transportDate": "Transport date",
+          "origin": "Departure point",
+          "originPlaceholder": "Enter departure point",
+          "destination": "Arrival point",
+          "destinationPlaceholder": "Enter arrival point",
+          "distanceKm": "Trip distance",
+          "distanceKmPlaceholder": "Enter distance in kilometers",
+          "kmUnit": "km",
+          "currency": "SAR",
+          "totalCargoValue": "Total insured cargo value"
+        },
+        "sections": {
+          "cargo": "Insured cargo",
+          "cargoHint": "Add each cargo item with its serial number and value, then continue with trip details.",
+          "cargoList": "Added cargo items",
+          "trip": "Trip details",
+          "tripHint": "Provide the transport date, route, and distance for this shipment."
+        },
+        "hints": {
+          "serialNumber": "Use the chip or serial number associated with the cargo",
+          "cargoValue": "Enter the insured value in Saudi Riyals",
+          "transportDate": "Select the planned transport date",
+          "distanceKm": "Approximate distance between departure and arrival"
+        },
+        "actions": {
+          "saveCargo": "Save",
+          "saveChanges": "Save changes",
+          "addCargo": "Add cargo",
+          "editCargo": "Edit cargo",
+          "removeCargo": "Remove cargo",
+          "clearDraft": "Clear"
+        },
+        "empty": {
+          "cargoTitle": "No cargo added yet",
+          "cargoDescription": "Enter a serial number and value, then save to add your first insured cargo item."
         },
         "validation": {
-          "address": "Enter a valid address (at least 5 characters)"
+          "address": "Enter a valid address (at least 5 characters)",
+          "serialNumberRequired": "Serial number is required",
+          "serialNumberMax": "Serial number must be at most 64 characters",
+          "cargoValueRequired": "Cargo value is required",
+          "cargoValueInvalid": "Enter a valid cargo value greater than zero",
+          "cargoItemsRequired": "Add at least one cargo item before continuing",
+          "transportDateRequired": "Transport date is required",
+          "transportDateInvalid": "Enter a valid transport date",
+          "originMin": "Departure point must be at least 2 characters",
+          "originMax": "Departure point must be at most 100 characters",
+          "destinationMin": "Arrival point must be at least 2 characters",
+          "destinationMax": "Arrival point must be at most 100 characters",
+          "distanceRequired": "Trip distance is required",
+          "distanceInvalid": "Enter a valid distance greater than zero"
         },
         "placeholders": {
-          "shipment": {
-            "title": "Shipment information",
-            "description": "This step is under development. You will soon be able to enter shipment and destination details."
-          },
           "pricing": {
             "title": "Pricing",
             "description": "This step is under development. Available pricing options and policies will appear here."
