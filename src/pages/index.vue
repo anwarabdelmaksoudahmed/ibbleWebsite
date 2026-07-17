@@ -14,15 +14,26 @@ useSeoMeta({
 
 type HeroSlide = {
   src: string
-  altKey: 'desert' | 'portrait' | 'dunes' | 'caravan'
+  altKey:
+    | 'oasis'
+    | 'caravan'
+    | 'sunset'
+    | 'heritage'
+    | 'journey'
+    | 'expedition'
+    | 'dunes'
+    | 'guide'
 }
 
 const heroSlides: HeroSlide[] = [
-  // { src: '/images/hero/camel-1.jpg', altKey: 'desert' },
-  // { src: '/images/hero/camel-2.jpg', altKey: 'portrait' },
-  { src: '/images/hero/camel-3.jpg', altKey: 'dunes' },
-  { src: '/images/hero/camel-4.jpg', altKey: 'caravan' },
-  { src: '/images/hero/camel-5.png', altKey: 'desert' },
+  { src: '/images/hero/ibbil-hero-01.png', altKey: 'oasis' },
+  { src: '/images/hero/ibbil-hero-02.png', altKey: 'caravan' },
+  { src: '/images/hero/ibbil-hero-03.png', altKey: 'sunset' },
+  { src: '/images/hero/ibbil-hero-04.png', altKey: 'heritage' },
+  { src: '/images/hero/ibbil-hero-05.png', altKey: 'journey' },
+  { src: '/images/hero/ibbil-hero-06.png', altKey: 'expedition' },
+  { src: '/images/hero/ibbil-hero-07.png', altKey: 'dunes' },
+  { src: '/images/hero/ibbil-hero-08.png', altKey: 'guide' },
 ]
 </script>
 
@@ -47,9 +58,9 @@ const heroSlides: HeroSlide[] = [
             <img
               :src="item.src"
               :alt="t(`site.home.hero.slides.${item.altKey}`)"
-              class="absolute inset-0 h-full w-full object-cover"
-              width="1920"
-              height="1080"
+              class="absolute inset-0 h-full w-full object-cover object-[center_35%] sm:object-center"
+              width="1349"
+              height="410"
               :loading="index === 0 ? 'eager' : 'lazy'"
               :fetchpriority="index === 0 ? 'high' : 'auto'"
               decoding="async"
@@ -104,6 +115,7 @@ const heroSlides: HeroSlide[] = [
       </BaseSwiper>
     </section>
 
+    <HomeMarketplaceSection />
     <HomeAboutSection />
     <HomeServicesSection />
     <HomeStatsSection />

@@ -55,14 +55,14 @@ useIntersectionObserver(
               aria-hidden="true"
             />
 
-            <div class="relative aspect-[4/5] overflow-hidden bg-ibbil-green/5">
+            <div class="relative aspect-square overflow-hidden bg-[#faf9f6]">
               <img
-                src="/images/hero/camel-2.jpg"
+                src="/images/market/camel.png"
                 :alt="t('site.home.about.imageAlt')"
-                class="absolute inset-0 h-full w-full object-cover"
+                class="absolute inset-0 h-full w-full object-contain p-4 sm:p-6"
                 :class="isVisible ? 'about-media-image' : 'opacity-0'"
-                width="800"
-                height="1000"
+                width="392"
+                height="392"
                 loading="lazy"
                 decoding="async"
               >

@@ -47,8 +47,8 @@ useSeoMeta({
       class="flex min-h-[50vh] items-center justify-center bg-[#f4f6f5] px-4"
     >
       <MarketplaceFetchLoader class="max-w-lg" />
+      
     </div>
-
     <div
       v-else-if="errorMessage && !category"
       class="min-h-[50vh] bg-[#f4f6f5] px-4 py-16"
@@ -72,5 +72,6 @@ useSeoMeta({
     </div>
 
     <CategoryStoresSection v-else-if="category" :category="category" />
+  
   </div>
 </template>

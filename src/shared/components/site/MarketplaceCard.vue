@@ -165,12 +165,7 @@ const animationStyle = computed(() =>
           width="120"
           height="120"
         >
-        <Icon
-          v-else
-          name="lucide:store"
-          class="relative z-[1] h-1/3 w-1/3 text-ibbil-green/70 transition-transform duration-300 group-hover:scale-[1.06]"
-          aria-hidden="true"
-        />
+    
       </div>
 
       <h3

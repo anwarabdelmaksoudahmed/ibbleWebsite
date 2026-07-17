@@ -196,6 +196,47 @@
       "servicesSubtitle": "Choose the service you need and get started instantly on Ibbil.",
       "exploreService": "Explore service",
       "servicesEyebrow": "What we offer",
+      "marketplaceEyebrow": "Ibbil Marketplace",
+      "marketplaceTitle": "Shop by category",
+      "marketplaceSubtitle": "Choose a category and explore trusted stores on the Ibbil platform.",
+      "marketplaceCta": "View all stores",
+      "marketplaceCategories": {
+        "camel": {
+          "title": "Camel Stores",
+          "text": "Buy, lease, and share camels",
+          "alt": "Illustration of a camel in the Ibbil marketplace"
+        },
+        "feed": {
+          "title": "Fodder",
+          "text": "Fodder and nutritional supplements",
+          "alt": "Illustration of fodder sacks"
+        },
+        "animalFood": {
+          "title": "Animal Food",
+          "text": "Specialized feed for camels and livestock",
+          "alt": "Illustration of a camel eating feed"
+        },
+        "products": {
+          "title": "Camel Products",
+          "text": "Milk, derivatives, and natural products",
+          "alt": "Illustration of camel milk products"
+        },
+        "supplies": {
+          "title": "Camel Supplies",
+          "text": "Grains, seeds, and feeding supplies",
+          "alt": "Illustration of camel supplies"
+        },
+        "accessories": {
+          "title": "Camel Accessories",
+          "text": "Care, riding, and handling accessories",
+          "alt": "Illustration of camel accessories"
+        },
+        "microchip": {
+          "title": "Microchips",
+          "text": "Smart identification and tracking technology",
+          "alt": "Illustration of a camel with a microchip"
+        }
+      },
       "serviceItems": {
         "stores": "Shop fodder, supplies, and camel products from trusted stores.",
         "insurance": "Clear insurance policies to protect your camels with confidence.",
@@ -209,7 +250,7 @@
         "lead": "Ibbil is the first platform to offer a complete commercial marketplace for all camel-related services in the Kingdom of Saudi Arabia.",
         "body": "It covers insurance, transport, and permits, as well as fodder and food stores, camel supplies, and veterinary services — in addition to camel trading, leasing, and sharing. Shop across many stores and benefit from services offered by merchants, veterinarians, and store owners on the Ibbil platform.",
         "cta": "Learn more",
-        "imageAlt": "A camel in a desert setting representing the Ibbil platform"
+        "imageAlt": "Illustration of a camel representing the Ibbil platform"
       },
       "ctaTitle": "Are you a merchant or service provider?",
       "ctaSubtitle": "Join Ibbil and grow your business with thousands of users.",
@@ -230,10 +271,14 @@
         "slidesLabel": "Hero image slides",
         "slideStatus": "Slide {current} of {total}",
         "slides": {
-          "desert": "Tourists riding camels across orange sand dunes under a cloudy sky",
-          "portrait": "Close-up portrait of a camel in the desert",
-          "dunes": "Camel walking across golden sand dunes",
-          "caravan": "Camel caravan crossing desert dunes"
+          "oasis": "A man with camels on sand dunes near a desert oasis",
+          "caravan": "A camel caravan crossing the desert at sunset",
+          "sunset": "A man leading a camel across golden dunes at sunset",
+          "heritage": "A large camel caravan crossing the desert",
+          "journey": "A desert oasis with tents and a camel caravan",
+          "expedition": "A man leading three camels across sand dunes",
+          "dunes": "A man leading a camel along a dune ridge",
+          "guide": "A man leading a camel across a wide desert valley"
         }
       },
       "highlights": {
