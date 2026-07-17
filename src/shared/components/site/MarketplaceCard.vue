@@ -11,6 +11,7 @@ const props = withDefaults(
     description?: string
     logo?: string
     cover?: string
+    illustration?: string
     variant?: MarketplaceCardVariant
     meta?: MarketplaceCardMetaItem[]
     ctaLabel?: string
@@ -21,6 +22,7 @@ const props = withDefaults(
     description: '',
     logo: '',
     cover: '',
+    illustration: '',
     variant: 'grid',
     meta: () => [],
     ctaLabel: '',
@@ -30,6 +32,7 @@ const props = withDefaults(
 
 const hasLogo = computed(() => Boolean(props.logo?.trim()))
 const hasCover = computed(() => Boolean(props.cover?.trim()))
+const hasIllustration = computed(() => Boolean(props.illustration?.trim()))
 const hasDescription = computed(() => Boolean(props.description?.trim()))
 const hasMeta = computed(() => props.meta.length > 0)
 const isList = computed(() => props.variant === 'list')
@@ -61,10 +64,25 @@ const animationStyle = computed(() =>
     <!-- List: media -->
     <div
       v-if="isList"
-      class="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-gradient-to-br from-ibbil-green/[0.08] to-ibbil-green/[0.02] sm:aspect-auto sm:w-[38%] sm:min-w-[12rem] sm:max-w-[18rem]"
+      class="relative w-full shrink-0 overflow-hidden sm:w-[38%] sm:min-w-[12rem] sm:max-w-[18rem]"
+      :class="
+        hasIllustration
+          ? 'aspect-[391/282] bg-[#fafbfa] sm:aspect-auto sm:min-h-[9rem]'
+          : 'aspect-[16/10] bg-gradient-to-br from-ibbil-green/[0.08] to-ibbil-green/[0.02] sm:aspect-auto'
+      "
     >
       <img
-        v-if="hasCover"
+        v-if="hasIllustration"
+        :src="illustration"
+        alt=""
+        class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+        width="392"
+        height="282"
+        loading="lazy"
+        decoding="async"
+      >
+      <img
+        v-else-if="hasCover"
         :src="cover"
         alt=""
         class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
@@ -79,6 +97,7 @@ const animationStyle = computed(() =>
       </div>
 
       <div
+        v-if="!hasIllustration"
         class="absolute bottom-3 start-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border-2 border-white bg-white shadow-md sm:h-16 sm:w-16"
       >
         <img
@@ -141,6 +160,28 @@ const animationStyle = computed(() =>
     <!-- Grid: media + content -->
     <template v-else>
       <div
+        v-if="hasIllustration"
+        class="relative mb-5 flex aspect-[391/282] w-full max-w-[9.5rem] items-center justify-center overflow-hidden sm:max-w-[11rem]"
+        :class="animate ? 'marketplace-card-icon' : undefined"
+        :style="
+          animate && index != null
+            ? { animationDelay: `${180 + index * 55}ms` }
+            : undefined
+        "
+      >
+        <img
+          :src="illustration"
+          alt=""
+          class="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+          width="392"
+          height="282"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+
+      <div
+        v-else
         class="relative mb-5 flex aspect-square w-full max-w-[8.5rem] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-ibbil-green/[0.06] to-ibbil-green/[0.02] transition-colors duration-300 group-hover:from-ibbil-gold/[0.14] group-hover:to-ibbil-gold/[0.04] sm:max-w-[9.5rem]"
         :class="animate ? 'marketplace-card-icon' : undefined"
         :style="
@@ -165,7 +206,6 @@ const animationStyle = computed(() =>
           width="120"
           height="120"
         >
-    
       </div>
 
       <h3

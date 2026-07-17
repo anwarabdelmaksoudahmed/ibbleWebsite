@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MarketplaceCard from '@shared/components/site/MarketplaceCard.vue'
+import { marketplaceCategoryImageForSlug } from '@shared/constants/home-marketplace'
 import type { MarketplaceCardVariant } from '@shared/types/marketplace-card'
 import type { StoreCategory } from '@modules/stores/types'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
@@ -20,6 +21,14 @@ const props = withDefaults(
 const { t } = useI18n()
 
 const to = computed(() => STORES_ROUTES.CATEGORY(props.category.slug))
+
+const illustration = computed(
+  () =>
+    marketplaceCategoryImageForSlug(props.category.slug) ||
+    props.category.logo ||
+    props.category.cover ||
+    '',
+)
 </script>
 
 <template>
@@ -27,8 +36,7 @@ const to = computed(() => STORES_ROUTES.CATEGORY(props.category.slug))
     :to="to"
     :title="category.name"
     :description="category.description || category.content"
-    :logo="category.logo"
-    :cover="category.cover"
+    :illustration="illustration"
     :variant="variant"
     :cta-label="t('site.stores.exploreCategory')"
     :index="index"
