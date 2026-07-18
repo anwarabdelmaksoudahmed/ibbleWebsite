@@ -849,6 +849,24 @@
             "total": "Total"
           }
         }
+      },
+      "favorites": {
+        "seoTitle": "My Favorites | Ibbil",
+        "seoDescription": "View and manage products you saved to your Ibbil wishlist.",
+        "breadcrumb": "Favorites",
+        "summaryLabel": "Favorites",
+        "errorTitle": "Could not load your favorites",
+        "errorDescription": "Something went wrong while loading your wishlist. Please try again.",
+        "emptyTitle": "No favorites yet",
+        "emptyDescription": "Save products you like from the marketplace and they will appear here.",
+        "emptySearchTitle": "No matching favorites",
+        "emptySearchDescription": "Try a different search term or clear the search to see all favorites.",
+        "clearSearch": "Clear search",
+        "browseStores": "Browse stores",
+        "filters": {
+          "label": "Search favorites",
+          "searchPlaceholder": "Search by product or store…"
+        }
       }
     }
   },

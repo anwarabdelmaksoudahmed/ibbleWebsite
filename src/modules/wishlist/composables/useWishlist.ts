@@ -136,7 +136,11 @@ export function useWishlist() {
 
   return {
     wishlist,
-    isLoading: computed(() => wishlistQuery.isPending.value),
+    isLoading: computed(
+      () =>
+        wishlistQuery.isPending.value ||
+        (wishlistQuery.isFetching.value && !wishlistQuery.isFetched.value),
+    ),
     isFetching: computed(() => wishlistQuery.isFetching.value),
     isError: computed(() => wishlistQuery.isError.value),
     error: computed(() => wishlistQuery.error.value),

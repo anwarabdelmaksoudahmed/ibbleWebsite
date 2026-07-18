@@ -20,9 +20,10 @@ const {
 
 const displayName = computed(() => user.value?.name || t('site.profile.guestName'))
 
-const isInsurance = computed(
-  () => stripLocalePrefix(route.path) === PROFILE_ROUTES.INSURANCE,
-)
+const currentProfilePath = computed(() => stripLocalePrefix(route.path))
+
+const isInsurance = computed(() => currentProfilePath.value === PROFILE_ROUTES.INSURANCE)
+const isFavourite = computed(() => currentProfilePath.value === PROFILE_ROUTES.FAVOURITE)
 
 const breadcrumbItems = computed<ProfileBreadcrumbItem[]>(() => {
   const items: ProfileBreadcrumbItem[] = [
@@ -33,6 +34,11 @@ const breadcrumbItems = computed<ProfileBreadcrumbItem[]>(() => {
     items.push(
       { label: t('site.profile.breadcrumb'), to: localePath(PROFILE_ROUTES.ROOT) },
       { label: t('site.profile.insurance.breadcrumb') },
+    )
+  } else if (isFavourite.value) {
+    items.push(
+      { label: t('site.profile.breadcrumb'), to: localePath(PROFILE_ROUTES.ROOT) },
+      { label: t('site.profile.favorites.breadcrumb') },
     )
   } else {
     items.push({ label: t('site.profile.breadcrumb') })

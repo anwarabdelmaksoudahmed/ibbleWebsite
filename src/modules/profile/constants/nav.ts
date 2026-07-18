@@ -37,6 +37,6 @@ export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
     id: 'favorites',
     icon: 'lucide:heart',
     labelKey: 'site.profile.nav.favorites',
-    to: ROUTES.STORES.ROOT,
+    to: PROFILE_ROUTES.FAVOURITE,
   },
 ]

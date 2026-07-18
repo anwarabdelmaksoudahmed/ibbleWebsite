@@ -1,3 +1,5 @@
+import type { StoreProductApiDto } from '@modules/stores/types'
+import { mapStoreProduct } from '@modules/stores/utils/mappers'
 import type {
   WishlistApiResponse,
   WishlistItemApiDto,
@@ -9,15 +11,63 @@ function resolveProductId(dto: WishlistItemApiDto): string {
   return String(dto.product_id || dto.productId || dto.product?.id || dto.id || '')
 }
 
+function emptyStoreProduct(productId: string) {
+  return {
+    id: productId,
+    storeId: '',
+    name: '',
+    description: '',
+    image: '',
+    price: 0,
+    finalPrice: 0,
+    discount: 0,
+    rating: null as number | null,
+    categoryId: '',
+    categoryName: '',
+  }
+}
+
+function toStoreProductDto(dto: WishlistItemApiDto, productId: string): StoreProductApiDto {
+  return {
+    id: productId,
+    name: dto.name || dto.product?.name || '',
+    content: dto.content || '',
+    description: dto.description || '',
+    featured_image: dto.featured_image || dto.product?.featured_image || '',
+    status: dto.status || '',
+    store_id: String(dto.store_id || ''),
+    created_at: dto.created_at || '',
+    quantity: dto.quantity ?? 0,
+    price: dto.price ?? 0,
+    sku: dto.sku || '',
+    product_images: dto.product_images ?? [],
+    product_categories: dto.product_categories ?? [],
+    discounts: dto.discounts ?? [],
+    price_info: dto.price_info ?? null,
+    stars: dto.stars ?? null,
+  }
+}
+
 function mapWishlistItem(dto: WishlistItemApiDto): WishlistItem | null {
   const productId = resolveProductId(dto)
   if (!productId) return null
 
+  const product = mapStoreProduct(toStoreProductDto(dto, productId))
+  const storeCategoryName = dto.store?.category?.name?.trim() || ''
+
+  if (!product.categoryName && storeCategoryName) {
+    product.categoryName = storeCategoryName
+  }
+
   return {
     id: String(dto.id || productId),
     productId,
-    name: (dto.product?.name || '').trim(),
-    image: dto.product?.featured_image || '',
+    name: product.name,
+    image: product.image,
+    product,
+    storeName: dto.store?.name?.trim() || '',
+    storeSlug: dto.store?.url?.trim() || '',
+    categorySlug: dto.store?.category?.slug?.trim() || '',
   }
 }
 
@@ -35,7 +85,12 @@ function extractItems(
     const nested = (data as { items?: WishlistItemApiDto[] }).items
     if (Array.isArray(nested)) return nested
   }
-  if (data && typeof data === 'object' && !Array.isArray(data) && ('product_id' in data || 'id' in data)) {
+  if (
+    data &&
+    typeof data === 'object' &&
+    !Array.isArray(data) &&
+    ('product_id' in data || 'id' in data)
+  ) {
     return [data as WishlistItemApiDto]
   }
 
@@ -66,12 +121,26 @@ export function cloneWishlist(wishlist: Wishlist): Wishlist {
   }
 }
 
+export function createPlaceholderWishlistItem(productId: string): WishlistItem {
+  const product = emptyStoreProduct(productId)
+  return {
+    id: productId,
+    productId,
+    name: '',
+    image: '',
+    product,
+    storeName: '',
+    storeSlug: '',
+    categorySlug: '',
+  }
+}
+
 export function withWishlistProduct(wishlist: Wishlist, productId: string): Wishlist {
   const next = cloneWishlist(wishlist)
   if (next.productIds.has(productId)) return next
 
   next.productIds.add(productId)
-  next.items = [...next.items, { id: productId, productId, name: '', image: '' }]
+  next.items = [...next.items, createPlaceholderWishlistItem(productId)]
   return next
 }
 

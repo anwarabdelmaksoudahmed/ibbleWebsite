@@ -1,8 +1,14 @@
+import type { StoreProduct } from '@modules/stores/types'
+
 export type WishlistItem = {
   id: string
   productId: string
   name: string
   image: string
+  product: StoreProduct
+  storeName: string
+  storeSlug: string
+  categorySlug: string
 }
 
 export type Wishlist = {

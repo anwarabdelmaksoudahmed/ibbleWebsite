@@ -849,6 +849,24 @@
             "total": "الإجمالي"
           }
         }
+      },
+      "favorites": {
+        "seoTitle": "مفضلتي | إبل",
+        "seoDescription": "عرض وإدارة المنتجات التي حفظتها في قائمة المفضلة على منصة إبل.",
+        "breadcrumb": "المفضلة",
+        "summaryLabel": "المفضلة",
+        "errorTitle": "تعذّر تحميل المفضلة",
+        "errorDescription": "حدث خطأ أثناء تحميل قائمة المفضلة. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد منتجات في المفضلة",
+        "emptyDescription": "احفظ المنتجات التي تعجبك من المتاجر وستظهر هنا.",
+        "emptySearchTitle": "لا توجد نتائج مطابقة",
+        "emptySearchDescription": "جرّب كلمة بحث أخرى أو امسح البحث لعرض كل المفضلة.",
+        "clearSearch": "مسح البحث",
+        "browseStores": "تصفّح المتاجر",
+        "filters": {
+          "label": "البحث في المفضلة",
+          "searchPlaceholder": "ابحث باسم المنتج أو المتجر…"
+        }
       }
     }
   },
