@@ -7,6 +7,8 @@ import type {
   CreateInsuranceApiResponse,
   InsuranceServiceProvidersApiResponse,
   InsuranceServiceProvidersQueryParams,
+  UserInsurancesApiResponse,
+  UserInsurancesQueryParams,
 } from '@modules/insurance/types/api.types'
 
 export class InsuranceApi {
@@ -47,6 +49,25 @@ export class InsuranceApi {
     return this.client
       .post<CreateInsuranceApiResponse>(INSURANCE_ENDPOINTS.CREATE, payload, {
         baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  listUserInsurances(
+    params: UserInsurancesQueryParams = {},
+    options?: { signal?: AbortSignal },
+  ): Promise<UserInsurancesApiResponse> {
+    return this.client
+      .get<UserInsurancesApiResponse>(INSURANCE_ENDPOINTS.USER_LIST, {
+        baseURL: this.baseUrl,
+        signal: options?.signal,
+        params: {
+          id: params.id ?? '',
+          company: params.company ?? '',
+          status: params.status ?? '',
+          page: params.page ?? 1,
+        },
         skipErrorToast: true,
       })
       .then((response) => response.data)

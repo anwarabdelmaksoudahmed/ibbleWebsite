@@ -7,6 +7,7 @@
     "edit": "تعديل",
     "create": "إنشاء",
     "search": "بحث",
+    "clearSearch": "مسح البحث",
     "loading": "جاري التحميل...",
     "noResults": "لا توجد نتائج",
     "emptyDescription": "لا يوجد محتوى للعرض حالياً.",
@@ -764,6 +765,90 @@
         "addSuccess": "تمت إضافة المنتج إلى المفضلة",
         "removeSuccess": "تمت إزالة المنتج من المفضلة",
         "alreadyFavourite": "هذا المنتج موجود بالفعل في المفضلة"
+      }
+    },
+    "profile": {
+      "seoTitle": "ملفي الشخصي | إبل",
+      "seoDescription": "إدارة حسابك في إبل، متابعة نشاطك، والوصول إلى خدماتك من مكان واحد.",
+      "breadcrumb": "ملفي الشخصي",
+      "guestName": "عضو إبل",
+      "errorTitle": "تعذّر تحميل الملف الشخصي",
+      "errorDescription": "حدث خطأ أثناء تحميل ملفك الشخصي. يرجى المحاولة مرة أخرى.",
+      "lastLogin": {
+        "value": "آخر نشاط بتاريخ {date}",
+        "unknown": "آخر نشاط غير متاح"
+      },
+      "sidebar": {
+        "label": "الشريط الجانبي للملف الشخصي"
+      },
+      "nav": {
+        "label": "تنقل الملف الشخصي",
+        "overview": "نظرة عامة",
+        "insurance": "التأمين",
+        "marketplace": "المتاجر",
+        "transport": "النقل",
+        "veterinary": "البيطرة",
+        "favorites": "المفضلة"
+      },
+      "stats": {
+        "label": "إحصائيات الحساب",
+        "orders": "الطلبات",
+        "favorites": "المفضلة",
+        "wallet": "رصيد المحفظة",
+        "insurance": "التأمين",
+        "transportation": "النقل",
+        "veterinary": "البيطرة",
+        "marketplace": "المتاجر",
+        "bookings": "الحجوزات"
+      },
+      "insurance": {
+        "seoTitle": "تأميناتي | إبل",
+        "seoDescription": "عرض وإدارة وثائق تأمين نقل الإبل الخاصة بك على منصة إبل.",
+        "breadcrumb": "التأمين",
+        "title": "تفاصيل التأمين",
+        "summaryLabel": "التأمين",
+        "insureNow": "أمّن الآن",
+        "errorTitle": "تعذّر تحميل وثائق التأمين",
+        "errorDescription": "حدث خطأ أثناء تحميل قائمة التأمين. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد وثائق تأمين حالياً",
+        "emptyDescription": "لا توجد وثائق مطابقة لهذه الفلاتر. ابدأ طلباً جديداً أو امسح الفلاتر.",
+        "clearFilters": "مسح الفلاتر",
+        "filters": {
+          "label": "تصفية وثائق التأمين",
+          "searchPlaceholder": "ابحث برقم الوثيقة…",
+          "status": "الحالة",
+          "company": "الشركة",
+          "allStatuses": "كل الحالات",
+          "allCompanies": "كل الشركات"
+        },
+        "status": {
+          "active": "سارية",
+          "expired": "غير سارية"
+        },
+        "card": {
+          "policyNumber": "رقم الوثيقة #{id}",
+          "unknownProvider": "شركة التأمين",
+          "dateRange": "من {date} إلى {date}",
+          "totalPrice": "إجمالي سعر التأمين",
+          "expand": "عرض تفاصيل الوثيقة",
+          "collapse": "إخفاء تفاصيل الوثيقة",
+          "detailsTitle": "تفاصيل الوثيقة",
+          "feesTitle": "تفاصيل الرسوم",
+          "fullName": "الاسم الكامل",
+          "phone": "الجوال",
+          "email": "البريد",
+          "address": "العنوان",
+          "iban": "رقم الآيبان",
+          "invoice": "الفاتورة PDF",
+          "policies": "وثيقة التأمين PDF",
+          "fees": {
+            "insuredAmount": "قيمة التأمين",
+            "certificateFees": "رسوم الشهادة",
+            "transportationCoverage": "تغطية النقل",
+            "taxFees": "ضريبة القيمة المضافة",
+            "total": "الإجمالي"
+          }
+        }
       }
     }
   },

@@ -4,6 +4,7 @@ import { ROUTES } from '@shared/constants/routes'
 import { useAuth } from '@modules/auth/composables/useAuth'
 import { isAuthError } from '@modules/auth/utils/errors'
 import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
+import { resolveAuthRedirect } from '@shared/utils/auth-redirect'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -84,9 +85,9 @@ async function handleSubmit() {
 
     toast.success(t('auth.loginSuccess'))
 
-    const redirect =
-      typeof route.query.redirect === 'string' ? route.query.redirect : localePath(ROUTES.HOME)
-    await navigateTo(redirect)
+    await navigateTo(
+      resolveAuthRedirect(route.query.redirect, localePath(ROUTES.HOME)),
+    )
   } catch (error) {
     if (isAuthError(error)) {
       formError.value = error.message

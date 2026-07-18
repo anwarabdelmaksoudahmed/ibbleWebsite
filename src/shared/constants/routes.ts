@@ -39,6 +39,7 @@ export const ROUTES = {
     PREFERENCES: '/settings/preferences',
     SECURITY: '/settings/security',
   },
+  PROFILE: '/profile',
 } as const
 
 export const GUEST_ROUTES = [
@@ -54,4 +55,5 @@ export const PROTECTED_ROUTE_PREFIXES = [
   '/orders',
   '/customers',
   '/settings',
+  '/profile',
 ] as const

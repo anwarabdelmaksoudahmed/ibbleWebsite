@@ -90,7 +90,7 @@ function onSearch() {
 
           <template v-if="authenticated">
             <NuxtLinkLocale
-              :to="ROUTES.HOME"
+              :to="ROUTES.PROFILE"
               class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
             >
               <Icon name="lucide:user" class="h-4 w-4" />

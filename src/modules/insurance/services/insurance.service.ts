@@ -1,7 +1,11 @@
 import { InsuranceApi } from '@modules/insurance/api/insurance.api'
-import type { InsuranceServiceProvider } from '@modules/insurance/types'
-import type { CreateInsuranceApiRequest, CreateInsuranceApiResponse } from '@modules/insurance/types/api.types'
-import { mapInsuranceServiceProviders } from '@modules/insurance/utils/mappers'
+import type { InsuranceServiceProvider, UserInsurancesPage } from '@modules/insurance/types'
+import type {
+  CreateInsuranceApiRequest,
+  CreateInsuranceApiResponse,
+  UserInsurancesQueryParams,
+} from '@modules/insurance/types/api.types'
+import { mapInsuranceServiceProviders, mapUserInsurancesPage } from '@modules/insurance/utils/mappers'
 import { unwrapCreateInsuranceResponse } from '@modules/insurance/utils/create-insurance-payload'
 import { distanceKmToMeters } from '@modules/insurance/utils/pricing'
 
@@ -45,6 +49,14 @@ export class InsuranceService {
   async createInsurance(payload: CreateInsuranceApiRequest): Promise<CreateInsuranceApiResponse> {
     const response = await this.api.createInsurance(payload)
     return unwrapCreateInsuranceResponse(response)
+  }
+
+  async listUserInsurances(
+    params: UserInsurancesQueryParams = {},
+    options?: { signal?: AbortSignal },
+  ): Promise<UserInsurancesPage> {
+    const response = await this.api.listUserInsurances(params, options)
+    return mapUserInsurancesPage(response)
   }
 }
 

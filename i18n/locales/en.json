@@ -7,6 +7,7 @@
     "edit": "Edit",
     "create": "Create",
     "search": "Search",
+    "clearSearch": "Clear search",
     "loading": "Loading...",
     "noResults": "No results found",
     "emptyDescription": "There is nothing to display here yet.",
@@ -764,6 +765,90 @@
         "addSuccess": "Product added to wishlist",
         "removeSuccess": "Product removed from wishlist",
         "alreadyFavourite": "This product is already in your wishlist"
+      }
+    },
+    "profile": {
+      "seoTitle": "My Profile | Ibbil",
+      "seoDescription": "Manage your Ibbil account, view activity, and access your services from one place.",
+      "breadcrumb": "My profile",
+      "guestName": "Ibbil member",
+      "errorTitle": "Could not load your profile",
+      "errorDescription": "Something went wrong while loading your profile. Please try again.",
+      "lastLogin": {
+        "value": "Last activity {date}",
+        "unknown": "Last activity unavailable"
+      },
+      "sidebar": {
+        "label": "Profile sidebar"
+      },
+      "nav": {
+        "label": "Profile navigation",
+        "overview": "Overview",
+        "insurance": "Insurance",
+        "marketplace": "Marketplace",
+        "transport": "Transportation",
+        "veterinary": "Veterinary",
+        "favorites": "Favorites"
+      },
+      "stats": {
+        "label": "Account statistics",
+        "orders": "Orders",
+        "favorites": "Favorites",
+        "wallet": "Wallet balance",
+        "insurance": "Insurance",
+        "transportation": "Transportation",
+        "veterinary": "Veterinary",
+        "marketplace": "Marketplace",
+        "bookings": "Bookings"
+      },
+      "insurance": {
+        "seoTitle": "My Insurance | Ibbil",
+        "seoDescription": "View and manage your camel transport insurance policies on Ibbil.",
+        "breadcrumb": "Insurance",
+        "title": "Insurance details",
+        "summaryLabel": "Insurance",
+        "insureNow": "Insure now",
+        "errorTitle": "Could not load your policies",
+        "errorDescription": "Something went wrong while loading your insurance list. Please try again.",
+        "emptyTitle": "No insurance policies yet",
+        "emptyDescription": "You have no policies matching these filters. Start a new request or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter insurance policies",
+          "searchPlaceholder": "Search by policy number…",
+          "status": "Status",
+          "company": "Company",
+          "allStatuses": "All statuses",
+          "allCompanies": "All companies"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired"
+        },
+        "card": {
+          "policyNumber": "Policy #{id}",
+          "unknownProvider": "Insurance provider",
+          "dateRange": "From {date} to {date}",
+          "totalPrice": "Total insurance price",
+          "expand": "Show policy details",
+          "collapse": "Hide policy details",
+          "detailsTitle": "Policy details",
+          "feesTitle": "Fee breakdown",
+          "fullName": "Full name",
+          "phone": "Phone",
+          "email": "Email",
+          "address": "Address",
+          "iban": "IBAN",
+          "invoice": "Invoice PDF",
+          "policies": "Policy PDF",
+          "fees": {
+            "insuredAmount": "Insured amount",
+            "certificateFees": "Certificate fees",
+            "transportationCoverage": "Transport coverage",
+            "taxFees": "VAT",
+            "total": "Total"
+          }
+        }
       }
     }
   },

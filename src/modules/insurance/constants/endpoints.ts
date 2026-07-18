@@ -6,4 +6,6 @@ export const INSURANCE_ENDPOINTS = {
   SERVICE_PROVIDERS: 'insuranceServiceProvider',
   /** Create an insurance request and start card / wallet payment. */
   CREATE: 'insurances',
+  /** List the authenticated user's insurance policies. */
+  USER_LIST: 'insurances/user',
 } as const

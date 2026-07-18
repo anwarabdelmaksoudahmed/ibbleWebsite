@@ -43,3 +43,50 @@ export type InsuranceServiceProvider = {
   /** Original API DTO — required when posting `selectedCompany` on create. */
   raw: InsuranceServiceProviderApiDto
 }
+
+export type UserInsuranceStatus = 'active' | 'expired'
+
+export type UserInsuranceFees = {
+  insuredAmount: number
+  certificateFees: number
+  transportationCoverage: number
+  taxFees: number
+  total: number
+}
+
+export type UserInsuranceProvider = {
+  id: number
+  name: string
+  image: string
+  isActive: boolean
+}
+
+export type UserInsurance = {
+  id: number
+  fullName: string
+  address: string
+  phone: string
+  email: string
+  /** Coverage date (YYYY-MM-DD). */
+  date: string
+  distanceMeters: number
+  iban: string
+  totalPrice: number
+  nationalId: string
+  transportationCoverage: number
+  invoiceUrl: string | null
+  policiesUrl: string | null
+  fees: UserInsuranceFees
+  createdAt: string
+  updatedAt: string
+  provider: UserInsuranceProvider
+  status: UserInsuranceStatus
+}
+
+export type UserInsurancesPage = {
+  items: UserInsurance[]
+  count: number
+  totalPages: number
+  currentPage: number
+  itemsPerPage: number
+}

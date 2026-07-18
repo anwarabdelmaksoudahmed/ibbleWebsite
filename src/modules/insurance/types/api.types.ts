@@ -126,3 +126,66 @@ export type CreateInsuranceCardApiResponse = {
 export type CreateInsuranceApiResponse =
   | CreateInsuranceCardApiResponse
   | CreateInsuranceRecordApiResponse
+
+export type UserInsuranceFeesApiDto = {
+  total_insurance_price: number
+  certificate_fees: number
+  transportaion_coverage: number
+  tax_fees: number
+  total: number
+}
+
+export type UserInsuranceProviderApiDto = {
+  id: number
+  name: string
+  doc: string | null
+  image: string
+  is_active: boolean
+  options: InsuranceProviderOptionsApiDto
+  termsAndConditions: string
+  created_at: string
+  updated_at: string
+}
+
+export type UserInsuranceApiDto = {
+  id: number
+  full_name: string
+  address: string
+  phone: string
+  email: string
+  date: string
+  distance: number
+  iban: string
+  doc: string | null
+  total_price: number
+  user_id: number
+  national_id: string
+  transportation_coverage: number
+  invoice: string | null
+  policies: string | null
+  fees_details: UserInsuranceFeesApiDto
+  created_at: string
+  updated_at: string
+  service_provider: UserInsuranceProviderApiDto
+}
+
+export type UserInsurancesMetaApiDto = {
+  itemCount: number
+  totalPages: number
+  currentPage: string | number
+  itemsPerPage: string | number
+  startItemInPage: number
+}
+
+export type UserInsurancesApiResponse = {
+  count: number
+  meta: UserInsurancesMetaApiDto
+  data: UserInsuranceApiDto[]
+}
+
+export type UserInsurancesQueryParams = {
+  id?: string
+  company?: string
+  status?: string
+  page?: number
+}
