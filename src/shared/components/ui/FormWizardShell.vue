@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { StepperStep } from '@shared/components/ui/BaseStepper.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     steps: StepperStep[]
     currentStep: number
@@ -10,10 +10,13 @@ const props = withDefaults(
     showPrev?: boolean
     loading?: boolean
     progressLabel?: string
+    /** Hide the forward chevron (e.g. final pay/submit step). */
+    hideNextArrow?: boolean
   }>(),
   {
     showPrev: false,
     loading: false,
+    hideNextArrow: false,
   },
 )
 
@@ -60,7 +63,7 @@ const emit = defineEmits<{
           @click="emit('next')"
         >
           {{ nextLabel }}
-          <DirectionalArrow animated />
+          <DirectionalArrow v-if="!hideNextArrow" animated />
         </BaseButton>
       </div>
     </div>

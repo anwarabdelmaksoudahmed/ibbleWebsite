@@ -125,12 +125,7 @@ function onInput(event: Event) {
         <BaseLoader size="sm" />
       </div>
 
-      <div
-        v-if="hasSuffix"
-        class="absolute top-1/2 -translate-y-1/2 end-2.5 flex items-center"
-      >
-        <slot name="suffix" />
-      </div>
+   
     </div>
 
     <p v-if="hint && !error" :id="`${inputId}-hint`" class="text-xs text-foreground-muted">

@@ -4,4 +4,6 @@ export const INSURANCE_ENDPOINTS = {
     `camel/findbychipnumber/${encodeURIComponent(serial)}`,
   /** List active insurance service providers with pricing for a trip. */
   SERVICE_PROVIDERS: 'insuranceServiceProvider',
+  /** Create an insurance request and start card / wallet payment. */
+  CREATE: 'insurances',
 } as const

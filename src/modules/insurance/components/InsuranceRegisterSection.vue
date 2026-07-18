@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import CheckoutWalletPinModal from '@modules/checkout/components/CheckoutWalletPinModal.vue'
 import InsuranceCustomerStep from '@modules/insurance/components/InsuranceCustomerStep.vue'
+import InsurancePaymentStep from '@modules/insurance/components/InsurancePaymentStep.vue'
 import InsurancePricingStep from '@modules/insurance/components/InsurancePricingStep.vue'
 import InsuranceShipmentStep from '@modules/insurance/components/InsuranceShipmentStep.vue'
 import { INSURANCE_ROUTES } from '@modules/insurance/constants/routes'
+import { useInsurancePayment } from '@modules/insurance/composables/useInsurancePayment'
 import { useInsuranceRegisterWizard } from '@modules/insurance/composables/useInsuranceRegisterWizard'
+import { useCheckoutWallets } from '@modules/checkout/composables/useCheckoutWallets'
 import { ROUTES } from '@shared/constants/routes'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+const toast = useToast()
 
 const {
   steps,
@@ -30,15 +35,23 @@ const {
   providersLoading,
   providersError,
   selectedProviderId,
+  selectedProvider,
   providerSelectionError,
+  payment,
+  paymentErrors,
   isFirstStep,
   isLastStep,
   next,
   prev,
   setNationalId,
+  setIban,
+  setPaymentDataAccurate,
+  setPaymentTermsAccepted,
+  setPaymentMethod,
   touchCustomerField,
   touchCargoDraftField,
   touchShipmentTripField,
+  touchPaymentField,
   setCargoValue,
   setDistanceKm,
   selectProvider,
@@ -48,7 +61,15 @@ const {
   editCargoItem,
   removeCargoItem,
   resetCargoDraft,
+  clearPersistedDraft,
 } = useInsuranceRegisterWizard()
+
+const { placeInsurancePayment } = useInsurancePayment()
+const { primaryWallet, isLoading: walletsLoading, refetch: refetchWallets } = useCheckoutWallets()
+
+const submitting = ref(false)
+const pinModalOpen = ref(false)
+const pinServerError = ref('')
 
 const breadcrumbItems = computed(() => [
   { label: t('site.nav.home'), to: localePath(ROUTES.HOME) },
@@ -56,9 +77,158 @@ const breadcrumbItems = computed(() => [
   { label: t('site.insurance.register.breadcrumb') },
 ])
 
+const nextLabel = computed(() =>
+  isLastStep.value
+    ? t('site.insurance.register.pay')
+    : t('site.insurance.register.next'),
+)
+
+const payableTotal = computed(() => selectedProvider.value?.quote.total ?? 0)
+
+const walletDisabled = computed(() => {
+  if (walletsLoading.value || !primaryWallet.value) return true
+  return primaryWallet.value.balance < payableTotal.value
+})
+
+const paymentSummary = computed(() => {
+  const provider = selectedProvider.value
+  if (!provider) return undefined
+
+  return {
+    title: provider.name,
+    items: [
+      {
+        label: t('site.insurance.register.pricing.coverage'),
+        amount: provider.quote.coverage,
+      },
+      {
+        label: t('site.insurance.register.pricing.certificateFees'),
+        amount: provider.quote.certificateFees,
+      },
+      {
+        label: t('site.insurance.register.pricing.vat', { percent: provider.quote.taxPercent }),
+        amount: provider.quote.vat,
+      },
+    ],
+    total: provider.quote.total,
+    currency: 'SAR',
+  }
+})
+
+watch(
+  () => walletDisabled.value,
+  (disabled) => {
+    if (disabled && payment.paymentMethod === 'wallet') {
+      setPaymentMethod('card')
+    }
+  },
+)
+
 async function onNext() {
-  if (isLastStep.value) return
-  await next()
+  if (!isLastStep.value) {
+    await next()
+    return
+  }
+
+  await submitPayment()
+}
+
+async function submitPayment() {
+  const valid = await next()
+  if (!valid) return
+
+  if (!selectedProvider.value || payment.paymentMethod === '') return
+
+  if (payment.paymentMethod === 'wallet') {
+    if (walletDisabled.value) {
+      toast.warning(t('site.insurance.register.payment.walletInsufficientBalance'))
+      return
+    }
+    pinServerError.value = ''
+    pinModalOpen.value = true
+    return
+  }
+
+  await submitCardPayment()
+}
+
+async function submitCardPayment() {
+  const provider = selectedProvider.value
+  if (!provider || payment.paymentMethod !== 'card') return
+
+  submitting.value = true
+
+  try {
+    const result = await placeInsurancePayment({
+      customer,
+      shipment,
+      provider,
+      iban: payment.iban,
+      paymentMethod: 'card',
+      camelStatusLabel: t('site.insurance.register.form.cargoStatusExists'),
+      summary: paymentSummary.value,
+    })
+
+    if (result.success) {
+      clearPersistedDraft()
+      toast.success(result.message || t('site.insurance.register.payment.success'))
+      await navigateTo(localePath(INSURANCE_ROUTES.ROOT))
+      return
+    }
+
+    if (result.status !== 'cancelled') {
+      toast.error(result.message || t('site.insurance.register.payment.failed'))
+    }
+  } catch {
+    toast.error(t('site.insurance.register.payment.failed'))
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function onWalletPinSubmit(pinCode: string) {
+  const provider = selectedProvider.value
+  if (!provider) return
+
+  submitting.value = true
+  pinServerError.value = ''
+
+  try {
+    const result = await placeInsurancePayment({
+      customer,
+      shipment,
+      provider,
+      iban: payment.iban,
+      paymentMethod: 'wallet',
+      pinCode,
+      camelStatusLabel: t('site.insurance.register.form.cargoStatusExists'),
+      summary: paymentSummary.value,
+    })
+
+    if (result.success) {
+      pinModalOpen.value = false
+      clearPersistedDraft()
+      toast.success(result.message || t('site.insurance.register.payment.success'))
+      await refetchWallets()
+      await navigateTo(localePath(INSURANCE_ROUTES.ROOT))
+      return
+    }
+
+    const pinError =
+      result.fieldErrors?.PIN_code?.[0]
+      ?? result.fieldErrors?.pin_code?.[0]
+
+    if (pinError) {
+      pinServerError.value = pinError
+      return
+    }
+
+    toast.error(result.message || t('site.insurance.register.payment.failed'))
+  } catch {
+    toast.error(t('site.insurance.register.payment.failed'))
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -67,21 +237,14 @@ async function onNext() {
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-6 lg:py-12">
       <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
-      <!-- <header class="mb-8 text-center">
-        <h1 class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl">
-          {{ t('site.insurance.register.title') }}
-        </h1>
-        <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-foreground-muted sm:text-base">
-          {{ t('site.insurance.register.subtitle') }}
-        </p>
-      </header> -->
-
       <FormWizardShell
         :steps="steps"
         :current-step="currentStep"
-        :next-label="t('site.insurance.register.next')"
+        :next-label="nextLabel"
         :prev-label="t('site.insurance.register.prev')"
         :show-prev="!isFirstStep"
+        :hide-next-arrow="isLastStep"
+        :loading="submitting"
         :progress-label="t('site.insurance.register.progressLabel')"
         @next="onNext"
         @prev="prev"
@@ -132,18 +295,30 @@ async function onNext() {
           @retry="loadProviders(true)"
         />
 
-        <div v-else class="py-6 text-center">
-          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ibbil-green/10 text-ibbil-green">
-            <Icon name="lucide:construction" class="h-7 w-7" aria-hidden="true" />
-          </div>
-          <h2 class="text-lg font-bold text-ibbil-green sm:text-xl">
-            {{ t(`site.insurance.register.placeholders.${activeStep}.title`) }}
-          </h2>
-          <p class="mx-auto mt-2 max-w-md text-sm leading-relaxed text-foreground-muted">
-            {{ t(`site.insurance.register.placeholders.${activeStep}.description`) }}
-          </p>
-        </div>
+        <InsurancePaymentStep
+          v-else-if="activeStep === 'payment'"
+          :provider="selectedProvider"
+          :customer="customer"
+          :model="payment"
+          :errors="paymentErrors"
+          :wallet="primaryWallet"
+          :wallet-loading="walletsLoading"
+          :wallet-disabled="walletDisabled"
+          @update:iban="setIban"
+          @update:data-accurate="setPaymentDataAccurate"
+          @update:terms-accepted="setPaymentTermsAccepted"
+          @update:payment-method="setPaymentMethod"
+          @field-blur="touchPaymentField"
+        />
       </FormWizardShell>
     </div>
+
+    <CheckoutWalletPinModal
+      v-model:open="pinModalOpen"
+      :submitting="submitting"
+      :total="payableTotal"
+      :server-error="pinServerError"
+      @submit="onWalletPinSubmit"
+    />
   </section>
 </template>

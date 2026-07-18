@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { REGEX } from '@shared/constants/regex'
+import { nationalIdSchema } from '@shared/schemas/national-id.schema'
 
 export const emailSchema = z
   .string()
@@ -41,11 +42,7 @@ export const registerSchema = z
 
 export const phoneRegisterSchema = z
   .object({
-    nationalId: z
-      .string()
-      .trim()
-      .min(1, 'auth.validation.nationalIdRequired')
-      .regex(/^\d{10,14}$/, 'auth.validation.nationalIdInvalid'),
+    nationalId: nationalIdSchema,
     phone: z
       .string()
       .trim()

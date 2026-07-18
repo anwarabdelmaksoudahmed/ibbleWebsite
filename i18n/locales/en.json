@@ -136,6 +136,9 @@
       "phoneInvalid": "Enter a valid phone number (9–15 digits)",
       "countryCodeRequired": "Country code is required",
       "nationalIdRequired": "National ID is required",
+      "nationalIdDigits": "National ID must contain digits only",
+      "nationalIdMin": "National ID must be at least 10 digits",
+      "nationalIdMax": "National ID must be at most 14 digits",
       "nationalIdInvalid": "Enter a valid national ID (10–14 digits)",
       "nameMin": "Name must be at least 2 characters",
       "usernameMin": "Username must be at least 2 characters",
@@ -377,10 +380,11 @@
         "progressLabel": "Insurance request steps",
         "next": "Next",
         "prev": "Back",
+        "pay": "Complete payment",
         "steps": {
           "customer": "Customer details",
           "shipment": "Shipment information",
-          "pricing": "Pricing",
+          "pricing": "Shipping companies",
           "payment": "Payment"
         },
         "form": {
@@ -418,7 +422,9 @@
           "distanceKmPlaceholder": "Calculated automatically from the map",
           "kmUnit": "km",
           "currency": "SAR",
-          "totalCargoValue": "Total insured cargo value"
+          "totalCargoValue": "Total insured cargo value",
+          "iban": "Insured account number (IBAN)",
+          "ibanPlaceholder": "SAxx xxxx xxxx xxxx xxxx xxxx"
         },
         "sections": {
           "cargo": "Insured cargo",
@@ -427,7 +433,37 @@
           "trip": "Trip details",
           "tripHint": "Set the transport date, then pick departure and arrival on the map to calculate distance automatically.",
           "pricing": "Choose an insurance provider",
-          "pricingHint": "Compare available offers and select the provider that best fits your shipment."
+          "pricingHint": "Compare available offers and select the provider that best fits your shipment.",
+          "payment": "Review and payment",
+          "paymentHint": "Review the policy summary, confirm the declarations, then choose a payment method to finish."
+        },
+        "payment": {
+          "companyTitle": "Insurance company details",
+          "quoteTitle": "Pricing details",
+          "grandTotal": "Total",
+          "totalIncludes": "This includes all fees",
+          "policyHolderId": "Policyholder ID",
+          "coverageLabel": "Coverage",
+          "coverageDescription": "All-risk land transport coverage (Institute Cargo Clause A)",
+          "deductibleLabel": "Deductible",
+          "dataAccurate": "I hereby declare that all information in this insurance application is correct and that the attached documents are valid.",
+          "termsPrefix": "I hereby agree to all",
+          "methodsTitle": "Payment method",
+          "methodsHint": "Choose a secure payment method to issue your policy.",
+          "methods": {
+            "card": "Credit / debit card",
+            "cardHint": "Pay via a secure gateway — card details are never stored on our servers.",
+            "wallet": "E-wallet",
+            "walletHint": "Pay using your Ibbil wallet balance.",
+            "walletBalance": "Available balance: {balance} {currency}",
+            "walletLoading": "Loading wallet balance…",
+            "walletInsufficient": "Insufficient wallet balance for this request"
+          },
+          "walletInsufficientBalance": "Your wallet balance is not enough to complete payment.",
+          "success": "Your insurance request was submitted successfully.",
+          "failed": "Payment could not be completed. Please try again.",
+          "missingProviderTitle": "No insurance provider selected",
+          "missingProviderDescription": "Go back to the pricing step and select a provider before completing payment."
         },
         "pricing": {
           "loading": "Loading insurance offers…",
@@ -456,7 +492,8 @@
           "transportDate": "Select the planned transport date",
           "origin": "Pick a result from the suggestions for accurate distance",
           "destination": "Pick a result from the suggestions for accurate distance",
-          "distanceKm": "You can adjust the distance manually if needed"
+          "distanceKm": "You can adjust the distance manually if needed",
+          "iban": "Enter a Saudi IBAN starting with SA (24 characters)"
         },
         "route": {
           "mapLabel": "Trip route",
@@ -493,13 +530,12 @@
           "destinationMax": "Arrival point must be at most 255 characters",
           "distanceRequired": "Trip distance is required",
           "distanceInvalid": "Enter a valid distance greater than zero",
-          "providerRequired": "Select an insurance provider to continue"
-        },
-        "placeholders": {
-          "payment": {
-            "title": "Payment",
-            "description": "This step is under development. You will soon be able to complete payment and receive your policy."
-          }
+          "providerRequired": "Select an insurance provider to continue",
+          "ibanRequired": "IBAN is required",
+          "ibanInvalid": "Enter a valid Saudi IBAN",
+          "dataAccurateRequired": "You must confirm the data is accurate to continue",
+          "termsRequired": "You must accept the terms and conditions to continue",
+          "paymentMethodRequired": "Select a payment method to continue"
         }
       }
     },

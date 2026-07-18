@@ -1,6 +1,8 @@
 import { InsuranceApi } from '@modules/insurance/api/insurance.api'
 import type { InsuranceServiceProvider } from '@modules/insurance/types'
+import type { CreateInsuranceApiRequest, CreateInsuranceApiResponse } from '@modules/insurance/types/api.types'
 import { mapInsuranceServiceProviders } from '@modules/insurance/utils/mappers'
+import { unwrapCreateInsuranceResponse } from '@modules/insurance/utils/create-insurance-payload'
 import { distanceKmToMeters } from '@modules/insurance/utils/pricing'
 
 export class InsuranceService {
@@ -38,6 +40,11 @@ export class InsuranceService {
     })
 
     return mapInsuranceServiceProviders(response.data ?? [], input.totalPrice)
+  }
+
+  async createInsurance(payload: CreateInsuranceApiRequest): Promise<CreateInsuranceApiResponse> {
+    const response = await this.api.createInsurance(payload)
+    return unwrapCreateInsuranceResponse(response)
   }
 }
 

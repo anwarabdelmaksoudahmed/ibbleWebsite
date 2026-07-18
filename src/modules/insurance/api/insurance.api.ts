@@ -3,6 +3,8 @@ import { getHttpClient } from '@core/api/http/client'
 import { INSURANCE_ENDPOINTS } from '@modules/insurance/constants/endpoints'
 import type {
   CheckChipNumberApiResponse,
+  CreateInsuranceApiRequest,
+  CreateInsuranceApiResponse,
   InsuranceServiceProvidersApiResponse,
   InsuranceServiceProvidersQueryParams,
 } from '@modules/insurance/types/api.types'
@@ -36,6 +38,15 @@ export class InsuranceApi {
           distance: params.distance,
           totalPrice: params.totalPrice,
         },
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  createInsurance(payload: CreateInsuranceApiRequest): Promise<CreateInsuranceApiResponse> {
+    return this.client
+      .post<CreateInsuranceApiResponse>(INSURANCE_ENDPOINTS.CREATE, payload, {
+        baseURL: this.baseUrl,
         skipErrorToast: true,
       })
       .then((response) => response.data)

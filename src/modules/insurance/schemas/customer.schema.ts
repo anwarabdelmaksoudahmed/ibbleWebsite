@@ -1,12 +1,9 @@
 import { z } from 'zod'
 import { emailSchema } from '@shared/schemas/auth.schema'
+import { nationalIdSchema } from '@shared/schemas/national-id.schema'
 
 export const insuranceCustomerSchema = z.object({
-  nationalId: z
-    .string()
-    .trim()
-    .min(1, 'auth.validation.nationalIdRequired')
-    .regex(/^\d{10,14}$/, 'auth.validation.nationalIdInvalid'),
+  nationalId: nationalIdSchema,
   name: z
     .string()
     .trim()

@@ -51,6 +51,7 @@ export function mapInsuranceServiceProvider(
     termsAndConditions: dto.termsAndConditions?.trim() ?? '',
     pricingRates,
     quote: buildProviderQuote(options, pricingRates, insuredAmount),
+    raw: dto,
   }
 }
 

@@ -8,6 +8,12 @@ import {
   type InsuranceCustomerFormValues,
 } from '@modules/insurance/schemas/customer.schema'
 import {
+  insurancePaymentFieldSchemas,
+  type InsurancePaymentField,
+  type InsurancePaymentFormValues,
+  type InsurancePaymentMethodId,
+} from '@modules/insurance/schemas/payment.schema'
+import {
   insuranceCargoDraftSchema,
   insuranceShipmentSchema,
   type InsuranceCargoDraftValues,
@@ -15,6 +21,8 @@ import {
   type InsuranceShipmentFormValues,
   type InsuranceShipmentTripField,
 } from '@modules/insurance/schemas/shipment.schema'
+import { sanitizeIbanInput } from '@shared/utils/iban'
+import { sanitizeNationalIdInput } from '@shared/utils/national-id'
 import {
   INSURANCE_REGISTER_STEPS,
   type InsuranceRegisterStep,
@@ -48,6 +56,13 @@ const SHIPMENT_TRIP_FIELDS = [
   'destination',
   'distanceKm',
 ] as const satisfies readonly InsuranceShipmentTripField[]
+
+const PAYMENT_FIELDS = [
+  'iban',
+  'dataAccurate',
+  'termsAccepted',
+  'paymentMethod',
+] as const satisfies readonly InsurancePaymentField[]
 
 export type ChipDraftStatus =
   | 'idle'
@@ -84,6 +99,15 @@ function createEmptyShipmentForm(): InsuranceShipmentFormValues {
   }
 }
 
+function createEmptyPaymentForm(): InsurancePaymentFormValues {
+  return {
+    iban: '',
+    dataAccurate: false,
+    termsAccepted: false,
+    paymentMethod: '',
+  }
+}
+
 export function useInsuranceRegisterWizard() {
   const { t } = useI18n()
   const { user } = useAuth()
@@ -111,6 +135,10 @@ export function useInsuranceRegisterWizard() {
   const selectedProviderId = ref<number | null>(null)
   const providerSelectionError = ref<string | undefined>()
   const lastProvidersQueryKey = ref('')
+
+  const payment = reactive<InsurancePaymentFormValues>(createEmptyPaymentForm())
+  const paymentErrors = reactive<Partial<Record<InsurancePaymentField, string>>>({})
+  const touchedPayment = reactive<Partial<Record<InsurancePaymentField, boolean>>>({})
 
   const steps = computed(() =>
     INSURANCE_REGISTER_STEPS.map((key) => ({
@@ -184,6 +212,10 @@ export function useInsuranceRegisterWizard() {
     Object.assign(cargoDraft, draft.cargoDraft)
     editingCargoId.value = draft.editingCargoId
     selectedProviderId.value = draft.selectedProviderId
+    payment.iban = draft.payment.iban
+    payment.paymentMethod = draft.payment.paymentMethod
+    payment.dataAccurate = false
+    payment.termsAccepted = false
 
     // Native date inputs ignore/break when value is before `min` (today).
     const todayLocal = formatLocalDate(new Date())
@@ -213,6 +245,10 @@ export function useInsuranceRegisterWizard() {
       cargoDraft: { ...cargoDraft },
       editingCargoId: editingCargoId.value,
       selectedProviderId: selectedProviderId.value,
+      payment: {
+        iban: payment.iban,
+        paymentMethod: payment.paymentMethod,
+      },
     }
   }
 
@@ -247,7 +283,7 @@ export function useInsuranceRegisterWizard() {
   watch(user, prefillFromUser)
 
   watch(
-    [currentStep, customer, shipment, cargoDraft, editingCargoId, selectedProviderId],
+    [currentStep, customer, shipment, cargoDraft, editingCargoId, selectedProviderId, payment],
     () => persistDraft(),
     { deep: true },
   )
@@ -570,10 +606,40 @@ export function useInsuranceRegisterWizard() {
     return true
   }
 
+  function validatePaymentField(field: InsurancePaymentField) {
+    const result = insurancePaymentFieldSchemas[field].safeParse(payment[field])
+    paymentErrors[field] = result.success ? undefined : t(result.error.issues[0]!.message)
+  }
+
+  function validateAllPaymentFields(): boolean {
+    if (selectedProviderId.value == null || !selectedProvider.value) {
+      providerSelectionError.value = t('site.insurance.register.validation.providerRequired')
+      return false
+    }
+
+    for (const field of PAYMENT_FIELDS) {
+      touchedPayment[field] = true
+      validatePaymentField(field)
+    }
+    return PAYMENT_FIELDS.every((field) => !paymentErrors[field])
+  }
+
+  for (const field of PAYMENT_FIELDS) {
+    watch(
+      () => payment[field],
+      () => {
+        if (touchedPayment[field] || paymentErrors[field]) {
+          validatePaymentField(field)
+        }
+      },
+    )
+  }
+
   async function validateCurrentStep(): Promise<boolean> {
     if (activeStep.value === 'customer') return validateAllCustomerFields()
     if (activeStep.value === 'shipment') return validateAllShipmentFields()
     if (activeStep.value === 'pricing') return validateProviderSelection()
+    if (activeStep.value === 'payment') return validateAllPaymentFields()
     return true
   }
 
@@ -593,13 +659,35 @@ export function useInsuranceRegisterWizard() {
   watch(
     activeStep,
     (step) => {
-      if (step === 'pricing') void loadProviders()
+      if (step === 'pricing' || step === 'payment') void loadProviders()
     },
     { immediate: true },
   )
 
   function setNationalId(value: string | number) {
-    customer.nationalId = String(value).replace(/\D/g, '').slice(0, 14)
+    customer.nationalId = sanitizeNationalIdInput(value)
+  }
+
+  function setIban(value: string) {
+    payment.iban = sanitizeIbanInput(value)
+  }
+
+  function setPaymentDataAccurate(value: boolean) {
+    payment.dataAccurate = value
+    touchedPayment.dataAccurate = true
+    validatePaymentField('dataAccurate')
+  }
+
+  function setPaymentTermsAccepted(value: boolean) {
+    payment.termsAccepted = value
+    touchedPayment.termsAccepted = true
+    validatePaymentField('termsAccepted')
+  }
+
+  function setPaymentMethod(value: InsurancePaymentMethodId) {
+    payment.paymentMethod = value
+    touchedPayment.paymentMethod = true
+    validatePaymentField('paymentMethod')
   }
 
   function touchCustomerField(field: keyof InsuranceCustomerFormValues) {
@@ -615,6 +703,11 @@ export function useInsuranceRegisterWizard() {
   function touchShipmentTripField(field: InsuranceShipmentTripField) {
     touchedShipmentTrip[field] = true
     validateShipmentTripField(field)
+  }
+
+  function touchPaymentField(field: InsurancePaymentField) {
+    touchedPayment[field] = true
+    validatePaymentField(field)
   }
 
   return {
@@ -640,14 +733,21 @@ export function useInsuranceRegisterWizard() {
     selectedProviderId,
     selectedProvider,
     providerSelectionError,
+    payment,
+    paymentErrors,
     isFirstStep,
     isLastStep,
     next,
     prev,
     setNationalId,
+    setIban,
+    setPaymentDataAccurate,
+    setPaymentTermsAccepted,
+    setPaymentMethod,
     touchCustomerField,
     touchCargoDraftField,
     touchShipmentTripField,
+    touchPaymentField,
     setCargoValue,
     setDistanceKm,
     selectProvider,

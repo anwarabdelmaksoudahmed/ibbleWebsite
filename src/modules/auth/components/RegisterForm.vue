@@ -5,6 +5,7 @@ import { useAuth } from '@modules/auth/composables/useAuth'
 import { isAuthError } from '@modules/auth/utils/errors'
 import { DEFAULT_COUNTRY_CODE, findCountryByApiCode } from '@shared/constants/country-codes'
 import { savePendingRegistration } from '@modules/auth/utils/pending-registration'
+import { sanitizeNationalIdInput } from '@shared/utils/national-id'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -90,10 +91,9 @@ function validateField(field: keyof typeof form) {
   }
 }
 
-function setDigitsOnly(field: 'nationalId', value: string | number, maxLength: number) {
-  const cleaned = String(value).replace(/\D/g, '').slice(0, maxLength)
-  form[field] = cleaned
-  if (touched[field]) validateField(field)
+function setNationalId(value: string | number) {
+  form.nationalId = sanitizeNationalIdInput(value)
+  if (touched.nationalId) validateField('nationalId')
 }
 
 function mapApiFieldErrors(apiFieldErrors: Record<string, string[]>) {
@@ -218,7 +218,7 @@ async function handleSubmit() {
             autocomplete="off"
             maxlength="14"
             required
-            @update:model-value="setDigitsOnly('nationalId', $event, 14)"
+            @update:model-value="setNationalId($event)"
             @blur="validateField('nationalId')"
           />
 

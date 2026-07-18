@@ -19,10 +19,13 @@ const { t } = useI18n()
     <div class="grid gap-4 sm:grid-cols-2">
       <BaseInput
         :model-value="model.nationalId"
+        type="text"
         inputmode="numeric"
         autocomplete="off"
+        maxlength="14"
         :label="t('site.insurance.register.form.nationalId')"
         :placeholder="t('site.insurance.register.form.nationalIdPlaceholder')"
+        :hint="t('auth.hints.nationalId')"
         :error="errors.nationalId"
         required
         @update:model-value="emit('update:nationalId', $event)"

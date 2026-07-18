@@ -94,13 +94,7 @@ const heroSlides: HeroSlide[] = [
                 </p>
 
                 <div class="hero-fade-in flex flex-wrap gap-2.5 pt-1">
-                  <NuxtLinkLocale
-                    :to="ROUTES.AUTH.LOGIN"
-                    class="inline-flex items-center gap-2 rounded-lg bg-ibbil-gold px-4 py-2.5 text-sm font-bold text-ibbil-green-dark shadow-md shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-ibbil-gold-hover"
-                  >
-                    {{ t('auth.login') }}
-                    <DirectionalArrow />
-                  </NuxtLinkLocale>
+              
                   <NuxtLinkLocale
                     to="/services"
                     class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"

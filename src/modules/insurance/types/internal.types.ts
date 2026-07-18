@@ -1,3 +1,5 @@
+import type { InsuranceServiceProviderApiDto } from '@modules/insurance/types/api.types'
+
 export type InsurancePricingRate = {
   id: number
   from: number
@@ -38,4 +40,6 @@ export type InsuranceServiceProvider = {
   termsAndConditions: string
   pricingRates: InsurancePricingRate[]
   quote: InsuranceProviderQuote
+  /** Original API DTO — required when posting `selectedCompany` on create. */
+  raw: InsuranceServiceProviderApiDto
 }

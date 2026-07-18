@@ -92,10 +92,10 @@ function onChange(event: Event) {
         </span>
       </span>
       <span
-        v-if="label"
+        v-if="label || $slots.label"
         :class="cn('select-none text-sm leading-snug text-foreground-muted', labelClass)"
       >
-        {{ label }}
+        <slot name="label">{{ label }}</slot>
       </span>
     </label>
     <p

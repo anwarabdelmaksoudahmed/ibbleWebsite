@@ -50,3 +50,79 @@ export type InsuranceServiceProvidersQueryParams = {
   distance: number
   totalPrice: number
 }
+
+export type CreateInsuranceCamelApiDto = {
+  chip_number: string
+  value: string
+  status: string
+  color: string
+}
+
+export type CreateInsuranceApiRequest = {
+  country_code: string
+  national_id: string
+  phone: string
+  email: string
+  address: string
+  full_name: string
+  camels: CreateInsuranceCamelApiDto[]
+  startText: string
+  endText: string
+  /** Trip distance in meters. */
+  distance: number
+  date: string
+  /** Total insured cargo value (SAR). */
+  totalFeesPackages: number
+  selectedCompany: InsuranceServiceProviderApiDto
+  service_provider_id: number
+  iban: string
+  payment_method_id: number
+  /** Required for wallet payments. */
+  PIN_code?: string
+}
+
+/** Wallet (and some success) responses return the created insurance record. */
+export type CreateInsuranceRecordApiResponse = {
+  id?: number
+  message?: string
+  full_name?: string
+  total_price?: number
+  invoice?: string | null
+  policies?: string | null
+  fees_details?: {
+    total_insurance_price?: number
+    certificate_fees?: number
+    transportaion_coverage?: number
+    tax_fees?: number
+    total?: number
+  }
+  [key: string]: unknown
+}
+
+/**
+ * Card payments return HyperPay initiation fields (same shape as marketplace checkout).
+ */
+export type CreateInsuranceCardApiResponse = {
+  message?: string
+  amount: number
+  currency: string
+  payment_type: string
+  merchant_transaction_id: number | string
+  description: string
+  module: string
+  payment_method_id: number | string
+  address: {
+    customer_email: string
+    country: string
+    state: string
+    street1: string
+    postcode: string
+    first_name: string
+    last_name: string
+  }
+  invoice?: unknown | null
+}
+
+export type CreateInsuranceApiResponse =
+  | CreateInsuranceCardApiResponse
+  | CreateInsuranceRecordApiResponse
