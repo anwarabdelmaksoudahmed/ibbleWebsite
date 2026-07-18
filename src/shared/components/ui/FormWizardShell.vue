@@ -24,7 +24,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl" data-form-wizard>
+  <div class="mx-auto w-full" data-form-wizard>
     <BaseStepper
       :steps="steps"
       :current-step="currentStep"

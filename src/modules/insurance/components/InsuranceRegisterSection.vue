@@ -67,14 +67,14 @@ async function onNext() {
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-6 lg:py-12">
       <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
-      <header class="mb-8 text-center">
+      <!-- <header class="mb-8 text-center">
         <h1 class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl">
           {{ t('site.insurance.register.title') }}
         </h1>
         <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-foreground-muted sm:text-base">
           {{ t('site.insurance.register.subtitle') }}
         </p>
-      </header>
+      </header> -->
 
       <FormWizardShell
         :steps="steps"
