@@ -1,4 +1,3 @@
-import { ROUTES } from '@shared/constants/routes'
 import { PROFILE_ROUTES } from '@modules/profile/constants/routes'
 import type { ProfileNavItem } from '@modules/profile/types'
 
@@ -19,7 +18,7 @@ export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
     id: 'marketplace',
     icon: 'lucide:store',
     labelKey: 'site.profile.nav.marketplace',
-    to: ROUTES.STORES.ROOT,
+    to: PROFILE_ROUTES.MARKETPLACE,
   },
   {
     id: 'transport',

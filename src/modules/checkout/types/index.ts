@@ -7,4 +7,9 @@ export type {
   PaymentMethodId,
   DiscountDraft,
   CreateOrderInput,
+  CustomerOrder,
+  CustomerOrderProduct,
+  CustomerOrderStore,
+  CustomerOrderAddress,
+  CustomerOrdersPage,
 } from './internal.types'

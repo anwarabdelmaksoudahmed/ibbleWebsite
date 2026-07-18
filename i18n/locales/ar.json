@@ -785,7 +785,7 @@
         "label": "تنقل الملف الشخصي",
         "overview": "نظرة عامة",
         "insurance": "التأمين",
-        "marketplace": "المتاجر",
+        "marketplace": "طلباتي",
         "transport": "النقل",
         "veterinary": "البيطرة",
         "favorites": "المفضلة"
@@ -800,6 +800,53 @@
         "veterinary": "البيطرة",
         "marketplace": "المتاجر",
         "bookings": "الحجوزات"
+      },
+      "marketplace": {
+        "seoTitle": "طلباتي | إبل",
+        "seoDescription": "عرض ومتابعة طلبات المتاجر الخاصة بك على منصة إبل.",
+        "breadcrumb": "طلباتي",
+        "summaryLabel": "الطلبات",
+        "browseStores": "تصفّح المتاجر",
+        "errorTitle": "تعذّر تحميل الطلبات",
+        "errorDescription": "حدث خطأ أثناء تحميل قائمة الطلبات. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد طلبات حالياً",
+        "emptyDescription": "لا توجد طلبات مطابقة لهذه الفلاتر. تصفّح المتاجر أو امسح الفلاتر.",
+        "clearFilters": "مسح الفلاتر",
+        "filters": {
+          "label": "تصفية الطلبات",
+          "searchPlaceholder": "ابحث برقم الطلب أو المتجر أو المنتج…",
+          "status": "الحالة",
+          "allStatuses": "كل الحالات"
+        },
+        "status": {
+          "pending": "قيد الانتظار",
+          "processing": "قيد المعالجة",
+          "shipped": "تم الشحن",
+          "delivered": "تم التسليم",
+          "completed": "مكتمل",
+          "cancelled": "ملغي"
+        },
+        "card": {
+          "orderNumber": "طلب {num}",
+          "unknownStore": "متجر",
+          "orderedAt": "بتاريخ {date}",
+          "productsCount": "{count} منتج",
+          "productsTitle": "منتجات الطلب",
+          "detailsTitle": "تفاصيل الطلب",
+          "noProducts": "لا توجد منتجات في هذا الطلب",
+          "qty": "الكمية: {qty}",
+          "subtotal": "المجموع الفرعي",
+          "discount": "الخصم",
+          "tax": "الضريبة",
+          "shipping": "الشحن",
+          "total": "الإجمالي",
+          "recipient": "المستلم",
+          "phone": "الجوال",
+          "address": "العنوان",
+          "invoice": "الفاتورة",
+          "expand": "عرض تفاصيل الطلب",
+          "collapse": "إخفاء تفاصيل الطلب"
+        }
       },
       "insurance": {
         "seoTitle": "تأميناتي | إبل",

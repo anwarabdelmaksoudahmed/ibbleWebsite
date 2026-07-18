@@ -785,7 +785,7 @@
         "label": "Profile navigation",
         "overview": "Overview",
         "insurance": "Insurance",
-        "marketplace": "Marketplace",
+        "marketplace": "My orders",
         "transport": "Transportation",
         "veterinary": "Veterinary",
         "favorites": "Favorites"
@@ -800,6 +800,53 @@
         "veterinary": "Veterinary",
         "marketplace": "Marketplace",
         "bookings": "Bookings"
+      },
+      "marketplace": {
+        "seoTitle": "My Orders | Ibbil",
+        "seoDescription": "View and track your marketplace orders on Ibbil.",
+        "breadcrumb": "My orders",
+        "summaryLabel": "Orders",
+        "browseStores": "Browse stores",
+        "errorTitle": "Could not load your orders",
+        "errorDescription": "Something went wrong while loading your orders. Please try again.",
+        "emptyTitle": "No orders yet",
+        "emptyDescription": "You have no orders matching these filters. Browse the marketplace or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter orders",
+          "searchPlaceholder": "Search by order number, store, or product…",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "status": {
+          "pending": "Pending",
+          "processing": "Processing",
+          "shipped": "Shipped",
+          "delivered": "Delivered",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "card": {
+          "orderNumber": "Order {num}",
+          "unknownStore": "Store",
+          "orderedAt": "On {date}",
+          "productsCount": "{count} products",
+          "productsTitle": "Order products",
+          "detailsTitle": "Order details",
+          "noProducts": "No products in this order",
+          "qty": "Qty: {qty}",
+          "subtotal": "Subtotal",
+          "discount": "Discount",
+          "tax": "Tax",
+          "shipping": "Shipping",
+          "total": "Total",
+          "recipient": "Recipient",
+          "phone": "Phone",
+          "address": "Address",
+          "invoice": "Invoice",
+          "expand": "Show order details",
+          "collapse": "Hide order details"
+        }
       },
       "insurance": {
         "seoTitle": "My Insurance | Ibbil",

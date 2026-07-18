@@ -61,3 +61,57 @@ export type CreateOrderInput = {
   pinCode?: string
   couponCode?: string
 }
+
+export type CustomerOrderProduct = {
+  id: string
+  qty: number
+  price: number
+  name: string
+  description: string
+  image: string
+  productId: string
+}
+
+export type CustomerOrderStore = {
+  id: string
+  name: string
+  logo: string
+  url: string
+  cityName: string
+  categoryName: string
+  categorySlug: string
+}
+
+export type CustomerOrderAddress = {
+  name: string
+  phone: string
+  countryCode: string
+  email: string
+  address: string
+}
+
+export type CustomerOrder = {
+  id: string
+  orderNum: string
+  status: string
+  totalAmount: number
+  taxAmount: number
+  shippingAmount: number
+  discountAmount: number
+  subTotal: number
+  couponCode: string
+  invoiceUrl: string | null
+  createdAt: string
+  address: CustomerOrderAddress
+  store: CustomerOrderStore
+  products: CustomerOrderProduct[]
+  productsCount: number
+}
+
+export type CustomerOrdersPage = {
+  items: CustomerOrder[]
+  count: number
+  totalPages: number
+  currentPage: number
+  itemsPerPage: number
+}

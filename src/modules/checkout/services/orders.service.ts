@@ -1,13 +1,15 @@
 import { OrdersApi } from '@modules/checkout/api/orders.api'
 import { CHECKOUT_PAYMENT_METHOD_IDS } from '@modules/checkout/constants/payment-methods'
-import type { CreateOrderInput } from '@modules/checkout/types'
+import type { CreateOrderInput, CustomerOrdersPage } from '@modules/checkout/types'
 import type {
   CardOrderApiResponse,
   CreateOrderApiRequest,
   CreateOrderApiResponse,
+  CustomerOrdersQueryParams,
   WalletOrderApiResponse,
 } from '@modules/checkout/types/api.types'
 import type { InitiatePaymentApiRequest } from '@shared/payment/types/api.types'
+import { mapCustomerOrdersPage } from '@modules/checkout/utils/mappers'
 
 export function isCardOrderResponse(
   order: CreateOrderApiResponse,
@@ -60,6 +62,14 @@ export class OrdersService {
 
     const response = await this.api.create(payload)
     return unwrapOrderResponse(response)
+  }
+
+  async listCustomerOrders(
+    params: CustomerOrdersQueryParams = {},
+    options?: { signal?: AbortSignal },
+  ): Promise<CustomerOrdersPage> {
+    const response = await this.api.listCustomerOrders(params, options)
+    return mapCustomerOrdersPage(response)
   }
 }
 

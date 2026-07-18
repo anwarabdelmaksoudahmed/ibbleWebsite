@@ -112,3 +112,81 @@ export type CardOrderApiResponse = {
 
 /** Card checkout returns HyperPay fields; wallet checkout returns message + invoice only. */
 export type CreateOrderApiResponse = CardOrderApiResponse | WalletOrderApiResponse
+
+export type CustomerOrderProductApiDto = {
+  id: string | number
+  qty?: string | number | null
+  price?: string | number | null
+  tax_amount?: string | number | null
+  product_name?: string | null
+  product_description?: string | null
+  product_image?: string | null
+  options?: unknown
+  product?: {
+    id?: string | number
+    featured_image?: string | null
+    price?: string | number | null
+    [key: string]: unknown
+  } | null
+}
+
+export type CustomerOrderStoreApiDto = {
+  id?: string | number
+  name?: string | null
+  logo?: string | null
+  url?: string | null
+  city?: { id?: string | number; name?: string | null } | null
+  country?: { id?: string | number; name?: string | null; flag?: string | null } | null
+  category?: { id?: string | number; name?: string | null; slug?: string | null } | null
+}
+
+export type CustomerOrderAddressApiDto = {
+  name?: string | null
+  phone?: string | null
+  country_code?: string | null
+  email?: string | null
+  address?: string | null
+  country?: { id?: string | number; flag?: string | null; code?: string | null } | null
+  city?: { id?: string | number; name?: string | null } | null
+}
+
+export type CustomerOrderApiDto = {
+  id: string | number
+  order_num?: string | null
+  shipping_option?: string | null
+  shipping_method?: string | null
+  status?: string | null
+  total_amount?: string | number | null
+  tax_amount?: string | number | null
+  shipping_amount?: string | number | null
+  description?: string | null
+  coupon_code?: string | null
+  discount_amount?: string | number | null
+  sub_total?: string | number | null
+  is_confirmed?: number | boolean | null
+  is_finished?: number | boolean | null
+  invoice?: string | null
+  payment_id?: string | number | null
+  order_address?: CustomerOrderAddressApiDto | null
+  created_at?: string | null
+  store?: CustomerOrderStoreApiDto | null
+  order_products?: CustomerOrderProductApiDto[] | null
+}
+
+export type CustomerOrdersApiMeta = {
+  totalItems?: number
+  itemCount?: number
+  itemsPerPage?: number
+  totalPages?: number
+  currentPage?: number
+}
+
+export type CustomerOrdersApiResponse = {
+  data?: CustomerOrderApiDto[]
+  meta?: CustomerOrdersApiMeta
+}
+
+export type CustomerOrdersQueryParams = {
+  page?: number
+  status?: string
+}

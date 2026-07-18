@@ -5,6 +5,9 @@ import type {
   CountryApiDto,
   CustomerAddressApiDto,
   CustomerAddressesApiResponse,
+  CustomerOrderApiDto,
+  CustomerOrderProductApiDto,
+  CustomerOrdersApiResponse,
   WalletApiDto,
   WalletsApiResponse,
 } from '@modules/checkout/types/api.types'
@@ -13,6 +16,11 @@ import type {
   CheckoutCity,
   CheckoutCountry,
   CustomerAddress,
+  CustomerOrder,
+  CustomerOrderAddress,
+  CustomerOrderProduct,
+  CustomerOrderStore,
+  CustomerOrdersPage,
   UserWallet,
 } from '@modules/checkout/types/internal.types'
 import type { CreateCustomerAddressApiRequest } from '@modules/checkout/types/api.types'
@@ -154,5 +162,77 @@ export function addressToFormInput(address: CustomerAddress): AddressFormInput {
     cityId: address.cityId,
     zipCode: address.zipCode,
     isDefault: address.isDefault,
+  }
+}
+
+function toNumber(value: string | number | null | undefined): number {
+  const n = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(n) ? n : 0
+}
+
+function mapOrderProduct(dto: CustomerOrderProductApiDto): CustomerOrderProduct {
+  return {
+    id: toId(dto.id),
+    qty: toNumber(dto.qty),
+    price: toNumber(dto.price),
+    name: (dto.product_name || '').trim(),
+    description: (dto.product_description || '').trim(),
+    image: (dto.product_image || dto.product?.featured_image || '').trim(),
+    productId: toId(dto.product?.id),
+  }
+}
+
+function mapOrderStore(dto: CustomerOrderApiDto['store']): CustomerOrderStore {
+  return {
+    id: toId(dto?.id),
+    name: (dto?.name || '').trim(),
+    logo: (dto?.logo || '').trim(),
+    url: (dto?.url || '').trim(),
+    cityName: (dto?.city?.name || '').trim(),
+    categoryName: (dto?.category?.name || '').trim(),
+    categorySlug: (dto?.category?.slug || '').trim(),
+  }
+}
+
+function mapOrderAddress(dto: CustomerOrderApiDto['order_address']): CustomerOrderAddress {
+  return {
+    name: (dto?.name || '').trim(),
+    phone: (dto?.phone || '').trim(),
+    countryCode: (dto?.country_code || '').trim(),
+    email: (dto?.email || '').trim(),
+    address: (dto?.address || '').trim(),
+  }
+}
+
+export function mapCustomerOrder(dto: CustomerOrderApiDto): CustomerOrder {
+  const products = (dto.order_products ?? []).map(mapOrderProduct)
+
+  return {
+    id: toId(dto.id),
+    orderNum: (dto.order_num || `#${dto.id}`).trim(),
+    status: (dto.status || 'pending').trim().toLowerCase(),
+    totalAmount: toNumber(dto.total_amount),
+    taxAmount: toNumber(dto.tax_amount),
+    shippingAmount: toNumber(dto.shipping_amount),
+    discountAmount: toNumber(dto.discount_amount),
+    subTotal: toNumber(dto.sub_total),
+    couponCode: (dto.coupon_code || '').trim(),
+    invoiceUrl: dto.invoice?.trim() || null,
+    createdAt: (dto.created_at || '').trim(),
+    address: mapOrderAddress(dto.order_address),
+    store: mapOrderStore(dto.store),
+    products,
+    productsCount: products.reduce((sum, product) => sum + product.qty, 0),
+  }
+}
+
+export function mapCustomerOrdersPage(response: CustomerOrdersApiResponse): CustomerOrdersPage {
+  const meta = response.meta
+  return {
+    items: (response.data ?? []).map(mapCustomerOrder),
+    count: toNumber(meta?.totalItems ?? meta?.itemCount),
+    totalPages: Math.max(1, toNumber(meta?.totalPages) || 1),
+    currentPage: Math.max(1, toNumber(meta?.currentPage) || 1),
+    itemsPerPage: Math.max(1, toNumber(meta?.itemsPerPage) || 10),
   }
 }
