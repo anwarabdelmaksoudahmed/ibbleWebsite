@@ -1,3 +1,9 @@
+import { isApiError, normalizeApiError } from '@core/api/http/errors'
+import {
+  CONTENT_FALLBACK_LOCALE,
+  isAuthBlockedStatus,
+  shouldRetryWithContentFallback,
+} from '@core/api/http/content-locale'
 import { CartApi } from '@modules/cart/api/cart.api'
 import type { Cart, CartItemInput } from '@modules/cart/types'
 import { createEmptyCart, mapCartResponse } from '@modules/cart/utils/mappers'
@@ -37,6 +43,19 @@ function resolveMutationResult(
   }
 }
 
+/** Retry marketplace cart calls with AR when EN content negotiation fails. */
+async function withContentLocaleFallback<T>(request: (apiLocale?: string) => Promise<T>): Promise<T> {
+  try {
+    return await request()
+  } catch (error) {
+    const apiError = isApiError(error) ? error : normalizeApiError(error)
+    if (isAuthBlockedStatus(apiError.statusCode) || !shouldRetryWithContentFallback()) {
+      throw error
+    }
+    return request(CONTENT_FALLBACK_LOCALE)
+  }
+}
+
 export class CartService {
   private readonly api: CartApi
 
@@ -45,24 +64,32 @@ export class CartService {
   }
 
   async getCart(): Promise<Cart> {
-    const response = await this.api.getCart()
+    const response = await withContentLocaleFallback((apiLocale) =>
+      this.api.getCart(apiLocale ? { apiLocale } : undefined),
+    )
     return mapCartResponse(response)
   }
 
   async addToCart(input: CartItemInput): Promise<CartMutationResult> {
     const quantity = Math.max(1, Math.floor(input.quantity ?? 1))
-    const response = await this.api.upsertCart(buildUpsertPayload(input, quantity))
+    const response = await withContentLocaleFallback((apiLocale) =>
+      this.api.upsertCart(buildUpsertPayload(input, quantity), apiLocale ? { apiLocale } : undefined),
+    )
     return resolveMutationResult(response)
   }
 
   async updateQuantity(input: CartItemInput & { quantity: number }): Promise<CartMutationResult> {
     const quantity = Math.max(1, Math.floor(input.quantity))
-    const response = await this.api.upsertCart(buildUpsertPayload(input, quantity))
+    const response = await withContentLocaleFallback((apiLocale) =>
+      this.api.upsertCart(buildUpsertPayload(input, quantity), apiLocale ? { apiLocale } : undefined),
+    )
     return resolveMutationResult(response)
   }
 
   async removeFromCart(input: CartItemInput): Promise<CartMutationResult> {
-    const response = await this.api.removeProduct(String(input.productId))
+    const response = await withContentLocaleFallback((apiLocale) =>
+      this.api.removeProduct(String(input.productId), apiLocale ? { apiLocale } : undefined),
+    )
     return {
       cart: createEmptyCart(),
       message: response.message,
@@ -74,17 +101,22 @@ export class CartService {
   async restoreStoreGroup(store: Cart['stores'][number]): Promise<void> {
     if (!store.storeId || store.products.length === 0) return
 
-    await this.api.upsertCart({
-      carts: [
+    await withContentLocaleFallback((apiLocale) =>
+      this.api.upsertCart(
         {
-          store_info: { id: store.storeId },
-          store_products: store.products.map((product) => ({
-            id: product.id,
-            quantityInCart: product.quantity,
-          })),
+          carts: [
+            {
+              store_info: { id: store.storeId },
+              store_products: store.products.map((product) => ({
+                id: product.id,
+                quantityInCart: product.quantity,
+              })),
+            },
+          ],
         },
-      ],
-    })
+        apiLocale ? { apiLocale } : undefined,
+      ),
+    )
   }
 }
 

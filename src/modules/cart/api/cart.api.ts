@@ -1,4 +1,4 @@
-import type { AxiosInstance } from 'axios'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { CART_ENDPOINTS } from '@modules/cart/constants/endpoints'
 import type {
@@ -15,21 +15,23 @@ export class CartApi {
     this.client = client ?? getHttpClient()
   }
 
-  getCart(): Promise<CartApiResponse> {
-    return this.client.get<CartApiResponse>(CART_ENDPOINTS.BASE).then((response) => response.data)
+  getCart(config?: AxiosRequestConfig): Promise<CartApiResponse> {
+    return this.client
+      .get<CartApiResponse>(CART_ENDPOINTS.BASE, config)
+      .then((response) => response.data)
   }
 
   /** POST `/v1/carts` — set absolute quantity for a cart line. */
-  upsertCart(payload: CartAddApiRequest): Promise<CartMutationApiResponse> {
+  upsertCart(payload: CartAddApiRequest, config?: AxiosRequestConfig): Promise<CartMutationApiResponse> {
     return this.client
-      .post<CartMutationApiResponse>(CART_ENDPOINTS.BASE, payload)
+      .post<CartMutationApiResponse>(CART_ENDPOINTS.BASE, payload, config)
       .then((response) => response.data)
   }
 
   /** DELETE `/v1/carts/:productId` — remove a product from the cart. */
-  removeProduct(productId: string): Promise<CartDeleteApiResponse> {
+  removeProduct(productId: string, config?: AxiosRequestConfig): Promise<CartDeleteApiResponse> {
     return this.client
-      .delete<CartDeleteApiResponse>(CART_ENDPOINTS.byProductId(productId))
+      .delete<CartDeleteApiResponse>(CART_ENDPOINTS.byProductId(productId), config)
       .then((response) => response.data)
   }
 }

@@ -11,7 +11,7 @@ const emit = defineEmits<{
   submit: [pinCode: string]
 }>()
 
-const { t, n } = useI18n()
+const { t } = useI18n()
 
 const PIN_MAX_LENGTH = 5
 
@@ -78,12 +78,11 @@ function onSubmit() {
 
       <p class="rounded-xl border border-ibbil-green/10 bg-ibbil-green/[0.04] px-4 py-3 text-sm">
         <span class="text-foreground-muted">{{ t('site.commerce.checkout.total') }}:</span>
-        <span class="ms-1 font-extrabold tabular-nums text-ibbil-green">
-          {{ n(total) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
-        </span>
+        <MoneyAmount
+          :amount="total"
+          class="ms-1 font-extrabold text-ibbil-green"
+          symbol-class="text-xs font-semibold text-foreground-muted"
+        />
       </p>
 
       <div class="space-y-1.5">

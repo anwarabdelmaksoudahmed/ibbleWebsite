@@ -66,8 +66,6 @@ const breadcrumbItems = computed(() => {
 
 const hasDiscount = computed(() => props.product.finalPrice < props.product.price)
 
-const formattedPrice = computed(() => n(props.product.finalPrice))
-
 const formattedOriginal = computed(() => n(props.product.price))
 
 const discountPercent = computed(() => {
@@ -219,10 +217,11 @@ async function onAddToCart() {
                 {{ t('site.stores.productDetail.currentPrice') }}
               </p>
               <div class="flex flex-wrap items-baseline gap-2">
-                <span class="text-2xl font-extrabold text-ibbil-green sm:text-3xl">
-                  {{ formattedPrice }}
-                  <span class="text-base font-semibold">{{ t('site.stores.profile.currency') }}</span>
-                </span>
+                <MoneyAmount
+                  :amount="product.finalPrice"
+                  class="text-2xl font-extrabold text-ibbil-green sm:text-3xl"
+                  symbol-class="text-base font-semibold"
+                />
                 <span
                   v-if="hasDiscount"
                   class="text-sm text-foreground-muted line-through"

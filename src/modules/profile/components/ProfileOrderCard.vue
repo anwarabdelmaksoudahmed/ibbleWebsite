@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CustomerOrder } from '@modules/checkout/types'
 import type { ComponentVariant } from '@shared/types/ui'
-import { formatInsuranceMoney } from '@modules/insurance/utils/format-money'
 import { cn } from '@shared/utils/cn'
 
 const props = defineProps<{
@@ -13,7 +12,7 @@ const emit = defineEmits<{
   toggle: []
 }>()
 
-const { t, te, locale } = useI18n()
+const { t, te } = useI18n()
 
 const statusVariant = computed<ComponentVariant>(() => {
   switch (props.item.status) {
@@ -35,14 +34,6 @@ const statusLabel = computed(() => {
   const key = `site.profile.marketplace.status.${props.item.status}`
   return te(key) ? t(key) : props.item.status
 })
-
-const currencyLabel = computed(() => t('site.stores.profile.currency'))
-
-function money(amount: number) {
-  return formatInsuranceMoney(amount, currencyLabel.value, locale.value)
-}
-
-const totalLabel = computed(() => money(props.item.totalAmount))
 
 const productsPreview = computed(() => props.item.products.slice(0, 3))
 const extraProductsCount = computed(() =>
@@ -97,7 +88,7 @@ const extraProductsCount = computed(() =>
           <span class="font-medium text-foreground-muted">
             {{ t('site.profile.marketplace.card.total') }}:
           </span>
-          {{ totalLabel }}
+          <MoneyAmount :amount="item.totalAmount" class="ms-1" />
         </p>
       </div>
 
@@ -195,10 +186,10 @@ const extraProductsCount = computed(() =>
                 <p class="truncate text-sm font-medium text-foreground">
                   {{ product.name || '—' }}
                 </p>
-                <p class="mt-0.5 text-xs text-foreground-muted">
-                  {{ t('site.profile.marketplace.card.qty', { qty: product.qty }) }}
-                  ·
-                  {{ money(product.price) }}
+                <p class="mt-0.5 inline-flex flex-wrap items-center gap-x-1 text-xs text-foreground-muted">
+                  <span>{{ t('site.profile.marketplace.card.qty', { qty: product.qty }) }}</span>
+                  <span>·</span>
+                  <MoneyAmount :amount="product.price" />
                 </p>
               </div>
             </li>
@@ -218,23 +209,33 @@ const extraProductsCount = computed(() =>
           <dl class="space-y-2.5 text-sm">
             <div class="flex justify-between gap-3">
               <dt class="text-foreground-muted">{{ t('site.profile.marketplace.card.subtotal') }}</dt>
-              <dd class="font-medium tabular-nums text-foreground">{{ money(item.subTotal) }}</dd>
+              <dd class="font-medium text-foreground">
+                <MoneyAmount :amount="item.subTotal" />
+              </dd>
             </div>
             <div class="flex justify-between gap-3">
               <dt class="text-foreground-muted">{{ t('site.profile.marketplace.card.discount') }}</dt>
-              <dd class="font-medium tabular-nums text-foreground">{{ money(item.discountAmount) }}</dd>
+              <dd class="font-medium text-foreground">
+                <MoneyAmount :amount="item.discountAmount" />
+              </dd>
             </div>
             <div class="flex justify-between gap-3">
               <dt class="text-foreground-muted">{{ t('site.profile.marketplace.card.tax') }}</dt>
-              <dd class="font-medium tabular-nums text-foreground">{{ money(item.taxAmount) }}</dd>
+              <dd class="font-medium text-foreground">
+                <MoneyAmount :amount="item.taxAmount" />
+              </dd>
             </div>
             <div class="flex justify-between gap-3">
               <dt class="text-foreground-muted">{{ t('site.profile.marketplace.card.shipping') }}</dt>
-              <dd class="font-medium tabular-nums text-foreground">{{ money(item.shippingAmount) }}</dd>
+              <dd class="font-medium text-foreground">
+                <MoneyAmount :amount="item.shippingAmount" />
+              </dd>
             </div>
             <div class="flex justify-between gap-3 border-t border-border pt-2.5">
               <dt class="font-semibold text-ibbil-green">{{ t('site.profile.marketplace.card.total') }}</dt>
-              <dd class="font-bold tabular-nums text-ibbil-green">{{ totalLabel }}</dd>
+              <dd class="font-bold text-ibbil-green">
+                <MoneyAmount :amount="item.totalAmount" />
+              </dd>
             </div>
             <div class="flex justify-between gap-3 pt-1">
               <dt class="text-foreground-muted">{{ t('site.profile.marketplace.card.recipient') }}</dt>

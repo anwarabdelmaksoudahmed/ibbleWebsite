@@ -9,7 +9,7 @@ const props = defineProps<{
   itemCount: number
 }>()
 
-const { t, n } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 
 const storeCount = computed(() => props.cart.stores.length)
@@ -51,12 +51,11 @@ async function onCheckoutAll() {
           <span class="text-sm font-semibold text-foreground-muted">
             {{ t('site.commerce.cart.grandTotal') }}
           </span>
-          <p class="text-xl font-extrabold tabular-nums text-ibbil-green">
-            {{ n(grandTotal) }}
-            <span class="text-sm font-semibold text-foreground-muted">
-              {{ t('site.stores.profile.currency') }}
-            </span>
-          </p>
+          <MoneyAmount
+            :amount="grandTotal"
+            class="text-xl font-extrabold text-ibbil-green"
+            symbol-class="text-sm font-semibold text-foreground-muted"
+          />
         </div>
       </div>
     </div>

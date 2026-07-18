@@ -109,6 +109,7 @@ export function useProfile() {
 
   return {
     user,
+    authenticated,
     logout,
     stats,
     formatStatValue,

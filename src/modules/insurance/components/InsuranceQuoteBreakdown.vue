@@ -1,38 +1,27 @@
 <script setup lang="ts">
 import type { InsuranceProviderQuote } from '@modules/insurance/types'
-import { formatInsuranceMoney } from '@modules/insurance/utils/format-money'
 
 const props = defineProps<{
   quote: InsuranceProviderQuote
 }>()
 
-const { t, locale } = useI18n()
-
-const numberLocale = computed(() => (locale.value === 'ar' ? 'ar' : 'en'))
-
-function money(amount: number) {
-  return formatInsuranceMoney(
-    amount,
-    t('site.insurance.register.form.currency'),
-    numberLocale.value,
-  )
-}
+const { t } = useI18n()
 
 const rows = computed(() => [
   {
     key: 'coverage',
     label: t('site.insurance.register.pricing.coverage'),
-    value: money(props.quote.coverage),
+    amount: props.quote.coverage,
   },
   {
     key: 'vat',
     label: t('site.insurance.register.pricing.vat', { percent: props.quote.taxPercent }),
-    value: money(props.quote.vat),
+    amount: props.quote.vat,
   },
   {
     key: 'certificateFees',
     label: t('site.insurance.register.pricing.certificateFees'),
-    value: money(props.quote.certificateFees),
+    amount: props.quote.certificateFees,
   },
 ])
 </script>
@@ -57,8 +46,8 @@ const rows = computed(() => [
         <dt class="min-w-0 leading-snug text-foreground-muted">
           {{ row.label }}
         </dt>
-        <dd class="shrink-0 font-bold tabular-nums text-foreground" dir="ltr">
-          {{ row.value }}
+        <dd class="shrink-0 font-bold text-foreground">
+          <MoneyAmount :amount="row.amount" />
         </dd>
       </div>
     </dl>
@@ -68,9 +57,10 @@ const rows = computed(() => [
         <p class="text-sm font-extrabold sm:text-base">
           {{ t('site.insurance.register.payment.grandTotal') }}
         </p>
-        <p class="text-base font-extrabold tabular-nums sm:text-lg" dir="ltr">
-          {{ money(quote.total) }}
-        </p>
+        <MoneyAmount
+          :amount="quote.total"
+          class="text-base font-extrabold sm:text-lg"
+        />
       </div>
       <p class="mt-1.5 text-xs leading-relaxed text-white/80">
         {{ t('site.insurance.register.payment.totalIncludes') }}

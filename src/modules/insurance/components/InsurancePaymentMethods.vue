@@ -33,7 +33,6 @@ const methods = computed(() => [
       : props.wallet
         ? t('site.insurance.register.payment.methods.walletBalance', {
             balance: n(props.wallet.balance),
-            currency: t('site.insurance.register.form.currency'),
           })
         : t('site.insurance.register.payment.methods.walletHint'),
     icon: 'lucide:wallet',
@@ -106,6 +105,13 @@ function selectMethod(id: InsurancePaymentMethodId) {
           <p class="mt-1 text-xs leading-relaxed text-foreground-muted">
             <span v-if="method.id === 'wallet' && walletLoading">
               {{ t('site.insurance.register.payment.methods.walletLoading') }}
+            </span>
+            <span
+              v-else-if="method.id === 'wallet' && wallet && !walletDisabled"
+              class="inline-flex items-center"
+            >
+              {{ method.description }}
+              <SaudiRiyalSymbol class="ms-0.5 text-[0.95em]" />
             </span>
             <span v-else>{{ method.description }}</span>
           </p>

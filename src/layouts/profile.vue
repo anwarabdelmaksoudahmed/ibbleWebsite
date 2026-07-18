@@ -10,6 +10,7 @@ const route = useRoute()
 
 const {
   user,
+  authenticated,
   logout,
   lastLoginLabel,
   sidebarNav,
@@ -18,7 +19,14 @@ const {
   refetch,
 } = useProfile()
 
-const displayName = computed(() => user.value?.name || t('site.profile.guestName'))
+const isUserPending = computed(() => authenticated.value && !user.value)
+const displayName = computed(() => {
+  const name = user.value?.name?.trim()
+  if (name) return name
+  // Avoid flashing the guest label while the session is authenticated but identity is still hydrating.
+  if (isUserPending.value) return ''
+  return t('site.profile.guestName')
+})
 
 const currentProfilePath = computed(() => stripLocalePrefix(route.path))
 
@@ -93,7 +101,7 @@ async function onLogout() {
                 :avatar="user?.avatar ?? null"
                 :last-login-label="lastLoginLabel"
                 :nav-items="sidebarNav"
-                :loading="isLoading && !user"
+                :loading="isUserPending || (isLoading && !user)"
                 @logout="onLogout"
               />
             </aside>

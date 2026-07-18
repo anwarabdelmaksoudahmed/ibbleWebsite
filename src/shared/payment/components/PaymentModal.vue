@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@shared/utils/cn'
+import { SAUDI_RIYAL_CURRENCY_CODE } from '@shared/constants/currency'
 
 const {
   isOpen,
@@ -21,12 +22,15 @@ const { t, locale } = useI18n()
 const widgetContainerRef = ref<HTMLElement | null>(null)
 const isWidgetMounted = ref(false)
 
-const displayCurrency = computed(() => summary.value?.currency ?? 'SAR')
+const displayCurrency = computed(() => summary.value?.currency ?? SAUDI_RIYAL_CURRENCY_CODE)
+const isSaudiRiyal = computed(
+  () => displayCurrency.value.toUpperCase() === SAUDI_RIYAL_CURRENCY_CODE,
+)
 
 function formatAmount(amount: number) {
   const currency = displayCurrency.value
-  const localeCode = locale.value === 'ar' ? 'ar-SA' : 'en-US'
-  return new Intl.NumberFormat(localeCode, { style: 'currency', currency }).format(amount)
+  const localeCode = locale.value === 'ar' ? 'ar-SA' : 'en-SA'
+  return formatCurrency(amount, currency, localeCode)
 }
 
 async function mountWidget() {
@@ -122,26 +126,41 @@ function handleRetry() {
             class="flex items-center justify-between gap-3 text-sm"
           >
             <span class="text-foreground-muted">{{ item.label }}</span>
-            <span class="font-medium text-foreground">{{ formatAmount(item.amount) }}</span>
+            <span class="font-medium text-foreground">
+              <MoneyAmount v-if="isSaudiRiyal" :amount="item.amount" />
+              <template v-else>{{ formatAmount(item.amount) }}</template>
+            </span>
           </li>
         </ul>
 
         <dl class="mt-3 space-y-2 border-t border-border pt-3 text-sm">
           <div v-if="summary.subtotal != null" class="flex items-center justify-between gap-3">
             <dt class="text-foreground-muted">{{ t('payment.modal.subtotal') }}</dt>
-            <dd class="font-medium text-foreground">{{ formatAmount(summary.subtotal) }}</dd>
+            <dd class="font-medium text-foreground">
+              <MoneyAmount v-if="isSaudiRiyal" :amount="summary.subtotal" />
+              <template v-else>{{ formatAmount(summary.subtotal) }}</template>
+            </dd>
           </div>
           <div v-if="summary.shipping != null" class="flex items-center justify-between gap-3">
             <dt class="text-foreground-muted">{{ t('payment.modal.shipping') }}</dt>
-            <dd class="font-medium text-foreground">{{ formatAmount(summary.shipping) }}</dd>
+            <dd class="font-medium text-foreground">
+              <MoneyAmount v-if="isSaudiRiyal" :amount="summary.shipping" />
+              <template v-else>{{ formatAmount(summary.shipping) }}</template>
+            </dd>
           </div>
           <div v-if="summary.tax != null" class="flex items-center justify-between gap-3">
             <dt class="text-foreground-muted">{{ t('payment.modal.tax') }}</dt>
-            <dd class="font-medium text-foreground">{{ formatAmount(summary.tax) }}</dd>
+            <dd class="font-medium text-foreground">
+              <MoneyAmount v-if="isSaudiRiyal" :amount="summary.tax" />
+              <template v-else>{{ formatAmount(summary.tax) }}</template>
+            </dd>
           </div>
           <div class="flex items-center justify-between gap-3 pt-1">
             <dt class="text-base font-bold text-ibbil-green">{{ t('payment.modal.total') }}</dt>
-            <dd class="text-base font-extrabold text-ibbil-green">{{ formatAmount(summary.total) }}</dd>
+            <dd class="text-base font-extrabold text-ibbil-green">
+              <MoneyAmount v-if="isSaudiRiyal" :amount="summary.total" />
+              <template v-else>{{ formatAmount(summary.total) }}</template>
+            </dd>
           </div>
         </dl>
       </section>

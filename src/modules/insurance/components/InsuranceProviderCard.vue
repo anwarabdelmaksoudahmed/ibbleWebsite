@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InsuranceServiceProvider } from '@modules/insurance/types'
+import { formatMoneyAmount } from '@shared/utils/format-money'
 
 const props = defineProps<{
   provider: InsuranceServiceProvider
@@ -13,51 +14,45 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n()
 
-function formatMoney(amount: number) {
-  const numberLocale = locale.value === 'ar' ? 'ar-SA' : 'en-SA'
-  const formatted = new Intl.NumberFormat(numberLocale, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount)
-
-  return `${formatted} ${t('site.insurance.register.form.currency')}`
-}
-
 const quoteRows = computed(() => {
   const quote = props.provider.quote
   return [
     {
       key: 'insuredAmount',
       label: t('site.insurance.register.pricing.insuredAmount'),
-      value: formatMoney(quote.insuredAmount),
+      amount: quote.insuredAmount,
       emphasize: false,
     },
     {
       key: 'certificateFees',
       label: t('site.insurance.register.pricing.certificateFees'),
-      value: formatMoney(quote.certificateFees),
+      amount: quote.certificateFees,
       emphasize: false,
     },
     {
       key: 'coverage',
       label: t('site.insurance.register.pricing.coverage'),
-      value: formatMoney(quote.coverage),
+      amount: quote.coverage,
       emphasize: false,
     },
     {
       key: 'vat',
       label: t('site.insurance.register.pricing.vat', { percent: quote.taxPercent }),
-      value: formatMoney(quote.vat),
+      amount: quote.vat,
       emphasize: false,
     },
     {
       key: 'total',
       label: t('site.insurance.register.pricing.total'),
-      value: formatMoney(quote.total),
+      amount: quote.total,
       emphasize: true,
     },
   ]
 })
+
+const deductibleMinLabel = computed(() =>
+  formatMoneyAmount(props.provider.quote.minDeductible, locale.value),
+)
 </script>
 
 <template>
@@ -140,10 +135,10 @@ const quoteRows = computed(() => {
             {{ row.label }}
           </dt>
           <dd
-            class="text-sm font-bold tabular-nums text-foreground"
+            class="text-sm font-bold text-foreground"
             :class="row.emphasize ? '!text-base !text-ibbil-green sm:!text-lg' : undefined"
           >
-            {{ row.value }}
+            <MoneyAmount :amount="row.amount" />
           </dd>
         </div>
       </dl>
@@ -152,7 +147,7 @@ const quoteRows = computed(() => {
         {{
           t('site.insurance.register.pricing.deductibleNote', {
             percent: provider.quote.deductiblePercent,
-            min: formatMoney(provider.quote.minDeductible),
+            min: deductibleMinLabel,
           })
         }}
       </p>

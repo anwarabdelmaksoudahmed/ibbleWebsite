@@ -10,7 +10,7 @@ const props = defineProps<{
   index?: number
 }>()
 
-const { t, n } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 
 const productCount = computed(() =>
@@ -80,12 +80,11 @@ async function onCheckout() {
     >
       <p class="text-sm text-foreground-muted">
         {{ t('site.commerce.cart.storeSubtotal') }}
-        <span class="ms-1.5 text-base font-extrabold tabular-nums text-ibbil-green">
-          {{ n(subtotal) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
-        </span>
+        <MoneyAmount
+          :amount="subtotal"
+          class="ms-1.5 text-base font-extrabold text-ibbil-green"
+          symbol-class="text-xs font-semibold text-foreground-muted"
+        />
       </p>
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center">

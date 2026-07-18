@@ -27,9 +27,7 @@ const { t } = useI18n()
         <template v-if="stat.key === 'wallet' && stat.value != null" #value>
           <span class="inline-flex items-baseline gap-1">
             <span>{{ formatValue(stat.key, stat.value) }}</span>
-            <span class="text-xs font-semibold text-foreground-muted">
-              {{ t('site.stores.profile.currency') }}
-            </span>
+            <SaudiRiyalSymbol class="text-xs font-semibold text-foreground-muted" />
           </span>
         </template>
       </BaseStatCard>

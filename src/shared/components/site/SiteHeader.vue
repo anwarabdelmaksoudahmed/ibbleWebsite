@@ -7,11 +7,14 @@ import { pathMatchesPrefix, stripLocalePrefix } from '@shared/utils/locale-path'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const { authenticated, user, logout } = useAuth()
+const { authenticated, user } = useAuth()
 
 const mobileOpen = ref(false)
 const searchQuery = ref('')
 const searchCategory = ref('all')
+
+const displayName = computed(() => user.value?.name?.trim() ?? '')
+const hasDisplayName = computed(() => displayName.value.length > 0)
 
 watch(
   () => route.fullPath,
@@ -88,23 +91,25 @@ function onSearch() {
             <LocaleSwitcher variant="header" />
           </div>
 
-          <template v-if="authenticated">
-            <NuxtLinkLocale
-              :to="ROUTES.PROFILE"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
+          <NuxtLinkLocale
+            v-if="authenticated"
+            :to="ROUTES.PROFILE"
+            class="header-user-greeting inline-flex min-w-0 max-w-[11rem] items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white sm:max-w-[14rem] md:max-w-[16rem] lg:max-w-[18rem]"
+            :aria-label="hasDisplayName ? `${t('auth.welcomeBack')}، ${displayName}` : t('site.profile.breadcrumb')"
+          >
+            <Icon name="lucide:user" class="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span
+              v-if="hasDisplayName"
+              :key="displayName"
+              class="hidden min-w-0 items-baseline gap-1 sm:inline-flex"
             >
-              <Icon name="lucide:user" class="h-4 w-4" />
-              <span class="hidden max-w-[8rem] truncate sm:inline">{{ user?.name || t('auth.welcomeBack') }}</span>
-            </NuxtLinkLocale>
-            <button
-              type="button"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
-              @click="logout"
-            >
-              <Icon name="lucide:log-out" class="h-4 w-4" />
-              <span class="hidden lg:inline">{{ t('auth.logout') }}</span>
-            </button>
-          </template>
+              <span class="shrink-0 whitespace-nowrap">{{ t('auth.welcomeBack') }}،</span>
+              <span
+                class="header-user-name min-w-0 truncate font-semibold text-ibbil-gold"
+                :title="displayName"
+              >{{ displayName }}</span>
+            </span>
+          </NuxtLinkLocale>
           <NuxtLinkLocale
             v-else
             :to="ROUTES.AUTH.LOGIN"
@@ -225,3 +230,64 @@ function onSearch() {
     </Transition>
   </header>
 </template>
+
+<style scoped>
+.header-user-greeting {
+  animation: header-greeting-in 0.35s ease-out both;
+}
+
+.header-user-name {
+  animation: header-name-slide 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  transition: color 0.2s ease;
+}
+
+.header-user-greeting:hover .header-user-name {
+  color: #e8c078;
+}
+
+@keyframes header-greeting-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* LTR: name slides in from the right */
+@keyframes header-name-slide {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RTL: name slides in from the left (after the greeting) */
+:dir(rtl) .header-user-name {
+  animation-name: header-name-slide-rtl;
+}
+
+@keyframes header-name-slide-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-user-greeting,
+  .header-user-name {
+    animation: none;
+  }
+}
+</style>

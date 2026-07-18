@@ -116,11 +116,11 @@ function unitPrice(product: CartStoreGroup['products'][number]) {
             <p class="mt-0.5 text-xs tabular-nums text-foreground-muted">
               {{ product.quantity }} × {{ n(unitPrice(product)) }}
             </p>
-            <p class="mt-0.5 text-sm font-extrabold tabular-nums text-ibbil-green">
-              {{ n(getLineTotal(product)) }}
-              <span class="text-[11px] font-semibold text-foreground-muted">
-                {{ t('site.stores.profile.currency') }}
-              </span>
+            <p class="mt-0.5 text-sm font-extrabold text-ibbil-green">
+              <MoneyAmount
+                :amount="getLineTotal(product)"
+                symbol-class="text-[11px] font-semibold text-foreground-muted"
+              />
             </p>
           </div>
 
@@ -140,30 +140,27 @@ function unitPrice(product: CartStoreGroup['products'][number]) {
     <div class="space-y-2.5 border-t border-ibbil-green/10 px-5 py-4 text-sm">
       <div class="flex items-center justify-between">
         <span class="text-foreground-muted">{{ t('site.commerce.checkout.subtotal') }}</span>
-        <span class="font-bold tabular-nums text-ibbil-green">
-          {{ n(subtotal) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
-        </span>
+        <MoneyAmount
+          :amount="subtotal"
+          class="font-bold text-ibbil-green"
+          symbol-class="text-xs font-semibold text-foreground-muted"
+        />
       </div>
       <div class="flex items-center justify-between">
         <span class="text-foreground-muted">{{ t('site.commerce.checkout.shipping') }}</span>
-        <span class="font-bold tabular-nums text-ibbil-green">
-          {{ n(shipping) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
-        </span>
+        <MoneyAmount
+          :amount="shipping"
+          class="font-bold text-ibbil-green"
+          symbol-class="text-xs font-semibold text-foreground-muted"
+        />
       </div>
       <div class="flex items-center justify-between">
         <span class="text-foreground-muted">{{ t('site.commerce.checkout.vat') }}</span>
-        <span class="font-bold tabular-nums text-ibbil-green">
-          {{ n(vat) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
-        </span>
+        <MoneyAmount
+          :amount="vat"
+          class="font-bold text-ibbil-green"
+          symbol-class="text-xs font-semibold text-foreground-muted"
+        />
       </div>
 
       <div class="border-t border-dashed border-ibbil-green/15 pt-3">
@@ -171,12 +168,11 @@ function unitPrice(product: CartStoreGroup['products'][number]) {
           <span class="text-sm font-semibold text-foreground-muted">
             {{ t('site.commerce.checkout.total') }}
           </span>
-          <p class="text-xl font-extrabold tabular-nums text-ibbil-green">
-            {{ n(total) }}
-            <span class="text-sm font-semibold text-foreground-muted">
-              {{ t('site.stores.profile.currency') }}
-            </span>
-          </p>
+          <MoneyAmount
+            :amount="total"
+            class="text-xl font-extrabold text-ibbil-green"
+            symbol-class="text-sm font-semibold text-foreground-muted"
+          />
         </div>
       </div>
     </div>

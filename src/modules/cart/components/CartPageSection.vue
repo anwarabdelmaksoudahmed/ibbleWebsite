@@ -7,7 +7,7 @@ import { ROUTES } from '@shared/constants/routes'
 import { CHECKOUT_ROUTES } from '@modules/checkout/constants/routes'
 import { STORES_ROUTES } from '@modules/stores/constants/routes'
 
-const { t, n } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const { authenticated } = useAuth()
 const authSessionReady = useAuthSessionReady()
@@ -48,7 +48,6 @@ const showEmpty = computed(
     !isCartSyncing.value,
 )
 const grandTotal = computed(() => getCartTotal(cart.value))
-const formattedGrandTotal = computed(() => n(grandTotal.value))
 
 async function goToLogin() {
   await navigateTo(localePath(ROUTES.AUTH.LOGIN))
@@ -123,7 +122,7 @@ onMounted(() => {
       />
 
       <div
-        v-else-if="authenticated && isError"
+        v-else-if="authenticated && isError && !hasItems"
         class="rounded-2xl border border-ibbil-green/10 bg-white dark:border-ibbil-green/20 dark:bg-surface-elevated"
       >
         <BaseErrorState
@@ -184,12 +183,11 @@ onMounted(() => {
             <p class="text-xs text-foreground-muted">
               {{ t('site.commerce.cart.grandTotal') }}
             </p>
-            <p class="truncate text-base font-extrabold tabular-nums text-ibbil-green">
-              {{ formattedGrandTotal }}
-              <span class="text-xs font-semibold text-foreground-muted">
-                {{ t('site.stores.profile.currency') }}
-              </span>
-            </p>
+            <MoneyAmount
+              :amount="grandTotal"
+              class="truncate text-base font-extrabold text-ibbil-green"
+              symbol-class="text-xs font-semibold text-foreground-muted"
+            />
           </div>
           <button
             type="button"

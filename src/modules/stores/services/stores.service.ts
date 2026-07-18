@@ -1,6 +1,9 @@
 import { BaseApiService } from '@core/api/base-service'
 import { isApiError, normalizeApiError } from '@core/api/http/errors'
-import { resolveApiLocale } from '@core/api/http/locale'
+import {
+  CONTENT_FALLBACK_LOCALE,
+  shouldRetryWithContentFallback,
+} from '@core/api/http/content-locale'
 import { STORES_ENDPOINTS } from '@modules/stores/constants/endpoints'
 import type {
   CategoryStoresApiResponse,
@@ -28,13 +31,6 @@ import {
   mapStoreProductsResponse,
   mapStoreProfile,
 } from '@modules/stores/utils/mappers'
-
-/** Marketplace product endpoints omit EN rows / 404 when translations are missing. */
-const CONTENT_FALLBACK_LOCALE = 'ar'
-
-function shouldRetryWithContentFallback(): boolean {
-  return resolveApiLocale() !== CONTENT_FALLBACK_LOCALE
-}
 
 function storeProductsQuery(params: StoreProductsQueryParams = {}) {
   return {

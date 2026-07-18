@@ -9,7 +9,7 @@ import type {
 import type { InsuranceCustomerFormValues } from '@modules/insurance/schemas/customer.schema'
 import type { InsuranceServiceProvider } from '@modules/insurance/types'
 import type { UserWallet } from '@modules/checkout/types'
-import { formatInsuranceMoney } from '@modules/insurance/utils/format-money'
+import { formatMoneyAmount } from '@shared/utils/format-money'
 import { sanitizeIbanInput } from '@shared/utils/iban'
 
 const props = defineProps<{
@@ -34,17 +34,11 @@ const { t, locale } = useI18n()
 
 const termsOpen = ref(false)
 
-const numberLocale = computed(() => (locale.value === 'ar' ? 'ar' : 'en'))
-
-function money(amount: number) {
-  return formatInsuranceMoney(
-    amount,
-    t('site.insurance.register.form.currency'),
-    numberLocale.value,
-  )
-}
-
 const quote = computed(() => props.provider?.quote ?? null)
+
+const deductibleMinLabel = computed(() =>
+  quote.value ? formatMoneyAmount(quote.value.minDeductible, locale.value) : '',
+)
 
 const policyFields = computed(() => {
   if (!props.provider || !quote.value) return []
@@ -63,15 +57,14 @@ const policyFields = computed(() => {
       label: t('site.insurance.register.payment.deductibleLabel'),
       value: t('site.insurance.register.pricing.deductibleNote', {
         percent: quote.value.deductiblePercent,
-        min: money(quote.value.minDeductible),
+        min: deductibleMinLabel.value,
       }),
       wide: true,
     },
     {
       label: t('site.insurance.register.pricing.insuredAmount'),
-      value: money(quote.value.insuredAmount),
+      amount: quote.value.insuredAmount,
       highlight: true,
-      dir: 'ltr' as const,
     },
   ]
 })
@@ -180,7 +173,8 @@ function closeTerms() {
                   class="m-0 break-words text-sm font-bold text-foreground [overflow-wrap:anywhere] sm:text-base"
                   :class="field.highlight ? 'text-ibbil-gold' : undefined"
                 >
-                  <bdi v-if="field.dir" :dir="field.dir">{{ field.value || '—' }}</bdi>
+                  <MoneyAmount v-if="field.amount != null" :amount="field.amount" />
+                  <bdi v-else-if="field.dir" :dir="field.dir">{{ field.value || '—' }}</bdi>
                   <template v-else>{{ field.value || '—' }}</template>
                 </dd>
               </div>

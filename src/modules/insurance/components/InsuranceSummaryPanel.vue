@@ -1,7 +1,9 @@
 <script setup lang="ts">
 export type InsuranceSummaryField = {
   label: string
-  value: string
+  value?: string
+  /** When set, renders MoneyAmount instead of plain value text. */
+  amount?: number
   /** Emphasize the value (e.g. total cargo value in gold). */
   highlight?: boolean
   /** Force LTR for phone / email / numeric values. */
@@ -74,7 +76,8 @@ function toggle() {
               class="m-0 break-words text-sm font-bold text-foreground [overflow-wrap:anywhere] sm:text-base"
               :class="field.highlight ? 'text-ibbil-gold' : undefined"
             >
-              <bdi v-if="field.dir" :dir="field.dir">{{ field.value || '—' }}</bdi>
+              <MoneyAmount v-if="field.amount != null" :amount="field.amount" />
+              <bdi v-else-if="field.dir" :dir="field.dir">{{ field.value || '—' }}</bdi>
               <template v-else>{{ field.value || '—' }}</template>
             </dd>
           </div>

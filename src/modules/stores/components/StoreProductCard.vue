@@ -22,8 +22,6 @@ const resolvedStoreId = computed(() => props.product.storeId || props.storeId ||
 
 const hasDiscount = computed(() => props.product.finalPrice < props.product.price)
 
-const formattedPrice = computed(() => n(props.product.finalPrice))
-
 const formattedOriginal = computed(() => n(props.product.price))
 
 const discountPercent = computed(() => {
@@ -220,10 +218,11 @@ async function onAddToCart() {
 
       <div class="mt-auto flex flex-col gap-3 pt-1">
         <div class="flex items-baseline gap-2">
-          <span class="text-lg font-extrabold text-ibbil-green">
-            {{ formattedPrice }}
-            <span class="text-sm font-semibold">{{ t('site.stores.profile.currency') }}</span>
-          </span>
+          <MoneyAmount
+            :amount="product.finalPrice"
+            class="text-lg font-extrabold text-ibbil-green"
+            symbol-class="text-sm font-semibold"
+          />
           <span
             v-if="hasDiscount"
             class="text-sm text-foreground-muted line-through"

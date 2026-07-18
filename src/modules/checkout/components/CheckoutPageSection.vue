@@ -16,7 +16,7 @@ import { restoreCheckoutCartIfNeeded } from '@modules/checkout/utils/cart-restor
 import { clearCheckoutCartSnapshot, consumePaymentOutcome } from '@shared/payment/utils/pending-payment'
 import { toRaw } from 'vue'
 
-const { t, n } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const toast = useToast()
@@ -433,7 +433,7 @@ onMounted(() => {
       />
 
       <div
-        v-else-if="authenticated && cartError"
+        v-else-if="authenticated && cartError && !hasItems"
         class="rounded-2xl border border-ibbil-green/10 bg-white dark:border-ibbil-green/20 dark:bg-surface-elevated"
       >
         <BaseErrorState
@@ -553,12 +553,11 @@ onMounted(() => {
             <p class="text-xs text-foreground-muted">
               {{ t('site.commerce.checkout.total') }}
             </p>
-            <p class="truncate text-base font-extrabold tabular-nums text-ibbil-green">
-              {{ n(storeTotal) }}
-              <span class="text-xs font-semibold text-foreground-muted">
-                {{ t('site.stores.profile.currency') }}
-              </span>
-            </p>
+            <MoneyAmount
+              :amount="storeTotal"
+              class="truncate text-base font-extrabold text-ibbil-green"
+              symbol-class="text-xs font-semibold text-foreground-muted"
+            />
           </div>
           <button
             type="button"

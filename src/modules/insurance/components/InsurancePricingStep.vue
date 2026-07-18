@@ -29,15 +29,6 @@ const termsProvider = ref<InsuranceServiceProvider | null>(null)
 
 const numberLocale = computed(() => (locale.value === 'ar' ? 'ar-SA' : 'en-SA'))
 
-function formatMoney(amount: number) {
-  const formatted = new Intl.NumberFormat(numberLocale.value, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount)
-
-  return `${formatted} ${t('site.insurance.register.form.currency')}`
-}
-
 function formatPhone(countryCode: string, phone: string) {
   const country = findCountryByApiCode(countryCode)
   return `${country.dialCode} ${phone}`.trim()
@@ -50,6 +41,8 @@ function formatDistance(distanceKm: string) {
   const formatted = new Intl.NumberFormat(numberLocale.value, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 3,
+    // numberingSystem: 'latn', 
+
   }).format(value)
 
   return `${formatted} ${t('site.insurance.register.form.kmUnit')}`
@@ -66,8 +59,6 @@ function formatDate(value: string) {
     day: 'numeric',
   }).format(date)
 }
-
-const formattedInsuredTotal = computed(() => formatMoney(props.totalCargoValue))
 
 const customerFields = computed(() => [
   {
@@ -116,7 +107,7 @@ const shipmentFields = computed(() => [
   },
   {
     label: t('site.insurance.register.form.totalCargoValue'),
-    value: formattedInsuredTotal.value,
+    amount: props.totalCargoValue,
     highlight: true,
     wide: true,
   },

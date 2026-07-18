@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type {
   InsuranceCargoDraftValues,
-  InsuranceCargoItem,
   InsuranceShipmentFormValues,
   InsuranceShipmentTripField,
 } from '@modules/insurance/schemas/shipment.schema'
@@ -33,7 +32,7 @@ const emit = defineEmits<{
   'reset-cargo': []
 }>()
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 /** Local calendar date (avoid UTC shift from `toISOString()` which breaks `min`). */
 const today = computed(() => {
@@ -57,22 +56,6 @@ const statusToneClass = computed(() => {
       return 'border-border bg-white text-foreground-muted dark:bg-surface'
   }
 })
-
-function formatMoney(amount: number) {
-  const numberLocale = locale.value === 'ar' ? 'ar-SA' : 'en-SA'
-  const formatted = new Intl.NumberFormat(numberLocale, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount)
-
-  return `${formatted} ${t('site.insurance.register.form.currency')}`
-}
-
-const formattedTotal = computed(() => formatMoney(props.totalCargoValue))
-
-function cargoValueLabel(item: InsuranceCargoItem) {
-  return formatMoney(Number(item.cargoValue))
-}
 </script>
 
 <template>
@@ -125,9 +108,7 @@ function cargoValueLabel(item: InsuranceCargoItem) {
             @blur="emit('cargo-field-blur', 'cargoValue')"
           >
             <template #suffix>
-              <span class="text-xs font-semibold text-foreground-muted">
-                {{ t('site.insurance.register.form.currency') }}
-              </span>
+              <SaudiRiyalSymbol class="text-xs font-semibold text-foreground-muted" />
             </template>
           </BaseInput>
 
@@ -244,7 +225,7 @@ function cargoValueLabel(item: InsuranceCargoItem) {
                 {{ item.serialNumber }}
               </p>
               <p class="mt-0.5 text-sm text-foreground-muted">
-                {{ cargoValueLabel(item) }}
+                <MoneyAmount :amount="Number(item.cargoValue)" />
               </p>
             </div>
           </div>
@@ -354,9 +335,10 @@ function cargoValueLabel(item: InsuranceCargoItem) {
           {{ t('site.insurance.register.form.totalCargoValue') }}
         </p>
       </div>
-      <p class="text-lg font-extrabold tracking-tight text-ibbil-green sm:text-xl">
-        {{ formattedTotal }}
-      </p>
+      <MoneyAmount
+        :amount="totalCargoValue"
+        class="text-lg font-extrabold tracking-tight text-ibbil-green sm:text-xl"
+      />
     </div>
   </form>
 </template>

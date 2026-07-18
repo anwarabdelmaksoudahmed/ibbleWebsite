@@ -104,15 +104,12 @@ async function onToggleWishlist() {
         </h3>
 
         <div class="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <span
+          <MoneyAmount
             v-if="unitPrice != null"
-            class="text-sm font-extrabold tabular-nums text-ibbil-green"
-          >
-            {{ n(unitPrice) }}
-            <span class="text-xs font-semibold text-foreground-muted">
-              {{ t('site.stores.profile.currency') }}
-            </span>
-          </span>
+            :amount="unitPrice"
+            class="text-sm font-extrabold text-ibbil-green"
+            symbol-class="text-xs font-semibold text-foreground-muted"
+          />
           <span
             v-if="hasDiscount && product.price != null"
             class="text-xs tabular-nums text-foreground-muted line-through"
@@ -131,12 +128,11 @@ async function onToggleWishlist() {
             @increase="onIncrease"
             @decrease="onDecrease"
           />
-          <span class="ms-auto text-sm font-extrabold tabular-nums text-ibbil-green">
-            {{ n(lineTotal) }}
-            <span class="text-xs font-semibold text-foreground-muted">
-              {{ t('site.stores.profile.currency') }}
-            </span>
-          </span>
+          <MoneyAmount
+            :amount="lineTotal"
+            class="ms-auto text-sm font-extrabold text-ibbil-green"
+            symbol-class="text-xs font-semibold text-foreground-muted"
+          />
         </div>
       </div>
     </div>
@@ -150,11 +146,11 @@ async function onToggleWishlist() {
       />
 
       <div class="min-w-[7rem] text-end">
-        <p class="text-sm font-extrabold tabular-nums text-ibbil-green">
-          {{ n(lineTotal) }}
-          <span class="text-xs font-semibold text-foreground-muted">
-            {{ t('site.stores.profile.currency') }}
-          </span>
+        <p class="text-sm font-extrabold text-ibbil-green">
+          <MoneyAmount
+            :amount="lineTotal"
+            symbol-class="text-xs font-semibold text-foreground-muted"
+          />
         </p>
       </div>
     </div>

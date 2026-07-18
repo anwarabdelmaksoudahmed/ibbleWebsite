@@ -86,11 +86,22 @@ export const useAuthStore = defineStore('auth', {
 
       this.isAuthenticated = true
 
+      if (!this.user) {
+        this.restoreIdentityFromStorage()
+      }
+
       if (this.user) return
 
       try {
         const authService = new AuthService()
         this.user = await authService.getCurrentUser()
+        if (this.user) {
+          tokenManager.persistIdentity({
+            user: this.user,
+            roles: this.roles,
+            permissions: this.permissions,
+          })
+        }
       } catch (error) {
         if (error instanceof AuthEndpointNotAvailableError) return
         this.clearSession()
@@ -103,6 +114,11 @@ export const useAuthStore = defineStore('auth', {
       this.permissions = authModel.permissions
       this.applySession(authModel.session)
       this.isAuthenticated = true
+      tokenManager.persistIdentity({
+        user: authModel.user,
+        roles: authModel.roles,
+        permissions: authModel.permissions,
+      })
     },
 
     applySession(session: InternalAuthModel['session']) {
@@ -145,6 +161,27 @@ export const useAuthStore = defineStore('auth', {
       this.sessionExpiresAt = persisted.sessionExpiresAt
       this.refreshExpiresAt = persisted.refreshExpiresAt
       this.isAuthenticated = true
+
+      // Tokens restore immediately; user may still be missing if Pinia rehydrate raced.
+      // Identity is stored next to tokens so the name is available without `/auth/me`.
+      if (!this.user) {
+        this.restoreIdentityFromStorage()
+      } else {
+        tokenManager.persistIdentity({
+          user: this.user,
+          roles: this.roles,
+          permissions: this.permissions,
+        })
+      }
+    },
+
+    restoreIdentityFromStorage() {
+      const identity = tokenManager.readPersistedIdentity()
+      if (!identity) return
+
+      this.user = identity.user
+      this.roles = identity.roles
+      this.permissions = identity.permissions
     },
   },
 

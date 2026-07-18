@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { UserInsurance } from '@modules/insurance/types'
-import { formatInsuranceMoney } from '@modules/insurance/utils/format-money'
 import { dayjs } from '@shared/utils/formatters'
 import { cn } from '@shared/utils/cn'
 
@@ -13,7 +12,7 @@ const emit = defineEmits<{
   toggle: []
 }>()
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const isActive = computed(() => props.item.status === 'active')
 
@@ -27,14 +26,6 @@ const dateRangeLabel = computed(() => {
     : props.item.date
   return t('site.profile.insurance.card.dateRange', { date: formatted })
 })
-
-const totalPriceLabel = computed(() =>
-  formatInsuranceMoney(
-    props.item.totalPrice,
-    t('site.insurance.register.form.currency'),
-    locale.value,
-  ),
-)
 
 const feeRows = computed(() => [
   {
@@ -64,14 +55,6 @@ const feeRows = computed(() => [
     emphasize: true,
   },
 ])
-
-function money(amount: number) {
-  return formatInsuranceMoney(
-    amount,
-    t('site.insurance.register.form.currency'),
-    locale.value,
-  )
-}
 </script>
 
 <template>
@@ -132,7 +115,7 @@ function money(amount: number) {
             <span class="text-foreground-muted font-medium">
               {{ t('site.profile.insurance.card.totalPrice') }}:
             </span>
-            {{ totalPriceLabel }}
+            <MoneyAmount :amount="item.totalPrice" class="ms-1" />
           </p>
         </div>
 
@@ -213,10 +196,9 @@ function money(amount: number) {
                   {{ row.label }}
                 </dt>
                 <dd
-                  class="tabular-nums"
                   :class="row.emphasize ? 'font-bold text-ibbil-green' : 'font-medium text-foreground'"
                 >
-                  {{ money(row.value) }}
+                  <MoneyAmount :amount="row.value" />
                 </dd>
               </div>
             </dl>
