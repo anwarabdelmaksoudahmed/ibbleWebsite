@@ -1,7 +1,12 @@
 import { VeterinaryReservationsApi } from '@modules/veterinary/api/reservations.api'
+import type {
+  CreateVeterinaryReservationApiRequest,
+  CreateVeterinaryReservationApiResponse,
+} from '@modules/veterinary/types/api.types'
 import type { VeterinaryReservationsPage } from '@modules/veterinary/types'
 import type { VeterinaryReservationsQueryParams } from '@modules/veterinary/types/api.types'
 import { mapVeterinaryReservationsPage } from '@modules/veterinary/utils/mappers'
+import { unwrapCreateVeterinaryReservationResponse } from '@modules/veterinary/utils/create-reservation-payload'
 
 export class VeterinaryReservationsService {
   private readonly api: VeterinaryReservationsApi
@@ -24,6 +29,22 @@ export class VeterinaryReservationsService {
   ): Promise<VeterinaryReservationsPage> {
     const response = await this.api.listCustomerReservations(params, options)
     return mapVeterinaryReservationsPage(response)
+  }
+
+  async listReservedTimes(
+    doctorId: string,
+    params: { day: string; date: string },
+    options?: { signal?: AbortSignal },
+  ) {
+    return this.api.listReservedTimes(doctorId, params, options)
+  }
+
+  async createReservation(
+    payload: CreateVeterinaryReservationApiRequest,
+    options?: { signal?: AbortSignal },
+  ): Promise<CreateVeterinaryReservationApiResponse> {
+    const response = await this.api.createReservation(payload, options)
+    return unwrapCreateVeterinaryReservationResponse(response)
   }
 }
 

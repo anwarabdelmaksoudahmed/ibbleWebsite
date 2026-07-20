@@ -2,8 +2,11 @@ import type { AxiosInstance } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { VETERINARY_ENDPOINTS } from '@modules/veterinary/constants/endpoints'
 import type {
+  CreateVeterinaryReservationApiRequest,
+  CreateVeterinaryReservationApiResponse,
   VeterinaryReservationsApiResponse,
   VeterinaryReservationsQueryParams,
+  VeterinaryReservedTimesApiResponse,
 } from '@modules/veterinary/types/api.types'
 
 export class VeterinaryReservationsApi {
@@ -29,6 +32,38 @@ export class VeterinaryReservationsApi {
         },
         skipErrorToast: true,
       })
+      .then((response) => response.data)
+  }
+
+  listReservedTimes(
+    doctorId: string,
+    params: { day: string; date: string },
+    options?: { signal?: AbortSignal },
+  ): Promise<VeterinaryReservedTimesApiResponse> {
+    return this.client
+      .get<VeterinaryReservedTimesApiResponse>(VETERINARY_ENDPOINTS.RESERVED_TIMES(doctorId), {
+        baseURL: this.baseUrl,
+        signal: options?.signal,
+        params,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  createReservation(
+    payload: CreateVeterinaryReservationApiRequest,
+    options?: { signal?: AbortSignal },
+  ): Promise<CreateVeterinaryReservationApiResponse> {
+    return this.client
+      .post<CreateVeterinaryReservationApiResponse>(
+        VETERINARY_ENDPOINTS.CUSTOMER_RESERVATIONS,
+        payload,
+        {
+          baseURL: this.baseUrl,
+          signal: options?.signal,
+          skipErrorToast: true,
+        },
+      )
       .then((response) => response.data)
   }
 }

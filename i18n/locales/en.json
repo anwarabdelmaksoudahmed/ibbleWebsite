@@ -493,7 +493,94 @@
         }
       },
       "footerTitle": "Veterinary Services",
-      "footerDescription": "After completing the form, your camel treatment price appears. If you accept it, you are redirected to payment via an approved Saudi method, then receive a treatment invoice and your chosen booking method."
+      "footerDescription": "After completing the form, your camel treatment price appears. If you accept it, you are redirected to payment via an approved Saudi method, then receive a treatment invoice and your chosen booking method.",
+      "book": {
+        "seoTitle": "Book a Veterinary Appointment | Ibbil",
+        "seoDescription": "Book a veterinary appointment in clear steps: service type, doctor, time slot, then payment.",
+        "breadcrumb": "Book appointment",
+        "progressLabel": "Veterinary booking steps",
+        "next": "Next",
+        "prev": "Back",
+        "pay": "Complete payment",
+        "steps": {
+          "serviceType": "Service type",
+          "doctor": "Choose doctor",
+          "appointment": "Set appointment",
+          "payment": "Confirm booking"
+        },
+        "sections": {
+          "serviceType": "Choose a service",
+          "serviceTypeHint": "Select whether you need a clinic visit or a field visit."
+        },
+        "serviceTypes": {
+          "clinic": {
+            "title": "Clinic examination"
+          },
+          "fieldVisit": {
+            "title": "Field visit"
+          }
+        },
+        "doctor": {
+          "label": "Doctor",
+          "typeIndividual": "Independent",
+          "typeEmployed": "Clinic",
+          "address": "Address",
+          "price": "Booking price",
+          "book": "Book appointment",
+          "ratingLabel": "Rating {count} out of 5",
+          "scheduledAppointment": "Scheduled appointment",
+          "searchPlaceholder": "Search by doctor or clinic name",
+          "city": "City",
+          "allCities": "All cities",
+          "sortLabel": "Sort",
+          "sort": {
+            "default": "Default order",
+            "priceAsc": "Price: low to high",
+            "priceDesc": "Price: high to low",
+            "nameAsc": "Name: A–Z"
+          },
+          "loadMore": "Load more",
+          "emptyTitle": "No doctors available",
+          "emptyDescription": "Try changing your search or filters, or check back later.",
+          "errorTitle": "Could not load doctors",
+          "errorDescription": "Something went wrong while loading doctors. Please try again."
+        },
+        "appointment": {
+          "title": "Choose appointment time",
+          "today": "Today",
+          "fromTo": "From {range}",
+          "bookDay": "Book",
+          "changeDay": "Change day",
+          "noDaysTitle": "No available days",
+          "noDaysDescription": "This doctor has no working schedule in the upcoming period.",
+          "slotsErrorTitle": "Could not load time slots",
+          "slotsErrorDescription": "Something went wrong while checking available times. Please try again.",
+          "unavailableTitle": "This day is unavailable",
+          "unavailableDescription": "Booking is not available for this day. Please choose another day.",
+          "noSlotsTitle": "No slots available",
+          "noSlotsDescription": "All slots on this day are booked. Try another day."
+        },
+        "payment": {
+          "title": "Booking details",
+          "subtitle": "Review your details and choose a payment method.",
+          "customerName": "Full name",
+          "customerNamePlaceholder": "Enter full name",
+          "customerPhone": "Mobile number",
+          "customerPhonePlaceholder": "Enter mobile number",
+          "address": "Visit address",
+          "addressPlaceholder": "Enter the field visit address",
+          "walletInsufficientBalance": "Wallet balance is insufficient for this booking.",
+          "success": "Your booking request was submitted successfully.",
+          "failed": "Could not complete the booking. Please try again."
+        },
+        "validation": {
+          "customerNameMin": "Name must be at least 2 characters",
+          "customerPhoneMin": "Enter a valid mobile number",
+          "countryCodeRequired": "Country code is required",
+          "addressMin": "Enter a clearer address for the field visit",
+          "paymentMethodRequired": "Please choose a payment method"
+        }
+      }
     },
     "insurance": {
       "seoTitle": "Camel Insurance | Ibbil",

@@ -8,6 +8,8 @@ withDefaults(
     nextLabel: string
     prevLabel?: string
     showPrev?: boolean
+    /** Hide the primary next/submit action (steps with inline CTAs). */
+    showNext?: boolean
     loading?: boolean
     progressLabel?: string
     /** Hide the forward chevron (e.g. final pay/submit step). */
@@ -15,6 +17,7 @@ withDefaults(
   }>(),
   {
     showPrev: false,
+    showNext: true,
     loading: false,
     hideNextArrow: false,
   },
@@ -56,6 +59,7 @@ const emit = defineEmits<{
         </BaseButton>
 
         <BaseButton
+          v-if="showNext"
           type="button"
           variant="brand"
           class="group min-w-36 !rounded-lg"
