@@ -90,6 +90,8 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_WEB_API_BASE_URL || 'https://api-web.ibbil.com/api',
       insuranceApiBaseUrl:
         process.env.NUXT_PUBLIC_INSURANCE_API_BASE_URL || 'https://api-insurance.ibbil.com/',
+      veterinaryApiBaseUrl:
+        process.env.NUXT_PUBLIC_VETERINARY_API_BASE_URL || 'https://api-veterinary.ibbil.com/api',
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '966500000000',
       hyperPayWidgetBaseUrl:

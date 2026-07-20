@@ -31,7 +31,7 @@ export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
     id: 'veterinary',
     icon: 'lucide:stethoscope',
     labelKey: 'site.profile.nav.veterinary',
-    to: '/services/veterinary',
+    to: PROFILE_ROUTES.VETERINARY,
   },
   {
     id: 'favorites',

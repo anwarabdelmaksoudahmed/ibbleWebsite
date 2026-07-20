@@ -1018,6 +1018,60 @@
           }
         }
       },
+      "veterinary": {
+        "seoTitle": "حجوزاتي البيطرية | إبل",
+        "seoDescription": "عرض ومتابعة حجوزاتك في العيادات البيطرية على منصة إبل.",
+        "breadcrumb": "البيطرة",
+        "summaryLabel": "الحجوزات",
+        "browseClinics": "تصفّح العيادات",
+        "errorTitle": "تعذّر تحميل الحجوزات البيطرية",
+        "errorDescription": "حدث خطأ أثناء تحميل قائمة الحجوزات. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد حجوزات حالياً",
+        "emptyDescription": "لا توجد حجوزات مطابقة لهذه الفلاتر. تصفّح العيادات أو امسح الفلاتر.",
+        "clearFilters": "مسح الفلاتر",
+        "filters": {
+          "label": "تصفية الحجوزات البيطرية",
+          "searchPlaceholder": "ابحث برقم الحجز أو العيادة أو الطبيب…",
+          "status": "الحالة",
+          "allStatuses": "كل الحالات"
+        },
+        "status": {
+          "active": "نشط",
+          "pending": "قيد الانتظار",
+          "completed": "مكتمل",
+          "cancelled": "ملغي"
+        },
+        "card": {
+          "reservationNumber": "حجز #{id}",
+          "unknownClinic": "عيادة بيطرية",
+          "unknownDoctor": "الطبيب",
+          "bookedAt": "بتاريخ {date}",
+          "total": "الإجمالي",
+          "paid": "مدفوع",
+          "unpaid": "غير مدفوع",
+          "expand": "عرض تفاصيل الحجز",
+          "collapse": "إخفاء تفاصيل الحجز",
+          "visitTitle": "تفاصيل الزيارة",
+          "detailsTitle": "تفاصيل الحجز",
+          "doctor": "الطبيب",
+          "specialty": "التخصص",
+          "examineMethod": "طريقة الفحص",
+          "clinicAddress": "عنوان العيادة",
+          "appointmentTime": "موعد الحجز",
+          "attendance": "الحضور",
+          "attended": "حضر",
+          "notAttended": "لم يحضر",
+          "attendanceUnknown": "غير محدد",
+          "serviceType": "نوع الخدمة",
+          "customer": "العميل",
+          "phone": "الجوال",
+          "nationalId": "رقم الهوية",
+          "deposit": "العربون",
+          "diagnosis": "التشخيص",
+          "prescription": "الوصفة",
+          "invoice": "الفاتورة"
+        }
+      },
       "favorites": {
         "seoTitle": "مفضلتي | إبل",
         "seoDescription": "عرض وإدارة المنتجات التي حفظتها في قائمة المفضلة على منصة إبل.",

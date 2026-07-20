@@ -1018,6 +1018,60 @@
           }
         }
       },
+      "veterinary": {
+        "seoTitle": "My Veterinary Bookings | Ibbil",
+        "seoDescription": "View and track your veterinary clinic reservations on Ibbil.",
+        "breadcrumb": "Veterinary",
+        "summaryLabel": "Bookings",
+        "browseClinics": "Browse clinics",
+        "errorTitle": "Could not load your bookings",
+        "errorDescription": "Something went wrong while loading your veterinary reservations. Please try again.",
+        "emptyTitle": "No bookings yet",
+        "emptyDescription": "You have no bookings matching these filters. Browse clinics or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter veterinary bookings",
+          "searchPlaceholder": "Search by booking number, clinic, or doctor…",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "status": {
+          "active": "Active",
+          "pending": "Pending",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "card": {
+          "reservationNumber": "Booking #{id}",
+          "unknownClinic": "Veterinary clinic",
+          "unknownDoctor": "Doctor",
+          "bookedAt": "On {date}",
+          "total": "Total",
+          "paid": "Paid",
+          "unpaid": "Unpaid",
+          "expand": "Show booking details",
+          "collapse": "Hide booking details",
+          "visitTitle": "Visit details",
+          "detailsTitle": "Booking details",
+          "doctor": "Doctor",
+          "specialty": "Specialty",
+          "examineMethod": "Examination method",
+          "clinicAddress": "Clinic address",
+          "appointmentTime": "Appointment time",
+          "attendance": "Attendance",
+          "attended": "Attended",
+          "notAttended": "Did not attend",
+          "attendanceUnknown": "Not set",
+          "serviceType": "Service type",
+          "customer": "Customer",
+          "phone": "Phone",
+          "nationalId": "National ID",
+          "deposit": "Deposit",
+          "diagnosis": "Diagnosis",
+          "prescription": "Prescription",
+          "invoice": "Invoice"
+        }
+      },
       "favorites": {
         "seoTitle": "My Favorites | Ibbil",
         "seoDescription": "View and manage products you saved to your Ibbil wishlist.",

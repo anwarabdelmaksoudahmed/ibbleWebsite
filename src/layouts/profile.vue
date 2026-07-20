@@ -32,6 +32,7 @@ const currentProfilePath = computed(() => stripLocalePrefix(route.path))
 
 const isInsurance = computed(() => currentProfilePath.value === PROFILE_ROUTES.INSURANCE)
 const isMarketplace = computed(() => currentProfilePath.value === PROFILE_ROUTES.MARKETPLACE)
+const isVeterinary = computed(() => currentProfilePath.value === PROFILE_ROUTES.VETERINARY)
 const isFavourite = computed(() => currentProfilePath.value === PROFILE_ROUTES.FAVOURITE)
 
 const breadcrumbItems = computed<ProfileBreadcrumbItem[]>(() => {
@@ -48,6 +49,11 @@ const breadcrumbItems = computed<ProfileBreadcrumbItem[]>(() => {
     items.push(
       { label: t('site.profile.breadcrumb'), to: localePath(PROFILE_ROUTES.ROOT) },
       { label: t('site.profile.marketplace.breadcrumb') },
+    )
+  } else if (isVeterinary.value) {
+    items.push(
+      { label: t('site.profile.breadcrumb'), to: localePath(PROFILE_ROUTES.ROOT) },
+      { label: t('site.profile.veterinary.breadcrumb') },
     )
   } else if (isFavourite.value) {
     items.push(
