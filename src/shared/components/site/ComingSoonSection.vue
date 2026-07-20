@@ -18,6 +18,7 @@ const resolvedTitle = computed(() => {
     '/services': 'site.nav.services',
     '/services/insurance': 'site.nav.insurance',
     '/services/transport': 'site.nav.transport',
+    '/transport': 'site.nav.transport',
     '/services/veterinary': 'site.nav.veterinary',
     '/services/permits': 'site.nav.permits',
     '/media': 'site.nav.media',

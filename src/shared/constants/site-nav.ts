@@ -15,7 +15,7 @@ export const SITE_TOP_LINKS: SiteNavItem[] = [
 export const SITE_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
-  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
   { key: 'site.nav.services', to: '/services', icon: 'lucide:briefcase' },
@@ -26,7 +26,7 @@ export const SITE_SERVICE_LINKS: SiteNavItem[] = [
 export const HOME_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
-  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
   { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
@@ -42,7 +42,7 @@ export const SITE_FOOTER_STORES = [
 export const SITE_FOOTER_SERVICES = [
   { key: 'site.nav.permits', to: '/services/permits' },
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE },
-  { key: 'site.nav.transport', to: '/services/transport' },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT },
   { key: 'site.nav.veterinary', to: '/services/veterinary' },
 ]
 

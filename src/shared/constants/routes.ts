@@ -2,6 +2,8 @@ export const ROUTES = {
   HOME: '/',
   INSURANCE: '/insurance',
   INSURANCE_REGISTER: '/insurance/register-insurance',
+  TRANSPORT: '/transport',
+  TRANSPORT_REGISTER: '/transport/register-transportation',
   CART: '/cart',
   CHECKOUT: '/checkout',
   STORES: {

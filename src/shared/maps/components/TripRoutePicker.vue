@@ -29,9 +29,16 @@ const props = withDefaults(
     kmUnit?: string
     required?: boolean
     country?: string
+    /** stacked: fields above map; split: form + tall map side-by-side from lg */
+    layout?: 'stacked' | 'split'
+    showSwap?: boolean
+    distanceReadonly?: boolean
   }>(),
   {
     required: true,
+    layout: 'stacked',
+    showSwap: true,
+    distanceReadonly: false,
   },
 )
 
@@ -260,64 +267,103 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div
-      v-if="loadError"
-      class="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 px-3.5 py-3 text-sm text-foreground"
-      role="status"
-    >
-      <Icon name="lucide:map" class="mt-0.5 size-4 shrink-0 text-ibbil-gold" aria-hidden="true" />
-      <p>{{ labels.loadError }}</p>
-    </div>
+  <div
+    :class="
+      layout === 'split'
+        ? 'grid gap-6 lg:grid-cols-2 lg:items-stretch'
+        : 'space-y-4'
+    "
+  >
+    <div class="space-y-4">
+      <slot name="before" />
 
-    <div class="relative space-y-3">
-      <PlaceAutocomplete
-        :model-value="origin"
-        :label="labels.origin"
-        :placeholder="labels.originPlaceholder"
-        :hint="labels.originHint"
-        :error="originError"
-        :country="country"
-        icon="lucide:circle-dot"
-        :required="required"
-        @update:model-value="emit('update:origin', $event)"
-        @select="onOriginSelect"
-        @blur="emit('origin-blur')"
-      />
-
-      <div class="flex justify-center">
-        <BaseButton
-          type="button"
-          variant="ghost"
-          size="sm"
-          class="!rounded-full !px-3 !py-2 text-ibbil-green hover:bg-ibbil-green/10"
-          :aria-label="labels.swap"
-          :disabled="!origin && !destination"
-          @click="swapPoints"
-        >
-          <Icon name="lucide:arrow-up-down" class="size-4" aria-hidden="true" />
-          <span class="text-xs font-semibold">{{ labels.swap }}</span>
-        </BaseButton>
+      <div
+        v-if="loadError"
+        class="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 px-3.5 py-3 text-sm text-foreground"
+        role="status"
+      >
+        <Icon name="lucide:map" class="mt-0.5 size-4 shrink-0 text-ibbil-gold" aria-hidden="true" />
+        <p>{{ labels.loadError }}</p>
       </div>
 
-      <PlaceAutocomplete
-        :model-value="destination"
-        :label="labels.destination"
-        :placeholder="labels.destinationPlaceholder"
-        :hint="labels.destinationHint"
-        :error="destinationError"
-        :country="country"
-        icon="lucide:map-pinned"
+      <div class="relative space-y-3">
+        <PlaceAutocomplete
+          :model-value="origin"
+          :label="labels.origin"
+          :placeholder="labels.originPlaceholder"
+          :hint="labels.originHint"
+          :error="originError"
+          :country="country"
+          icon="lucide:circle-dot"
+          :required="required"
+          @update:model-value="emit('update:origin', $event)"
+          @select="onOriginSelect"
+          @blur="emit('origin-blur')"
+        />
+
+        <div v-if="showSwap" class="flex justify-center">
+          <BaseButton
+            type="button"
+            variant="ghost"
+            size="sm"
+            class="!rounded-full !px-3 !py-2 text-ibbil-green hover:bg-ibbil-green/10"
+            :aria-label="labels.swap"
+            :disabled="!origin && !destination"
+            @click="swapPoints"
+          >
+            <Icon name="lucide:arrow-up-down" class="size-4" aria-hidden="true" />
+            <span class="text-xs font-semibold">{{ labels.swap }}</span>
+          </BaseButton>
+        </div>
+
+        <PlaceAutocomplete
+          :model-value="destination"
+          :label="labels.destination"
+          :placeholder="labels.destinationPlaceholder"
+          :hint="labels.destinationHint"
+          :error="destinationError"
+          :country="country"
+          icon="lucide:map-pinned"
+          :required="required"
+          @update:model-value="emit('update:destination', $event)"
+          @select="onDestinationSelect"
+          @blur="emit('destination-blur')"
+        />
+      </div>
+
+      <BaseInput
+        v-if="layout === 'split'"
+        :model-value="distanceKm"
+        inputmode="decimal"
+        autocomplete="off"
+        :label="labels.distance"
+        :placeholder="labels.distancePlaceholder"
+        :hint="isDistanceAuto ? labels.autoDistanceHint : labels.distanceHint"
+        :error="distanceError"
+        :loading="isCalculating"
         :required="required"
-        @update:model-value="emit('update:destination', $event)"
-        @select="onDestinationSelect"
-        @blur="emit('destination-blur')"
-      />
+        :disabled="distanceReadonly"
+        @update:model-value="onDistanceInput"
+        @blur="emit('distance-blur')"
+      >
+        <template #suffix>
+          <span class="flex items-center gap-1.5 text-xs font-semibold text-foreground-muted">
+            <Icon
+              v-if="isDistanceAuto"
+              name="lucide:sparkles"
+              class="size-3.5 text-ibbil-green"
+              aria-hidden="true"
+            />
+            {{ labels.kmUnit }}
+          </span>
+        </template>
+      </BaseInput>
     </div>
 
     <div
       v-if="showMap || isLoading"
       class="overflow-hidden rounded-2xl border border-ibbil-green/15 bg-[#eef2ef]"
+      :class="layout === 'split' ? 'min-h-[280px] lg:min-h-full' : undefined"
     >
       <div
         class="flex items-center justify-between gap-2 border-b border-ibbil-green/10 bg-white/80 px-3.5 py-2.5 dark:bg-surface"
@@ -343,44 +389,56 @@ onBeforeUnmount(() => {
 
       <div
         ref="mapEl"
-        class="h-56 w-full sm:h-64"
+        class="w-full"
+        :class="layout === 'split' ? 'h-[280px] sm:h-[360px] lg:h-[min(100%,560px)] lg:min-h-[480px]' : 'h-56 sm:h-64'"
         role="img"
         :aria-label="labels.mapLabel"
       />
     </div>
 
+    <template v-if="layout === 'stacked'">
+      <p
+        v-if="routeError"
+        class="text-sm text-danger"
+        role="alert"
+      >
+        {{ routeError }}
+      </p>
+
+      <BaseInput
+        :model-value="distanceKm"
+        inputmode="decimal"
+        autocomplete="off"
+        :label="labels.distance"
+        :placeholder="labels.distancePlaceholder"
+        :hint="isDistanceAuto ? labels.autoDistanceHint : labels.distanceHint"
+        :error="distanceError"
+        :loading="isCalculating"
+        :required="required"
+        :disabled="distanceReadonly"
+        @update:model-value="onDistanceInput"
+        @blur="emit('distance-blur')"
+      >
+        <template #suffix>
+          <span class="flex items-center gap-1.5 text-xs font-semibold text-foreground-muted">
+            <Icon
+              v-if="isDistanceAuto"
+              name="lucide:sparkles"
+              class="size-3.5 text-ibbil-green"
+              aria-hidden="true"
+            />
+            {{ labels.kmUnit }}
+          </span>
+        </template>
+      </BaseInput>
+    </template>
+
     <p
-      v-if="routeError"
-      class="text-sm text-danger"
+      v-if="routeError && layout === 'split'"
+      class="text-sm text-danger lg:col-span-2"
       role="alert"
     >
       {{ routeError }}
     </p>
-
-    <BaseInput
-      :model-value="distanceKm"
-      inputmode="decimal"
-      autocomplete="off"
-      :label="labels.distance"
-      :placeholder="labels.distancePlaceholder"
-      :hint="isDistanceAuto ? labels.autoDistanceHint : labels.distanceHint"
-      :error="distanceError"
-      :loading="isCalculating"
-      :required="required"
-      @update:model-value="onDistanceInput"
-      @blur="emit('distance-blur')"
-    >
-      <template #suffix>
-        <span class="flex items-center gap-1.5 text-xs font-semibold text-foreground-muted">
-          <Icon
-            v-if="isDistanceAuto"
-            name="lucide:sparkles"
-            class="size-3.5 text-ibbil-green"
-            aria-hidden="true"
-          />
-          {{ labels.kmUnit }}
-        </span>
-      </template>
-    </BaseInput>
   </div>
 </template>

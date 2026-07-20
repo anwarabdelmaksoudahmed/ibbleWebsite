@@ -32,6 +32,9 @@
       "placeholder": "Select a date",
       "prevMonth": "Previous month",
       "nextMonth": "Next month"
+    },
+    "timePicker": {
+      "placeholder": "Select a time"
     }
   },
   "maps": {
@@ -329,6 +332,123 @@
     "comingSoon": {
       "title": "Coming Soon",
       "description": "This page is under development and will be available soon with a better experience."
+    },
+    "transport": {
+      "seoTitle": "Camel Transport | Ibbil",
+      "seoDescription": "Transport your camels safely across Saudi Arabia with Ibbil: choose the truck, driver, and price that suit you.",
+      "heroTitle": "Transport camels whenever you want, anywhere",
+      "heroSubtitle": "You can now move your camels anywhere in the Kingdom easily and safely through Ibbil.",
+      "ctaPrimary": "Transport now",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "Camel transport truck on a desert road at golden hour",
+        "howToBook": "Camel owner managing a transport booking on a phone beside a loaded truck",
+        "service": "Transport driver handling a booking on a phone next to a camel truck"
+      },
+      "benefits": {
+        "choice": {
+          "title": "Freedom to choose",
+          "description": "Camel owners across Saudi Arabia can choose the truck, its size, the right driver, and a price that works for them."
+        },
+        "audience": {
+          "title": "Who can use transport",
+          "description": "All camel owners can transport camels safely within the Kingdom to any location by following clear transport steps."
+        },
+        "price": {
+          "title": "Pick a price that fits",
+          "description": "Once you choose the right truck, you can negotiate freely with your selected driver to agree on a suitable price."
+        }
+      },
+      "howTitle": "How do you transport?",
+      "howDescription": "Through Ibbil you can choose the truck you want, its type and size, then negotiate with the driver for the right price — so you get a reliable way to move camels anytime, anywhere in Saudi Arabia.",
+      "steps": {
+        "choose": {
+          "title": "1) Choose the truck",
+          "description": "Select the truck type and size that fit your camels and trip requirements."
+        },
+        "negotiate": {
+          "title": "2) Agree on the price",
+          "description": "Connect with the right driver and agree on a clear, fair price."
+        },
+        "book": {
+          "title": "3) Confirm and transport",
+          "description": "Confirm trip details, then move your camels safely to your destination in the Kingdom."
+        }
+      },
+      "footerTitle": "Camel Transport",
+      "footerDescription": "After completing the form, your transport price appears. If you accept it, you are redirected to payment via an approved Saudi method, then you receive an order invoice and can track the transport.",
+      "register": {
+        "seoTitle": "Camel Transport Request | Ibbil",
+        "seoDescription": "Complete your camel transport request in clear steps: delivery details, shipment type, and confirmation.",
+        "breadcrumb": "Transport request",
+        "progressLabel": "Transport request steps",
+        "next": "Next",
+        "prev": "Back",
+        "submit": "Confirm request",
+        "submitSuccess": "Your transport request was submitted successfully.",
+        "steps": {
+          "delivery": "Delivery details",
+          "shipmentType": "Choose shipment type",
+          "payment": "Payment"
+        },
+        "sections": {
+          "shipmentType": "Choose shipment type",
+          "shipmentTypeHint": "Select the truck size that best fits your camels and trip.",
+          "summary": "Request summary",
+          "summaryHint": "Review your details, then confirm to submit the transport request."
+        },
+        "form": {
+          "name": "Full name",
+          "namePlaceholder": "Enter full name",
+          "phone": "Mobile number",
+          "phonePlaceholder": "Enter mobile number",
+          "countryCode": "Country code",
+          "transportDate": "Transport date",
+          "transportDatePlaceholder": "Select transport date",
+          "transportTime": "Transport time",
+          "transportTimePlaceholder": "Select transport time",
+          "origin": "Pickup location",
+          "originPlaceholder": "Enter a location",
+          "destination": "Drop-off location",
+          "destinationPlaceholder": "Enter a location",
+          "distanceKm": "Trip distance in kilometers",
+          "distancePlaceholder": "Calculated automatically from the map",
+          "termsAccepted": "I confirm that the entered details are accurate and I accept the transport terms."
+        },
+        "hints": {
+          "origin": "Search and select the pickup point on the map.",
+          "destination": "Search and select the drop-off point on the map.",
+          "autoDistance": "Distance calculated automatically from the selected route."
+        },
+        "shipmentTypes": {
+          "small": {
+            "title": "Small truck",
+            "description": "Suitable for short trips and a small number of camels."
+          },
+          "medium": {
+            "title": "Medium truck",
+            "description": "Balanced capacity for most transport needs between cities."
+          },
+          "large": {
+            "title": "Large truck",
+            "description": "High capacity for long-distance trips and larger groups."
+          }
+        },
+        "validation": {
+          "transportDateRequired": "Transport date is required",
+          "transportDateInvalid": "Enter a valid transport date",
+          "transportTimeRequired": "Transport time is required",
+          "transportTimeInvalid": "Enter a valid transport time",
+          "originMin": "Pickup location must be at least 2 characters",
+          "originMax": "Pickup location is too long",
+          "destinationMin": "Drop-off location must be at least 2 characters",
+          "destinationMax": "Drop-off location is too long",
+          "distanceRequired": "Trip distance is required",
+          "distanceInvalid": "Enter a valid trip distance",
+          "shipmentTypeRequired": "Please choose a shipment type",
+          "termsRequired": "You must accept the terms to continue"
+        }
+      }
     },
     "insurance": {
       "seoTitle": "Camel Insurance | Ibbil",
