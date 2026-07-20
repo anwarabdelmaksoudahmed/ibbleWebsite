@@ -93,8 +93,22 @@ const paymentMethodIcon = computed(() =>
           <p class="truncate text-sm font-bold text-ibbil-green sm:text-base">
             {{ item.title || t('site.profile.wallet.card.unknownTitle') }}
           </p>
-          <p class="mt-0.5 text-xs text-foreground-muted sm:text-sm">
-            {{ t('site.profile.wallet.card.transactionNumber', { id: item.id }) }}
+          <p class="mt-0.5 flex min-w-0 items-baseline gap-1 text-xs text-foreground-muted sm:text-sm">
+            <span class="shrink-0">{{ t('site.profile.wallet.card.transactionNumberLabel') }}</span>
+            <BaseTooltip
+              v-if="item.transactionId"
+              :text="String(item.transactionId)"
+              class="min-w-0 flex-1"
+            >
+              <span
+                class="block min-w-0 truncate font-medium tabular-nums text-foreground/85"
+              
+                :aria-label="t('site.profile.wallet.card.transactionNumber', { id: item.transactionId })"
+              >
+                {{ item.transactionId }}
+              </span>
+            </BaseTooltip>
+            <span v-else class="text-foreground/60">—</span>
           </p>
           <p v-if="item.createdAt" class="mt-0.5 text-xs text-foreground-muted">
             {{ t('site.profile.wallet.card.createdAt', { date: item.createdAt }) }}

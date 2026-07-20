@@ -1251,6 +1251,7 @@
         },
         "card": {
           "unknownTitle": "Transaction",
+          "transactionNumberLabel": "Transaction #",
           "transactionNumber": "Transaction #{id}",
           "createdAt": "On {date}",
           "amount": "Amount",
