@@ -76,6 +76,67 @@ export type WalletsApiResponse =
   | { data: WalletApiDto[] | WalletApiDto }
   | WalletApiDto
 
+export type WalletBankInfoApiDto = {
+  account_name?: string | null
+  bank_name?: string | null
+  IBAN?: string | null
+}
+
+export type WalletDetailsApiDto = WalletApiDto & {
+  user_id?: string | number | null
+  total_withdraw?: string | number | null
+  total_deposit?: string | number | null
+  withdraw_count?: string | number | null
+  deposit_count?: string | number | null
+  pending_amount?: string | number | null
+  bank_info?: WalletBankInfoApiDto | null
+  activate_otb?: number | boolean | null
+  created_at?: string | null
+}
+
+export type WalletTransactionDetailsApiDto = {
+  orderId?: string | number | null
+  [key: string]: unknown
+}
+
+export type WalletTransactionApiDto = {
+  id: string | number
+  user_id?: string | number | null
+  model_type?: string | null
+  model_id?: string | number | null
+  amount?: string | number | null
+  title?: string | null
+  status?: string | null
+  type?: string | null
+  transaction_id?: string | number | null
+  module?: string | null
+  order_id?: string | number | null
+  details?: WalletTransactionDetailsApiDto | null
+  created_at?: string | null
+  payment_method?: string | null
+}
+
+export type WalletTransactionsApiMeta = {
+  totalItems?: number
+  itemCount?: number
+  itemsPerPage?: number
+  totalPages?: number
+  currentPage?: number
+}
+
+export type WalletTransactionsApiResponse = {
+  data?: WalletTransactionApiDto[]
+  meta?: WalletTransactionsApiMeta
+}
+
+export type WalletTransactionsQueryParams = {
+  page?: number
+  status?: string
+  source?: WalletTransactionSource
+}
+
+export type WalletTransactionSource = 'wallet' | 'card'
+
 export type CreateOrderApiRequest = {
   address_id: string
   store_id: string

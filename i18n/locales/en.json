@@ -905,6 +905,7 @@
       "nav": {
         "label": "Profile navigation",
         "overview": "Overview",
+        "wallet": "Wallet",
         "insurance": "Insurance",
         "marketplace": "My orders",
         "transport": "Transportation",
@@ -1070,6 +1071,66 @@
           "diagnosis": "Diagnosis",
           "prescription": "Prescription",
           "invoice": "Invoice"
+        }
+      },
+      "wallet": {
+        "seoTitle": "My Wallet | Ibbil",
+        "seoDescription": "View your wallet balance and transaction history on Ibbil.",
+        "breadcrumb": "Wallet",
+        "transactionsTitle": "Transactions",
+        "transactionsCount": "{count} transactions",
+        "errorTitle": "Could not load your wallet",
+        "errorDescription": "Something went wrong while loading your wallet data. Please try again.",
+        "emptyTitle": "No transactions yet",
+        "emptyDescription": "You have no transactions matching these filters. Clear the filters or try another status.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter transactions",
+          "searchPlaceholder": "Search by title, reference, or order…",
+          "paymentSource": "Payment method",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "paymentSource": {
+          "wallet": "Wallet",
+          "card": "Card"
+        },
+        "status": {
+          "completed": "Completed",
+          "pending": "Pending",
+          "failed": "Failed",
+          "cancelled": "Cancelled"
+        },
+        "type": {
+          "deposit": "Deposit",
+          "withdrawal": "Withdrawal"
+        },
+        "summary": {
+          "balanceLabel": "Current balance",
+          "pendingAmount": "Pending amount",
+          "bankInfo": "Bank account",
+          "accountName": "Account name",
+          "bankName": "Bank",
+          "iban": "IBAN",
+          "totalDeposit": "Total deposits",
+          "totalWithdraw": "Total withdrawals",
+          "depositCount": "Deposits",
+          "withdrawCount": "Withdrawals"
+        },
+        "card": {
+          "unknownTitle": "Transaction",
+          "transactionNumber": "Transaction #{id}",
+          "createdAt": "On {date}",
+          "amount": "Amount",
+          "orderId": "Order #{id}",
+          "expand": "Show transaction details",
+          "collapse": "Hide transaction details",
+          "detailsTitle": "Transaction details",
+          "referenceId": "Reference ID",
+          "type": "Type",
+          "status": "Status",
+          "module": "Module",
+          "paymentMethod": "Payment method"
         }
       },
       "favorites": {

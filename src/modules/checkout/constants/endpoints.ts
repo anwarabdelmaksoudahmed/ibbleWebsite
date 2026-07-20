@@ -6,4 +6,6 @@ export const CHECKOUT_ENDPOINTS = {
   ORDERS: '/v1/customer/orders',
   /** User wallets live on the web API host (`webApiBaseUrl`). */
   WALLETS: '/v1/user/wallets',
+  WALLET_TRANSACTIONS: '/v1/user/wallets/transactions',
+  WALLET_CREDIT_TRANSACTIONS: '/v1/user/wallets/credit-transactions',
 } as const

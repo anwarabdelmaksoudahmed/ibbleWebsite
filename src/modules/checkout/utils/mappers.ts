@@ -9,6 +9,10 @@ import type {
   CustomerOrderProductApiDto,
   CustomerOrdersApiResponse,
   WalletApiDto,
+  WalletDetailsApiDto,
+  WalletTransactionApiDto,
+  WalletTransactionSource,
+  WalletTransactionsApiResponse,
   WalletsApiResponse,
 } from '@modules/checkout/types/api.types'
 import type {
@@ -22,6 +26,10 @@ import type {
   CustomerOrderStore,
   CustomerOrdersPage,
   UserWallet,
+  WalletBankInfo,
+  WalletDetails,
+  WalletTransaction,
+  WalletTransactionsPage,
 } from '@modules/checkout/types/internal.types'
 import type { CreateCustomerAddressApiRequest } from '@modules/checkout/types/api.types'
 
@@ -33,9 +41,19 @@ function toId(value: unknown): string {
   return value == null ? '' : String(value)
 }
 
-function toBalance(value: unknown): number {
+function toNumber(value: unknown): number {
   const n = typeof value === 'number' ? value : Number(value)
   return Number.isFinite(n) ? n : 0
+}
+
+function toCount(value: unknown): number {
+  return toNumber(value)
+}
+
+function toOptionalNumber(value: unknown): number | null {
+  if (value == null || value === '') return null
+  const n = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(n) ? n : null
 }
 
 export function mapCustomerAddress(dto: CustomerAddressApiDto): CustomerAddress {
@@ -96,10 +114,114 @@ export function mapCountries(payload: CountriesApiResponse | null | undefined): 
 function mapWallet(dto: WalletApiDto, index: number): UserWallet {
   return {
     id: toId(dto.id) || `wallet-${index}`,
-    balance: toBalance(dto.balance),
+    balance: toNumber(dto.balance),
     currency: (dto.currency || 'SAR').trim() || 'SAR',
     status: (dto.status || '').trim(),
     name: (dto.name || '').trim(),
+  }
+}
+
+function mapWalletBankInfo(
+  dto: WalletDetailsApiDto['bank_info'],
+): WalletBankInfo | null {
+  if (!dto || typeof dto !== 'object') return null
+
+  const accountName = toTrimmed(dto.account_name)
+  const bankName = toTrimmed(dto.bank_name)
+  const iban = toTrimmed(dto.IBAN)
+
+  if (!accountName && !bankName && !iban) return null
+
+  return { accountName, bankName, iban }
+}
+
+function toTrimmed(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : value == null ? '' : String(value).trim()
+}
+
+function unwrapWalletDetailsDto(
+  payload: WalletsApiResponse | null | undefined,
+): WalletDetailsApiDto | null {
+  if (!payload) return null
+
+  if (Array.isArray(payload)) {
+    return (payload[0] as WalletDetailsApiDto) ?? null
+  }
+
+  if (isRecord(payload) && 'data' in payload) {
+    const data = payload.data
+    if (Array.isArray(data)) return (data[0] as WalletDetailsApiDto) ?? null
+    if (isRecord(data)) return data as WalletDetailsApiDto
+  }
+
+  if (isRecord(payload)) {
+    return payload as WalletDetailsApiDto
+  }
+
+  return null
+}
+
+export function mapWalletDetails(
+  payload: WalletsApiResponse | null | undefined,
+): WalletDetails | null {
+  const dto = unwrapWalletDetailsDto(payload)
+  if (!dto) return null
+
+  const wallet = mapWallet(dto, 0)
+
+  return {
+    id: wallet.id,
+    userId: toId(dto.user_id),
+    balance: wallet.balance,
+    currency: wallet.currency,
+    totalWithdraw: toNumber(dto.total_withdraw),
+    totalDeposit: toNumber(dto.total_deposit),
+    withdrawCount: toCount(dto.withdraw_count),
+    depositCount: toCount(dto.deposit_count),
+    pendingAmount: toOptionalNumber(dto.pending_amount),
+    bankInfo: mapWalletBankInfo(dto.bank_info),
+    createdAt: toTrimmed(dto.created_at),
+  }
+}
+
+export function mapWalletTransaction(
+  dto: WalletTransactionApiDto,
+  source: WalletTransactionSource = 'wallet',
+): WalletTransaction {
+  const details = dto.details
+  const orderIdFromDetails =
+    details && typeof details === 'object' && 'orderId' in details
+      ? toId(details.orderId)
+      : ''
+
+  const rawPaymentMethod = toTrimmed(dto.payment_method)
+
+  return {
+    id: toId(dto.id),
+    amount: toNumber(dto.amount),
+    title: toTrimmed(dto.title),
+    status: toTrimmed(dto.status).toLowerCase() || 'pending',
+    type: toTrimmed(dto.type).toLowerCase() || 'withdrawal',
+    transactionId: toId(dto.transaction_id),
+    orderId: toId(dto.order_id) || orderIdFromDetails,
+    module: toTrimmed(dto.module),
+    paymentMethod: rawPaymentMethod || source,
+    paymentSource: source,
+    createdAt: toTrimmed(dto.created_at),
+  }
+}
+
+export function mapWalletTransactionsPage(
+  response: WalletTransactionsApiResponse,
+  source: WalletTransactionSource = 'wallet',
+): WalletTransactionsPage {
+  const meta = response.meta
+  return {
+    items: (response.data ?? []).map((dto) => mapWalletTransaction(dto, source)),
+    count: toNumber(meta?.totalItems ?? meta?.itemCount),
+    totalPages: Math.max(1, toNumber(meta?.totalPages) || 1),
+    currentPage: Math.max(1, toNumber(meta?.currentPage) || 1),
+    itemsPerPage: Math.max(1, toNumber(meta?.itemsPerPage) || 10),
   }
 }
 
@@ -163,11 +285,6 @@ export function addressToFormInput(address: CustomerAddress): AddressFormInput {
     zipCode: address.zipCode,
     isDefault: address.isDefault,
   }
-}
-
-function toNumber(value: string | number | null | undefined): number {
-  const n = typeof value === 'number' ? value : Number(value)
-  return Number.isFinite(n) ? n : 0
 }
 
 function mapOrderProduct(dto: CustomerOrderProductApiDto): CustomerOrderProduct {

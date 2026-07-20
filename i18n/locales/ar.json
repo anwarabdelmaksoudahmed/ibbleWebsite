@@ -905,6 +905,7 @@
       "nav": {
         "label": "تنقل الملف الشخصي",
         "overview": "نظرة عامة",
+        "wallet": "المحفظة",
         "insurance": "التأمين",
         "marketplace": "طلباتي",
         "transport": "النقل",
@@ -1070,6 +1071,66 @@
           "diagnosis": "التشخيص",
           "prescription": "الوصفة",
           "invoice": "الفاتورة"
+        }
+      },
+      "wallet": {
+        "seoTitle": "محفظتي | إبل",
+        "seoDescription": "عرض رصيد محفظتك وحركاتك المالية على منصة إبل.",
+        "breadcrumb": "المحفظة",
+        "transactionsTitle": "الحركات المالية",
+        "transactionsCount": "{count} حركة",
+        "errorTitle": "تعذّر تحميل المحفظة",
+        "errorDescription": "حدث خطأ أثناء تحميل بيانات المحفظة. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد حركات مالية",
+        "emptyDescription": "لا توجد حركات مطابقة لهذه الفلاتر. امسح الفلاتر أو جرّب حالة أخرى.",
+        "clearFilters": "مسح الفلاتر",
+        "filters": {
+          "label": "تصفية الحركات المالية",
+          "searchPlaceholder": "ابحث بالعنوان أو رقم الحركة أو الطلب…",
+          "paymentSource": "طريقة الدفع",
+          "status": "الحالة",
+          "allStatuses": "كل الحالات"
+        },
+        "paymentSource": {
+          "wallet": "المحفظة",
+          "card": "البطاقة"
+        },
+        "status": {
+          "completed": "مكتمل",
+          "pending": "قيد الانتظار",
+          "failed": "فشل",
+          "cancelled": "ملغي"
+        },
+        "type": {
+          "deposit": "إيداع",
+          "withdrawal": "سحب"
+        },
+        "summary": {
+          "balanceLabel": "الرصيد الحالي",
+          "pendingAmount": "مبلغ معلّق",
+          "bankInfo": "بيانات الحساب البنكي",
+          "accountName": "اسم الحساب",
+          "bankName": "البنك",
+          "iban": "الآيبان",
+          "totalDeposit": "إجمالي الإيداع",
+          "totalWithdraw": "إجمالي السحب",
+          "depositCount": "عدد الإيداعات",
+          "withdrawCount": "عدد السحوبات"
+        },
+        "card": {
+          "unknownTitle": "حركة مالية",
+          "transactionNumber": "حركة #{id}",
+          "createdAt": "بتاريخ {date}",
+          "amount": "المبلغ",
+          "orderId": "طلب #{id}",
+          "expand": "عرض تفاصيل الحركة",
+          "collapse": "إخفاء تفاصيل الحركة",
+          "detailsTitle": "تفاصيل الحركة",
+          "referenceId": "رقم المرجع",
+          "type": "النوع",
+          "status": "الحالة",
+          "module": "الخدمة",
+          "paymentMethod": "طريقة الدفع"
         }
       },
       "favorites": {

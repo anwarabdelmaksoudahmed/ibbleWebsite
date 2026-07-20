@@ -10,6 +10,12 @@ export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
     to: PROFILE_ROUTES.ROOT,
   },
   {
+    id: 'wallet',
+    icon: 'lucide:wallet',
+    labelKey: 'site.profile.nav.wallet',
+    to: PROFILE_ROUTES.WALLET,
+  },
+  {
     id: 'insurance',
     icon: 'lucide:shield-check',
     labelKey: 'site.profile.nav.insurance',

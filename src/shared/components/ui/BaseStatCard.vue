@@ -61,8 +61,9 @@ const accentIcon = {
         v-else
         class="text-end text-xl font-extrabold tracking-tight text-ibbil-green tabular-nums sm:text-2xl"
       >
-        <template v-if="empty || value == null">{{ emptyLabel }}</template>
-        <slot v-else name="value">{{ value }}</slot>
+        <slot v-if="$slots.value" name="value" />
+        <template v-else-if="empty || value == null">{{ emptyLabel }}</template>
+        <template v-else>{{ value }}</template>
       </p>
     </div>
 

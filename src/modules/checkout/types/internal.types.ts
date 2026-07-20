@@ -47,6 +47,50 @@ export type UserWallet = {
   name: string
 }
 
+export type WalletBankInfo = {
+  accountName: string
+  bankName: string
+  iban: string
+}
+
+export type WalletDetails = {
+  id: string
+  userId: string
+  balance: number
+  currency: string
+  totalWithdraw: number
+  totalDeposit: number
+  withdrawCount: number
+  depositCount: number
+  pendingAmount: number | null
+  bankInfo: WalletBankInfo | null
+  createdAt: string
+}
+
+export type WalletTransactionSource = 'wallet' | 'card'
+
+export type WalletTransaction = {
+  id: string
+  amount: number
+  title: string
+  status: string
+  type: string
+  transactionId: string
+  orderId: string
+  module: string
+  paymentMethod: string
+  paymentSource: WalletTransactionSource
+  createdAt: string
+}
+
+export type WalletTransactionsPage = {
+  items: WalletTransaction[]
+  count: number
+  totalPages: number
+  currentPage: number
+  itemsPerPage: number
+}
+
 export type PaymentMethodId = 'wallet' | 'card'
 
 export type DiscountDraft = {
