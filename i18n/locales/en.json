@@ -450,6 +450,51 @@
         }
       }
     },
+    "veterinary": {
+      "seoTitle": "Veterinary Services | Ibbil",
+      "seoDescription": "Book a certified veterinarian for your camels: clinic visits, field calls, consultations, and medicine delivery through Ibbil.",
+      "heroTitle": "Request a veterinarian for your camels",
+      "heroSubtitle": "We connect you with certified doctors for your camels' comfort and care.",
+      "ctaPrimary": "Book an appointment",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "A veterinarian examining a camel at a desert farm at golden hour",
+        "careContent": "A veterinarian performing a close-up examination on a camel at a desert farm",
+        "howToBook": "A camel owner booking a veterinary appointment through the Ibbil app"
+      },
+      "benefits": {
+        "clinic": {
+          "title": "Clinic examination",
+          "description": "Choose an in-clinic checkup from certified veterinarians offering their services on the Ibbil platform."
+        },
+        "fieldVisit": {
+          "title": "Field visit",
+          "description": "Request a field or home visit to your location so your camels can be treated without transport."
+        },
+        "consultation": {
+          "title": "Consultation & medicine",
+          "description": "Get a medical consultation or have medicines dispensed and delivered to your home at a time that suits you."
+        }
+      },
+      "howTitle": "How to book",
+      "howDescription": "To keep your camels comfortable, Ibbil lets you choose the booking method you prefer — clinic visit, home visit, or medical consultation — and also dispense medicines through the veterinary platform on Ibbil.",
+      "steps": {
+        "chooseService": {
+          "title": "1) Choose a service",
+          "description": "Select the service you need: an in-clinic examination or a field visit to your location."
+        },
+        "chooseDate": {
+          "title": "2) Choose a date",
+          "description": "Pick a suitable appointment from the available slots with your chosen veterinarian."
+        },
+        "confirm": {
+          "title": "3) Confirm appointment",
+          "description": "Review your booking details and confirm the appointment to proceed to payment."
+        }
+      },
+      "footerTitle": "Veterinary Services",
+      "footerDescription": "After completing the form, your camel treatment price appears. If you accept it, you are redirected to payment via an approved Saudi method, then receive a treatment invoice and your chosen booking method."
+    },
     "insurance": {
       "seoTitle": "Camel Insurance | Ibbil",
       "seoDescription": "Request a camel transport insurance policy in Saudi Arabia through clear steps and secure payment.",
