@@ -35,6 +35,13 @@
     },
     "timePicker": {
       "placeholder": "اختر وقتاً"
+    },
+    "pagination": {
+      "label": "التصفح بين الصفحات",
+      "prevPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية",
+      "pageStatus": "صفحة {current} من {total}",
+      "goToPage": "الانتقال إلى الصفحة {page}"
     }
   },
   "maps": {

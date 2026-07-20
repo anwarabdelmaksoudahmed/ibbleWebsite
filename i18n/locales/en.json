@@ -35,6 +35,13 @@
     },
     "timePicker": {
       "placeholder": "Select a time"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "pageStatus": "Page {current} of {total}",
+      "goToPage": "Go to page {page}"
     }
   },
   "maps": {
