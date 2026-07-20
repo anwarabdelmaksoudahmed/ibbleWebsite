@@ -20,6 +20,8 @@ withDefaults(defineProps<BaseStatCardProps>(), {
   accent: 'green',
 })
 
+const { t } = useI18n()
+
 const accentIcon = {
   green: 'bg-ibbil-green/[0.08] text-ibbil-green',
   gold: 'bg-ibbil-gold/15 text-ibbil-gold',
@@ -29,29 +31,43 @@ const accentIcon = {
 
 <template>
   <article
+    :aria-busy="loading || undefined"
     :class="cn(
       'group relative flex flex-col overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white p-4 shadow-[0_8px_24px_-18px_rgba(45,83,61,0.35)] transition-all duration-300 dark:border-ibbil-green/20 dark:bg-surface-elevated sm:p-5',
       !loading && 'hover:-translate-y-0.5 hover:border-ibbil-gold/40 hover:shadow-[0_18px_36px_-20px_rgba(45,83,61,0.45)]',
     )"
   >
+    <div
+      v-if="loading"
+      class="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden rounded-t-2xl bg-ibbil-green/10"
+      aria-hidden="true"
+    >
+      <div class="stat-card-loading-bar" />
+    </div>
+
     <span
+      v-else
       class="pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-center scale-x-0 bg-ibbil-gold transition-transform duration-300 group-hover:scale-x-100"
       aria-hidden="true"
     />
 
+    <span v-if="loading" class="sr-only">{{ t('common.loading') }}</span>
+
     <div class="flex items-start justify-between gap-3">
       <div
         :class="cn(
-          'flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 sm:size-11',
+          'flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 sm:size-11',
           accentIcon[accent],
+          loading ? 'opacity-60' : 'group-hover:scale-105',
         )"
         aria-hidden="true"
       >
-        <Icon :name="icon" class="size-5" />
+        <Icon :name="icon" :class="cn('size-5', loading && 'animate-pulse')" />
       </div>
 
       <BaseSkeleton
         v-if="loading"
+        variant="shimmer"
         width="3.5rem"
         height="1.75rem"
         rounded="lg"
@@ -69,7 +85,8 @@ const accentIcon = {
 
     <BaseSkeleton
       v-if="loading"
-      class="mt-3"
+      variant="shimmer"
+      class="skeleton-shimmer-delay mt-3"
       width="70%"
       height="0.875rem"
     />
