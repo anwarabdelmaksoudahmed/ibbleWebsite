@@ -118,9 +118,9 @@ function tImageAlt(altKey: string) {
 
           <div class="relative z-[1] mx-auto w-full max-w-7xl px-4 py-10 pb-28 pointer-events-auto sm:px-6 sm:py-12 sm:pb-32 lg:px-6">
             <div class="max-w-2xl">
-              <p class="section-fade text-xs font-semibold tracking-[0.22em] text-ibbil-gold uppercase sm:text-sm">
+              <!-- <p class="section-fade text-xs font-semibold tracking-[0.22em] text-ibbil-gold uppercase sm:text-sm">
                 {{ t('auth.platformName') }}
-              </p>
+              </p> -->
               <h1
                 :id="titleId"
                 class="section-fade mt-3 text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl"

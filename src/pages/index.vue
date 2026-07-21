@@ -81,9 +81,7 @@ const heroSlides: HeroSlide[] = [
 
             <div class="relative z-[1] mx-auto w-full max-w-7xl px-4 py-8 pb-14 pointer-events-auto sm:px-6 sm:pb-12">
               <div class="max-w-xl space-y-3 text-white sm:space-y-4">
-                <p class="hero-fade-in text-xs font-semibold tracking-[0.22em] text-ibbil-gold uppercase sm:text-sm">
-                  {{ t('auth.platformName') }}
-                </p>
+    
 
                 <h1 class="hero-fade-in text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
                   {{ t('site.home.heroTitle') }}

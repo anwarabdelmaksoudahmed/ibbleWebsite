@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import StoreCategoryCard from '@modules/stores/components/StoreCategoryCard.vue'
-import StoresToolbar from '@modules/stores/components/StoresToolbar.vue'
 import MarketplaceFetchLoader from '@shared/components/site/MarketplaceFetchLoader.vue'
 import type { MarketplaceCardVariant } from '@shared/types/marketplace-card'
 
@@ -41,24 +40,27 @@ const showRefreshOverlay = computed(() => isLoading.value && hasCategories.value
 
     <div class="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-6 lg:py-16">
       <header
-        class="mx-auto mb-8 max-w-2xl text-center sm:mb-10"
+        class="mx-auto mb-[7px] max-w-2xl text-center "
         :class="isVisible ? 'stores-reveal' : 'opacity-0'"
       >
-
         <h1
           id="stores-categories-title"
           class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl"
         >
           {{ t('site.stores.title') }}
         </h1>
-        <div class="relative mx-auto mt-3 flex h-3 w-28 items-center justify-center" aria-hidden="true">
+
+        <p class="mx-auto mt-2.5 max-w-md text-sm leading-relaxed text-foreground-muted sm:text-base">
+          {{ t('site.stores.subtitle') }}
+        </p>
+
+        <div class="relative mx-auto mb-4 flex h-3 w-28 items-center justify-center" aria-hidden="true">
           <span class="h-px w-full bg-ibbil-green/20" />
           <span
             class="absolute h-1 w-10 origin-center rounded-full bg-ibbil-gold"
             :class="isVisible ? 'stores-accent-grow' : 'scale-x-0'"
           />
         </div>
-   
       </header>
 
 
@@ -108,7 +110,7 @@ const showRefreshOverlay = computed(() => isLoading.value && hasCategories.value
           role="list"
           :class="[
             view === 'grid'
-              ? 'grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5'
+              ? 'grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5 xl:grid-cols-4'
               : 'flex flex-col gap-3 sm:gap-4',
             showRefreshOverlay ? 'pointer-events-none opacity-60' : undefined,
           ]"
