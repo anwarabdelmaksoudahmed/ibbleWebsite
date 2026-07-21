@@ -1,9 +1,9 @@
 import { getStoresService } from '@modules/stores/services/stores.service'
 import { normalizeApiError } from '@core/api/http/errors'
-import type { StoreCategory } from '@modules/stores/types'
 
-export function useStoreCategories() {
+export function useStoreProductCategories(slug: MaybeRefOrGetter<string>) {
   const { locale } = useI18n()
+  const resolvedSlug = computed(() => toValue(slug))
 
   const {
     data: categories,
@@ -12,26 +12,22 @@ export function useStoreCategories() {
     error,
     refresh,
   } = useAsyncData(
-    () => `store-categories-${locale.value}`,
-    () => getStoresService().listCategories(),
+    () => ['store-product-categories', locale.value, resolvedSlug.value].join(':'),
+    () => getStoresService().listStoreProductCategories(resolvedSlug.value),
     {
+      watch: [locale, resolvedSlug],
       default: () => [],
-      watch: [locale],
     },
   )
 
   const isLoading = computed(
-    () => pending.value || status.value === 'pending' || status.value === 'idle',
+    () => status.value === 'pending' || status.value === 'idle' || pending.value,
   )
 
   const errorMessage = computed(() => {
     if (!error.value) return null
     return normalizeApiError(error.value).message
   })
-
-  function findBySlug(slug: string): StoreCategory | undefined {
-    return categories.value?.find((category) => category.slug === slug)
-  }
 
   return {
     categories,
@@ -41,6 +37,5 @@ export function useStoreCategories() {
     error,
     errorMessage,
     refresh,
-    findBySlug,
   }
 }
