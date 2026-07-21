@@ -8,6 +8,8 @@ import type {
   LoginApiResponse,
   LoginApiUserDto,
   RefreshTokenApiResponse,
+  SignupApiRequest,
+  SignupApiResponse,
 } from '@modules/auth/types/api.types'
 
 export class AuthApi {
@@ -22,6 +24,15 @@ export class AuthApi {
   login(payload: LoginApiRequest): Promise<LoginApiResponse> {
     return this.client
       .post<LoginApiResponse>(AUTH_ENDPOINTS.SSO_LOGIN, payload, {
+        baseURL: this.baseUrl,
+        skipAuth: true,
+      })
+      .then((response) => response.data)
+  }
+
+  signup(payload: SignupApiRequest): Promise<SignupApiResponse> {
+    return this.client
+      .post<SignupApiResponse>(AUTH_ENDPOINTS.SSO_SIGNUP, payload, {
         baseURL: this.baseUrl,
         skipAuth: true,
       })

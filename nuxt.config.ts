@@ -63,7 +63,16 @@ export default defineNuxtConfig({
     {
       path: '~/modules',
       pathPrefix: false,
-      ignore: ['**/pages/**', '**/stores/**/*.{ts,js}', '**/services/**', '**/api/**'],
+      ignore: [
+        '**/pages/**',
+        '**/stores/**/*.{ts,js}',
+        '**/services/**',
+        '**/api/**',
+        '**/types/**',
+        '**/constants/**',
+        '**/utils/**',
+        '**/composables/**',
+      ],
     },
   ],
 
@@ -72,9 +81,17 @@ export default defineNuxtConfig({
       appName: process.env.NUXT_PUBLIC_APP_NAME || 'Ibble',
       apiBaseUrl:
         process.env.NUXT_PUBLIC_API_BASE_URL || 'https://marketplace-api-ibbil-dev.dafagate.com/api',
-      authBaseUrl: process.env.NUXT_PUBLIC_AUTH_BASE_URL || 'https://auth-ibbil-dev.dafagate.com',
+      authBaseUrl: process.env.NUXT_PUBLIC_AUTH_BASE_URL || 'https://auth.ibbil.com',
+      webApiBaseUrl:
+        process.env.NUXT_PUBLIC_WEB_API_BASE_URL || 'https://api-web.ibbil.com/api',
+      insuranceApiBaseUrl:
+        process.env.NUXT_PUBLIC_INSURANCE_API_BASE_URL || 'https://api-insurance.ibbil.com/',
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '966500000000',
+      hyperPayWidgetBaseUrl:
+        process.env.NUXT_PUBLIC_HYPERPAY_WIDGET_BASE_URL
+        || 'https://eu-test.oppwa.com/v1/paymentWidgets.js',
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     },
   },
 
@@ -133,6 +150,28 @@ export default defineNuxtConfig({
       contentSecurityPolicy: {
         'img-src': ["'self'", 'data:', 'https:'],
         'font-src': ["'self'", 'https:', 'data:'],
+        'script-src': [
+          "'self'",
+          "'unsafe-inline'",
+          'https://eu-test.oppwa.com',
+          'https://oppwa.com',
+          'https://maps.googleapis.com',
+          'https://maps.gstatic.com',
+        ],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://maps.gstatic.com'],
+        'frame-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        'connect-src': [
+          "'self'",
+          'https://eu-test.oppwa.com',
+          'https://oppwa.com',
+          'https://maps.googleapis.com',
+          'https://places.googleapis.com',
+          'https:',
+        ],
+        'form-action': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
+        // upgrade CSS/JS/images to HTTPS and they fail to load.
+        'upgrade-insecure-requests': process.env.NODE_ENV === 'development' ? false : true,
       },
       crossOriginEmbedderPolicy: process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
       referrerPolicy: 'strict-origin-when-cross-origin',
@@ -166,6 +205,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/auth/**': { ssr: false },
+    '/payment/**': { ssr: false },
   },
 
   hooks: {

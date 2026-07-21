@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         refetchOnWindowFocus: false,
       },
       mutations: {
-        retry: 1,
+        retry: false,
       },
     },
   })
