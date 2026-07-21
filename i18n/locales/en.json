@@ -183,6 +183,99 @@
       "enterprise": "Built for multi-team enterprise workflows"
     }
   },
+  "join": {
+    "seoTitle": "Join as a Merchant or Service Provider",
+    "seoDescription": "Register now on Ibbil as a merchant, independent driver, shipping company, veterinary doctor, or veterinary clinic.",
+    "title": "New registration to join as a merchant or service provider",
+    "subtitle": "Choose the service you provide, complete your details, and our team will contact you",
+    "services": {
+      "marketplace": {
+        "title": "Stores",
+        "description": "Showcase and sell your products on Ibbil"
+      },
+      "transportation": {
+        "title": "Transportation",
+        "description": "Join as an independent driver or shipping company"
+      },
+      "veterinary": {
+        "title": "Veterinary",
+        "description": "Join as a veterinary doctor or clinic"
+      }
+    },
+    "providerTypes": {
+      "merchant": "Merchant",
+      "driver": "Independent driver",
+      "company": "Shipping company",
+      "doctor": "Independent doctor",
+      "clinic": "Clinic"
+    },
+    "form": {
+      "chooseService": "Choose the service you provide",
+      "chooseProviderType": "Service type",
+      "sections": {
+        "storeOwner": "Store owner details",
+        "storeData": "Store details"
+      },
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Bandar Mohammed Altamimi",
+      "mobile": "Mobile number",
+      "phone": "Phone number",
+      "otherPhone": "Another phone number",
+      "nationalId": "National ID",
+      "email": "Email",
+      "storeType": "Store type",
+      "storeTypePlaceholder": "Choose the store type",
+      "storeNameAr": "Store name in Arabic",
+      "storeNameEn": "Store name in English",
+      "city": "City",
+      "cityPlaceholder": "Choose the city",
+      "storeAddress": "Store address",
+      "companyName": "Company name",
+      "companyAddress": "Company address",
+      "companyOwnerName": "Company owner name",
+      "clinicName": "Clinic name",
+      "clinicOwnerName": "Clinic owner name",
+      "commissionOrder": "I agree to add a {rate}% fee on the value of each order",
+      "commissionBooking": "I agree to add a {rate}% fee on the value of each booking",
+      "submit": "Register",
+      "next": "Next",
+      "hasAccount": "Already have an account?",
+      "placeholders": {
+        "storeNameAr": "e.g. متجر الصحراء للإبل",
+        "storeNameEn": "e.g. Desert Camel Store",
+        "address": "District, street, city",
+        "companyName": "e.g. Desert Transport Co.",
+        "clinicName": "e.g. Camel Care Clinic"
+      }
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name must not exceed 50 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Invalid phone number",
+      "countryCodeRequired": "Country code is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "storeTypeRequired": "Store type is required",
+      "storeNameMin": "Store name must be at least 2 characters",
+      "storeNameMax": "Store name must not exceed 100 characters",
+      "cityRequired": "City is required",
+      "addressMin": "Address must be at least 5 characters",
+      "addressMax": "Address must not exceed 255 characters",
+      "companyNameMin": "Company name must be at least 2 characters",
+      "companyNameMax": "Company name must not exceed 100 characters",
+      "clinicNameMin": "Clinic name must be at least 2 characters",
+      "clinicNameMax": "Clinic name must not exceed 100 characters",
+      "termsRequired": "You must agree to the commission rate to continue"
+    },
+    "success": {
+      "toast": "Your join request was submitted successfully",
+      "title": "Your request has been received",
+      "message": "Thank you for joining Ibbil. Our team will review your request and contact you shortly.",
+      "backHome": "Back to home",
+      "newRequest": "Submit another request"
+    }
+  },
   "site": {
     "currency": {
       "saudiRiyal": "Saudi Riyal"

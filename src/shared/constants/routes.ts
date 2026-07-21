@@ -6,6 +6,7 @@ export const ROUTES = {
   TRANSPORT_REGISTER: '/transport/register-transportation',
   CART: '/cart',
   CHECKOUT: '/checkout',
+  JOIN: '/join',
   STORES: {
     ROOT: '/stores',
     CATEGORY: (slug: string) => `/stores/${slug}`,

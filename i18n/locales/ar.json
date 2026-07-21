@@ -183,6 +183,99 @@
       "enterprise": "مصممة لسير عمل الفرق المؤسسية"
     }
   },
+  "join": {
+    "seoTitle": "الانضمام كتاجر أو مقدم خدمة",
+    "seoDescription": "سجّل الآن في منصة إبل كتاجر أو سائق نقل أو شركة شحن أو طبيب بيطري أو عيادة بيطرية.",
+    "title": "تسجيل جديد للإنضمام كتاجر أو مقدم خدمة",
+    "subtitle": "اختر الخدمة التي تقدمها وأكمل بياناتك وسيتواصل معك فريقنا",
+    "services": {
+      "marketplace": {
+        "title": "المتاجر",
+        "description": "اعرض منتجاتك وبِع عبر منصة إبل"
+      },
+      "transportation": {
+        "title": "النقل",
+        "description": "انضم كسائق مستقل أو شركة شحن"
+      },
+      "veterinary": {
+        "title": "البيطرة",
+        "description": "انضم كطبيب بيطري أو عيادة"
+      }
+    },
+    "providerTypes": {
+      "merchant": "تاجر",
+      "driver": "سائق مستقل",
+      "company": "شركة شحن",
+      "doctor": "دكتور مستقل",
+      "clinic": "العيادة"
+    },
+    "form": {
+      "chooseService": "قم باختيار الخدمة التي تقدمها",
+      "chooseProviderType": "نوع الخدمة",
+      "sections": {
+        "storeOwner": "بيانات مالك المتجر",
+        "storeData": "بيانات المتجر"
+      },
+      "fullName": "الاسم بالكامل",
+      "fullNamePlaceholder": "بندر محمد التميمي",
+      "mobile": "رقم الجوال",
+      "phone": "رقم الهاتف",
+      "otherPhone": "رقم هاتف آخر",
+      "nationalId": "رقم الهوية",
+      "email": "البريد الالكتروني",
+      "storeType": "نوع المتجر",
+      "storeTypePlaceholder": "اختر نوع المتجر",
+      "storeNameAr": "اسم المتجر بالعربية",
+      "storeNameEn": "اسم المتجر بالإنجليزية",
+      "city": "المدينة",
+      "cityPlaceholder": "اختر المدينة",
+      "storeAddress": "عنوان المتجر",
+      "companyName": "اسم الشركة",
+      "companyAddress": "عنوان الشركة",
+      "companyOwnerName": "اسم مالك الشركة",
+      "clinicName": "اسم العيادة",
+      "clinicOwnerName": "إسم مالك العيادة",
+      "commissionOrder": "أوافق على إضافة نسبة {rate}% على قيمة كل طلب",
+      "commissionBooking": "أوافق على إضافة نسبة {rate}% على قيمة كل حجز",
+      "submit": "تسجيل",
+      "next": "التالي",
+      "hasAccount": "لديك حساب بالفعل؟",
+      "placeholders": {
+        "storeNameAr": "مثال: متجر الصحراء للإبل",
+        "storeNameEn": "مثال: Desert Camel Store",
+        "address": "الحي، الشارع، المدينة",
+        "companyName": "مثال: شركة الصحراء للنقل",
+        "clinicName": "مثال: عيادة الرعاية البيطرية"
+      }
+    },
+    "validation": {
+      "nameMin": "الاسم يجب ألا يقل عن حرفين",
+      "nameMax": "الاسم يجب ألا يتجاوز 50 حرفًا",
+      "phoneRequired": "رقم الهاتف مطلوب",
+      "phoneInvalid": "رقم الهاتف غير صحيح",
+      "countryCodeRequired": "كود الدولة مطلوب",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "البريد الإلكتروني غير صحيح",
+      "storeTypeRequired": "نوع المتجر مطلوب",
+      "storeNameMin": "اسم المتجر يجب ألا يقل عن حرفين",
+      "storeNameMax": "اسم المتجر يجب ألا يتجاوز 100 حرف",
+      "cityRequired": "المدينة مطلوبة",
+      "addressMin": "العنوان يجب ألا يقل عن 5 أحرف",
+      "addressMax": "العنوان يجب ألا يتجاوز 255 حرفًا",
+      "companyNameMin": "اسم الشركة يجب ألا يقل عن حرفين",
+      "companyNameMax": "اسم الشركة يجب ألا يتجاوز 100 حرف",
+      "clinicNameMin": "اسم العيادة يجب ألا يقل عن حرفين",
+      "clinicNameMax": "اسم العيادة يجب ألا يتجاوز 100 حرف",
+      "termsRequired": "يجب الموافقة على نسبة العمولة للمتابعة"
+    },
+    "success": {
+      "toast": "تم إرسال طلب الانضمام بنجاح",
+      "title": "تم استلام طلبك بنجاح",
+      "message": "شكرًا لانضمامك إلى منصة إبل. سيقوم فريقنا بمراجعة طلبك والتواصل معك في أقرب وقت.",
+      "backHome": "العودة للرئيسية",
+      "newRequest": "تقديم طلب آخر"
+    }
+  },
   "site": {
     "currency": {
       "saudiRiyal": "ريال سعودي"

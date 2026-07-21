@@ -137,7 +137,7 @@ function onSearch() {
         </nav>
 
         <NuxtLinkLocale
-          :to="ROUTES.AUTH.REGISTER"
+          :to="ROUTES.JOIN"
           class="ms-auto hidden shrink-0 rounded-md bg-ibbil-green px-3 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ibbil-green-dark hover:shadow md:inline-flex"
         >
           {{ t('site.nav.joinMerchant') }}
@@ -196,7 +196,7 @@ function onSearch() {
             {{ t(link.key) }}
           </NuxtLinkLocale>
           <NuxtLinkLocale
-            :to="ROUTES.AUTH.REGISTER"
+            :to="ROUTES.JOIN"
             class="mt-2 flex items-center justify-center rounded-lg bg-ibbil-green px-3 py-2.5 text-sm font-semibold text-white"
           >
             {{ t('site.nav.joinMerchant') }}
