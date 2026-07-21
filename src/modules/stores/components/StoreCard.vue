@@ -13,7 +13,7 @@ const props = withDefaults(
     animate?: boolean
   }>(),
   {
-    variant: 'list',
+    variant: 'grid',
     animate: false,
   },
 )
@@ -21,6 +21,12 @@ const props = withDefaults(
 const { t, n } = useI18n()
 
 const to = computed(() => STORES_ROUTES.STORE(props.categorySlug, props.store.slug))
+
+const productsLabel = computed(() =>
+  props.store.productsCount > 0
+    ? t('site.stores.productsCount', { count: n(props.store.productsCount) })
+    : '',
+)
 
 const meta = computed<MarketplaceCardMetaItem[]>(() => {
   const items: MarketplaceCardMetaItem[] = []
@@ -32,10 +38,11 @@ const meta = computed<MarketplaceCardMetaItem[]>(() => {
     })
   }
 
-  if (props.store.productsCount > 0) {
+  // Grid shows the count in the card footer instead of a meta chip.
+  if (props.variant === 'list' && productsLabel.value) {
     items.push({
       icon: 'lucide:package',
-      text: t('site.stores.productsCount', { count: n(props.store.productsCount) }),
+      text: productsLabel.value,
     })
   }
 
@@ -53,6 +60,7 @@ const meta = computed<MarketplaceCardMetaItem[]>(() => {
     :variant="variant"
     :meta="meta"
     :cta-label="t('site.stores.exploreStore')"
+    :footer-label="productsLabel"
     :index="index"
     :animate="animate"
   />

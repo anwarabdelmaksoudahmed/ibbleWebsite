@@ -15,6 +15,8 @@ const props = withDefaults(
     variant?: MarketplaceCardVariant
     meta?: MarketplaceCardMetaItem[]
     ctaLabel?: string
+    /** Grid footer stat (e.g. "25 products"). Falls back to `ctaLabel`. */
+    footerLabel?: string
     index?: number
     animate?: boolean
   }>(),
@@ -26,6 +28,7 @@ const props = withDefaults(
     variant: 'grid',
     meta: () => [],
     ctaLabel: '',
+    footerLabel: '',
     animate: false,
   },
 )
@@ -37,9 +40,17 @@ const hasDescription = computed(() => Boolean(props.description?.trim()))
 const hasMeta = computed(() => props.meta.length > 0)
 const isList = computed(() => props.variant === 'list')
 
+const gridFooterLabel = computed(() => props.footerLabel || props.ctaLabel)
+
 const animationStyle = computed(() =>
   props.animate && props.index != null
     ? { animationDelay: `${120 + props.index * 55}ms` }
+    : undefined,
+)
+
+const mediaAnimationStyle = computed(() =>
+  props.animate && props.index != null
+    ? { animationDelay: `${180 + props.index * 55}ms` }
     : undefined,
 )
 </script>
@@ -47,17 +58,17 @@ const animationStyle = computed(() =>
 <template>
   <NuxtLinkLocale
     :to="to"
-    class="marketplace-card group relative overflow-hidden border border-ibbil-green/10 bg-white transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green focus-visible:ring-offset-2"
+    class="marketplace-card group relative flex overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green focus-visible:ring-offset-2"
     :class="[
       animate ? 'marketplace-card-enter' : undefined,
       isList
-        ? 'flex flex-col rounded-2xl shadow-[0_10px_30px_-18px_rgba(45,83,61,0.35)] hover:-translate-y-0.5 hover:border-ibbil-gold/40 hover:shadow-[0_22px_44px_-22px_rgba(45,83,61,0.45)] sm:flex-row sm:items-stretch'
-        : 'flex h-full flex-col items-center rounded-2xl p-6 text-center shadow-[0_8px_28px_-18px_rgba(45,83,61,0.3)] hover:-translate-y-1.5 hover:border-ibbil-gold/50 hover:shadow-[0_18px_40px_-20px_rgba(45,83,61,0.45)] sm:p-7',
+        ? 'flex-col shadow-[0_10px_30px_-18px_rgba(45,83,61,0.35)] hover:-translate-y-0.5 hover:border-ibbil-gold/40 hover:shadow-[0_22px_44px_-22px_rgba(45,83,61,0.45)] sm:flex-row sm:items-stretch'
+        : 'h-full flex-col text-center shadow-[0_8px_28px_-18px_rgba(45,83,61,0.3)] hover:-translate-y-1.5 hover:border-ibbil-gold/50 hover:shadow-[0_18px_40px_-20px_rgba(45,83,61,0.45)]',
     ]"
     :style="animationStyle"
   >
     <span
-      class="pointer-events-none absolute inset-x-0 top-0 h-1 origin-center scale-x-0 rounded-b-full bg-ibbil-gold transition-transform duration-300 group-hover:scale-x-100"
+      class="pointer-events-none absolute inset-x-0 top-0 z-[2] h-1 origin-center scale-x-0 rounded-b-full bg-ibbil-gold transition-transform duration-300 group-hover:scale-x-100"
       aria-hidden="true"
     />
 
@@ -157,17 +168,14 @@ const animationStyle = computed(() =>
       </span>
     </div>
 
-    <!-- Grid: media + content -->
+    <!-- Grid -->
     <template v-else>
+      <!-- Grid: illustration media (e.g. category cards) -->
       <div
         v-if="hasIllustration"
-        class="relative mb-5 flex aspect-[391/282] w-full max-w-[9.5rem] items-center justify-center overflow-hidden sm:max-w-[11rem]"
-        :class="animate ? 'marketplace-card-icon' : undefined"
-        :style="
-          animate && index != null
-            ? { animationDelay: `${180 + index * 55}ms` }
-            : undefined
-        "
+        class="relative mx-auto mt-6 flex aspect-[391/282] w-full max-w-[9.5rem] items-center justify-center overflow-hidden sm:max-w-[11rem]"
+        :class="animate ? 'marketplace-card-media' : undefined"
+        :style="mediaAnimationStyle"
       >
         <img
           :src="illustration"
@@ -180,69 +188,97 @@ const animationStyle = computed(() =>
         >
       </div>
 
+      <!-- Grid: cover banner + overlapping avatar (e.g. store cards) -->
+      <template v-else>
+        <div class="relative h-28 w-full overflow-hidden sm:h-32">
+          <img
+            v-if="hasCover"
+            :src="cover"
+            alt=""
+            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+            loading="lazy"
+            decoding="async"
+          >
+          <div
+            v-else
+            class="h-full w-full bg-gradient-to-br from-ibbil-green/[0.14] via-ibbil-green/[0.06] to-ibbil-gold/[0.1]"
+            aria-hidden="true"
+          />
+          <span
+            class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent"
+            aria-hidden="true"
+          />
+        </div>
+
+        <div
+          class="relative z-[1] -mt-10 flex justify-center"
+          :class="animate ? 'marketplace-card-media' : undefined"
+          :style="mediaAnimationStyle"
+        >
+          <span
+            class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_8px_20px_-8px_rgba(45,83,61,0.4)] ring-4 ring-white transition-transform duration-300 group-hover:scale-[1.06]"
+          >
+            <img
+              v-if="hasLogo"
+              :src="logo"
+              alt=""
+              class="h-full w-full object-cover"
+              loading="lazy"
+              width="80"
+              height="80"
+            >
+            <Icon
+              v-else
+              name="lucide:store"
+              class="h-8 w-8 text-ibbil-green/40"
+              aria-hidden="true"
+            />
+          </span>
+        </div>
+      </template>
+
+      <!-- Grid: content -->
       <div
-        v-else
-        class="relative mb-5 flex aspect-square w-full max-w-[8.5rem] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-ibbil-green/[0.06] to-ibbil-green/[0.02] transition-colors duration-300 group-hover:from-ibbil-gold/[0.14] group-hover:to-ibbil-gold/[0.04] sm:max-w-[9.5rem]"
-        :class="animate ? 'marketplace-card-icon' : undefined"
-        :style="
-          animate && index != null
-            ? { animationDelay: `${180 + index * 55}ms` }
-            : undefined
-        "
+        class="flex w-full flex-1 flex-col items-center px-5 pb-5 sm:px-6"
+        :class="hasIllustration ? 'pt-5' : 'pt-3'"
       >
-        <img
-          v-if="hasCover"
-          :src="cover"
-          alt=""
-          class="absolute inset-0 h-full w-full object-cover opacity-30"
-          loading="lazy"
+        <h3
+          class="text-base font-bold leading-snug text-ibbil-green transition-colors duration-300 group-hover:text-ibbil-green-dark sm:text-lg"
         >
-        <img
-          v-if="hasLogo"
-          :src="logo"
-          alt=""
-          class="relative z-[1] h-[62%] w-[62%] object-contain transition-transform duration-300 group-hover:scale-[1.06]"
-          loading="lazy"
-          width="120"
-          height="120"
+          {{ title }}
+        </h3>
+
+        <p
+          v-if="hasDescription"
+          class="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground-muted"
         >
+          {{ description }}
+        </p>
+
+        <ul
+          v-if="hasMeta"
+          class="mt-3 flex flex-wrap items-center justify-center gap-2"
+          role="list"
+        >
+          <li
+            v-for="(item, i) in meta"
+            :key="i"
+            class="inline-flex items-center gap-1.5 rounded-full bg-ibbil-green/[0.06] px-3 py-1 text-xs font-medium text-ibbil-green"
+          >
+            <Icon :name="item.icon" class="h-3.5 w-3.5 shrink-0 text-ibbil-gold" aria-hidden="true" />
+            <span>{{ item.text }}</span>
+          </li>
+        </ul>
+
+        <div v-if="gridFooterLabel" class="mt-auto w-full pt-4">
+          <span
+            class="flex items-center justify-center gap-1 border-t border-ibbil-green/10 pt-3.5 text-sm font-bold text-ibbil-green transition-colors duration-300 group-hover:text-ibbil-gold"
+          >
+            {{ gridFooterLabel }}
+            <DirectionalArrow variant="chevron" animated />
+          </span>
+        </div>
       </div>
-
-      <h3
-        class="text-base font-bold leading-snug text-ibbil-green transition-colors duration-300 group-hover:text-ibbil-green-dark sm:text-lg"
-      >
-        {{ title }}
-      </h3>
-
-      <p
-        v-if="hasDescription"
-        class="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground-muted"
-      >
-        {{ description }}
-      </p>
-
-      <ul
-        v-if="hasMeta"
-        class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5"
-        role="list"
-      >
-        <li
-          v-for="(item, i) in meta"
-          :key="i"
-          class="inline-flex items-center gap-1 text-xs text-foreground-muted"
-        >
-          <Icon :name="item.icon" class="h-3.5 w-3.5 shrink-0 text-ibbil-gold" aria-hidden="true" />
-          <span>{{ item.text }}</span>
-        </li>
-      </ul>
-
-      <span
-        v-if="ctaLabel"
-        class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-ibbil-green transition-colors duration-300 group-hover:text-ibbil-gold"
-      >
-        {{ ctaLabel }}
-        <DirectionalArrow animated />
-      </span>
     </template>
   </NuxtLinkLocale>
 </template>
@@ -252,8 +288,8 @@ const animationStyle = computed(() =>
   animation: marketplace-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.marketplace-card-icon {
-  animation: marketplace-icon-in 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+.marketplace-card-media {
+  animation: marketplace-media-in 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) both;
 }
 
 @keyframes marketplace-fade-up {
@@ -267,7 +303,7 @@ const animationStyle = computed(() =>
   }
 }
 
-@keyframes marketplace-icon-in {
+@keyframes marketplace-media-in {
   from {
     opacity: 0;
     transform: scale(0.78);
@@ -280,7 +316,7 @@ const animationStyle = computed(() =>
 
 @media (prefers-reduced-motion: reduce) {
   .marketplace-card-enter,
-  .marketplace-card-icon {
+  .marketplace-card-media {
     animation: none;
     opacity: 1;
     transform: none;

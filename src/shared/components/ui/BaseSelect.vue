@@ -23,6 +23,9 @@ export type BaseSelectProps = {
   labelClass?: string
   wrapperClass?: string
   triggerClass?: string
+  /** When false, trigger and option labels stay on one line without ellipsis */
+  truncateLabels?: boolean
+  panelMinWidth?: number
 }
 
 const props = withDefaults(defineProps<BaseSelectProps>(), {
@@ -31,6 +34,7 @@ const props = withDefaults(defineProps<BaseSelectProps>(), {
   loading: false,
   required: false,
   searchable: false,
+  truncateLabels: true,
 })
 
 const emit = defineEmits<{ 'update:modelValue': [value: string | number] }>()
@@ -105,6 +109,7 @@ const {
   onClose: () => {
     searchQuery.value = ''
   },
+  panelMinWidth: () => props.panelMinWidth ?? 0,
 })
 
 const shellClasses = computed(() =>
@@ -120,13 +125,22 @@ const shellClasses = computed(() =>
 
 const triggerClasses = computed(() =>
   cn(
-    'flex min-w-0 flex-1 items-center gap-2 border-0 bg-transparent text-start outline-none',
+    'flex items-center gap-2 border-0 bg-transparent text-start outline-none',
     'focus-visible:outline-none disabled:cursor-not-allowed',
+    props.truncateLabels ? 'min-w-0 flex-1' : 'w-auto flex-none',
     hasPrefix.value ? 'ps-2 pe-9' : 'px-3.5 pe-9',
     sizeClasses[props.size],
     !hasValue.value && 'text-foreground-muted',
     props.triggerClass,
   ),
+)
+
+const triggerLabelClasses = computed(() =>
+  props.truncateLabels ? 'min-w-0 flex-1 truncate' : 'whitespace-nowrap',
+)
+
+const optionLabelClasses = computed(() =>
+  props.truncateLabels ? 'min-w-0 flex-1 truncate' : 'min-w-0 flex-1 whitespace-nowrap',
 )
 
 const resolvedSearchPlaceholder = computed(
@@ -184,7 +198,7 @@ function onOptionMouseEnter(option: SelectOption, index: number) {
           <slot name="prefix" />
         </span>
 
-        <span class="min-w-0 flex-1 truncate">
+        <span :class="triggerLabelClasses">
           {{ displayLabel }}
         </span>
       </button>
@@ -218,6 +232,8 @@ function onOptionMouseEnter(option: SelectOption, index: number) {
             :style="panelStyle"
             class="overflow-hidden rounded-xl border border-border bg-white shadow-[0_16px_40px_-16px_rgba(45,83,61,0.45)]"
             role="presentation"
+            @pointerdown.stop
+            @click.stop
             @keydown="onListKeydown"
           >
             <div v-if="showSearch" class="border-b border-border p-2">
@@ -276,7 +292,7 @@ function onOptionMouseEnter(option: SelectOption, index: number) {
                   option.disabled && 'cursor-not-allowed opacity-50',
                   index === highlightedIndex && !isSelected(option) && !option.disabled && 'bg-[#f3f5f3]',
                 ]"
-                @mousedown.prevent="selectItem(option, index)"
+                @click.stop.prevent="selectItem(option, index)"
                 @mouseenter="onOptionMouseEnter(option, index)"
               >
                 <slot
@@ -286,7 +302,7 @@ function onOptionMouseEnter(option: SelectOption, index: number) {
                   :highlighted="index === highlightedIndex"
                   :index="index"
                 >
-                  <span class="min-w-0 flex-1 truncate">{{ option.label }}</span>
+                  <span :class="optionLabelClasses">{{ option.label }}</span>
                   <Icon
                     v-if="isSelected(option)"
                     name="lucide:check"

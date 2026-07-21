@@ -14,7 +14,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const localePath = useLocalePath()
 
-const view = ref<MarketplaceCardVariant>('list')
+const view = ref<MarketplaceCardVariant>('grid')
 
 const {
   stores,

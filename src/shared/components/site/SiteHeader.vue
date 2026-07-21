@@ -58,33 +58,12 @@ function onSearch() {
           </NuxtLinkLocale>
         </nav>
 
-        <form
-          class="mx-auto hidden min-w-0 flex-1 max-w-xl overflow-hidden rounded-full bg-white shadow-sm md:flex"
-          @submit.prevent="onSearch"
-        >
-          <select
-            v-model="searchCategory"
-            class="shrink-0 border-e border-border/60 bg-transparent px-3 text-sm text-foreground outline-none"
-            :aria-label="t('site.search.category')"
-          >
-            <option value="all">{{ t('site.search.all') }}</option>
-            <option value="stores">{{ t('site.nav.stores') }}</option>
-            <option value="services">{{ t('site.nav.services') }}</option>
-          </select>
-          <input
-            v-model="searchQuery"
-            type="search"
-            :placeholder="t('site.search.placeholder')"
-            class="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-foreground-muted"
-          >
-          <button
-            type="submit"
-            class="flex items-center justify-center px-4 text-ibbil-green transition-colors hover:bg-ibbil-green/5"
-            :aria-label="t('common.search')"
-          >
-            <Icon name="lucide:search" class="h-4 w-4" />
-          </button>
-        </form>
+        <SiteSearchBar
+          v-model:query="searchQuery"
+          v-model:category="searchCategory"
+          variant="header"
+          @submit="onSearch"
+        />
 
         <div class="ms-auto flex items-center gap-1 sm:gap-2">
           <div class="hidden sm:block">
@@ -175,17 +154,14 @@ function onSearch() {
       leave-to-class="opacity-0 -translate-y-2"
     >
       <div v-if="mobileOpen" class="border-b border-border bg-white xl:hidden">
-        <form class="flex gap-2 border-b border-border p-3 md:hidden" @submit.prevent="onSearch">
-          <input
-            v-model="searchQuery"
-            type="search"
-            :placeholder="t('site.search.placeholder')"
-            class="min-w-0 flex-1 rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-ibbil-green focus:ring-2 focus:ring-ibbil-green/20"
-          >
-          <button type="submit" class="rounded-lg bg-ibbil-green px-3 text-white">
-            <Icon name="lucide:search" class="h-4 w-4" />
-          </button>
-        </form>
+        <div class="border-b border-border p-3 md:hidden">
+          <SiteSearchBar
+            v-model:query="searchQuery"
+            v-model:category="searchCategory"
+            variant="mobile"
+            @submit="onSearch"
+          />
+        </div>
 
         <div class="flex items-center justify-between border-b border-border px-3 py-2 sm:hidden">
           <LocaleSwitcher variant="mobile" />

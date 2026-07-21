@@ -10,6 +10,7 @@ export type UseFloatingListboxOptions<T> = {
   onSelect: (item: T, index: number) => void
   isItemDisabled?: (item: T, index: number) => boolean
   panelWidth?: MaybeRefOrGetter<'trigger' | number>
+  panelMinWidth?: MaybeRefOrGetter<number>
   panelMaxHeight?: number
   panelGap?: number
   focusSearchOnOpen?: MaybeRefOrGetter<boolean>
@@ -48,9 +49,16 @@ export function useFloatingListbox<T>(options: UseFloatingListboxOptions<T>) {
 
     const rect = trigger.getBoundingClientRect()
     const widthMode = toValue(options.panelWidth ?? 'trigger')
-    const width = widthMode === 'trigger'
-      ? Math.min(rect.width, window.innerWidth - 16)
-      : Math.min(widthMode, window.innerWidth - 16)
+    let width = widthMode === 'trigger'
+      ? rect.width
+      : widthMode
+
+    const minWidth = toValue(options.panelMinWidth ?? 0)
+    if (minWidth > 0) {
+      width = Math.max(width, minWidth)
+    }
+
+    width = Math.min(width, window.innerWidth - 16)
 
     let left = rect.left
     if (left + width > window.innerWidth - 8) {
@@ -68,7 +76,7 @@ export function useFloatingListbox<T>(options: UseFloatingListboxOptions<T>) {
           width: `${width}px`,
           bottom: `${window.innerHeight - rect.top + panelGapPx}px`,
           top: 'auto',
-          zIndex: '80',
+          zIndex: '100',
         }
       : {
           position: 'fixed',
@@ -76,7 +84,7 @@ export function useFloatingListbox<T>(options: UseFloatingListboxOptions<T>) {
           width: `${width}px`,
           top: `${rect.bottom + panelGapPx}px`,
           bottom: 'auto',
-          zIndex: '80',
+          zIndex: '100',
         }
   }
 
