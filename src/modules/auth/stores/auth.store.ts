@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { AuthState, InternalAuthModel, LoginCredentials, User } from '@modules/auth/types'
+import type { AuthState, InternalAuthModel, LoginCredentials, RegisterCredentials, User } from '@modules/auth/types'
 import { AuthService } from '@modules/auth/services/auth.service'
 import { tokenManager } from '@modules/auth/utils/token-manager'
 import { AuthEndpointNotAvailableError } from '@modules/auth/utils/errors'
@@ -42,6 +42,16 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async register(credentials: RegisterCredentials) {
+      this.isLoading = true
+      try {
+        const authService = new AuthService()
+        return await authService.signup(credentials)
+      } finally {
+        this.isLoading = false
+      }
+    },
+
     async logout() {
       try {
         const authService = new AuthService()
@@ -76,11 +86,22 @@ export const useAuthStore = defineStore('auth', {
 
       this.isAuthenticated = true
 
+      if (!this.user) {
+        this.restoreIdentityFromStorage()
+      }
+
       if (this.user) return
 
       try {
         const authService = new AuthService()
         this.user = await authService.getCurrentUser()
+        if (this.user) {
+          tokenManager.persistIdentity({
+            user: this.user,
+            roles: this.roles,
+            permissions: this.permissions,
+          })
+        }
       } catch (error) {
         if (error instanceof AuthEndpointNotAvailableError) return
         this.clearSession()
@@ -93,6 +114,11 @@ export const useAuthStore = defineStore('auth', {
       this.permissions = authModel.permissions
       this.applySession(authModel.session)
       this.isAuthenticated = true
+      tokenManager.persistIdentity({
+        user: authModel.user,
+        roles: authModel.roles,
+        permissions: authModel.permissions,
+      })
     },
 
     applySession(session: InternalAuthModel['session']) {
@@ -117,7 +143,13 @@ export const useAuthStore = defineStore('auth', {
 
     hydrateFromStorage() {
       const persisted = tokenManager.readPersistedTokens()
-      if (!persisted) return
+      if (!persisted) {
+        // Pinia may still have stale `isAuthenticated` from persist — clear it.
+        if (this.isAuthenticated || this.accessToken) {
+          this.clearSession()
+        }
+        return
+      }
 
       if (tokenManager.isAccessTokenExpired()) {
         this.clearSession()
@@ -129,6 +161,27 @@ export const useAuthStore = defineStore('auth', {
       this.sessionExpiresAt = persisted.sessionExpiresAt
       this.refreshExpiresAt = persisted.refreshExpiresAt
       this.isAuthenticated = true
+
+      // Tokens restore immediately; user may still be missing if Pinia rehydrate raced.
+      // Identity is stored next to tokens so the name is available without `/auth/me`.
+      if (!this.user) {
+        this.restoreIdentityFromStorage()
+      } else {
+        tokenManager.persistIdentity({
+          user: this.user,
+          roles: this.roles,
+          permissions: this.permissions,
+        })
+      }
+    },
+
+    restoreIdentityFromStorage() {
+      const identity = tokenManager.readPersistedIdentity()
+      if (!identity) return
+
+      this.user = identity.user
+      this.roles = identity.roles
+      this.permissions = identity.permissions
     },
   },
 

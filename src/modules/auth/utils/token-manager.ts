@@ -1,5 +1,5 @@
 import { AUTH_STORAGE_KEYS } from '@modules/auth/constants/storage-keys'
-import type { Session } from '@modules/auth/types'
+import type { Permission, Role, Session, User } from '@modules/auth/types'
 
 const isClient = import.meta.client
 
@@ -8,6 +8,26 @@ export type PersistedTokens = {
   refreshToken: string | null
   sessionExpiresAt: string | null
   refreshExpiresAt: string | null
+}
+
+export type PersistedAuthIdentity = {
+  user: User
+  roles: Role[]
+  permissions: Permission[]
+}
+
+function parseIdentity(raw: string): PersistedAuthIdentity | null {
+  try {
+    const parsed = JSON.parse(raw) as PersistedAuthIdentity
+    if (!parsed?.user?.id || typeof parsed.user.name !== 'string') return null
+    return {
+      user: parsed.user,
+      roles: Array.isArray(parsed.roles) ? parsed.roles : [],
+      permissions: Array.isArray(parsed.permissions) ? parsed.permissions : [],
+    }
+  } catch {
+    return null
+  }
 }
 
 export const tokenManager = {
@@ -65,6 +85,35 @@ export const tokenManager = {
     }
   },
 
+  persistIdentity(identity: PersistedAuthIdentity): void {
+    if (!isClient) return
+    localStorage.setItem(AUTH_STORAGE_KEYS.IDENTITY, JSON.stringify(identity))
+  },
+
+  readPersistedIdentity(): PersistedAuthIdentity | null {
+    if (!isClient) return null
+    const raw = localStorage.getItem(AUTH_STORAGE_KEYS.IDENTITY)
+    if (raw) {
+      const identity = parseIdentity(raw)
+      if (identity) return identity
+    }
+
+    // Migrate from Pinia persist blob written by older sessions.
+    const piniaRaw = localStorage.getItem('auth')
+    if (!piniaRaw) return null
+    const fromPinia = parseIdentity(piniaRaw)
+    if (fromPinia) {
+      this.persistIdentity(fromPinia)
+      return fromPinia
+    }
+    return null
+  },
+
+  clearIdentity(): void {
+    if (!isClient) return
+    localStorage.removeItem(AUTH_STORAGE_KEYS.IDENTITY)
+  },
+
   clear(): void {
     if (!isClient) return
     localStorage.removeItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN)
@@ -72,6 +121,7 @@ export const tokenManager = {
     localStorage.removeItem(AUTH_STORAGE_KEYS.SESSION_EXPIRES_AT)
     localStorage.removeItem(AUTH_STORAGE_KEYS.REFRESH_EXPIRES_AT)
     localStorage.removeItem(AUTH_STORAGE_KEYS.REMEMBER_ME)
+    this.clearIdentity()
   },
 
   isAccessTokenExpired(): boolean {

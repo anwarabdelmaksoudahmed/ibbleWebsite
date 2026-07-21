@@ -4,4 +4,6 @@ export const AUTH_STORAGE_KEYS = {
   SESSION_EXPIRES_AT: 'ibble_session_expires_at',
   REFRESH_EXPIRES_AT: 'ibble_refresh_expires_at',
   REMEMBER_ME: 'ibble_remember_me',
+  /** User/roles/permissions — restored with tokens because `/auth/me` is unavailable */
+  IDENTITY: 'ibble_auth_identity',
 } as const

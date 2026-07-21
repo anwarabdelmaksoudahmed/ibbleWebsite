@@ -28,7 +28,18 @@ const STATUS_MESSAGES: Record<number, string> = {
   408: 'The request timed out. Please try again.',
 }
 
-export function resolveAuthError(error: unknown): AuthError {
+const SIGNUP_STATUS_MESSAGES: Record<number, string> = {
+  401: 'An account with these details already exists and is inactive.',
+  409: 'Password and confirm password do not match.',
+  422: 'Account already exists or some fields are invalid.',
+  500: 'Authentication service is temporarily unavailable.',
+  408: 'The request timed out. Please try again.',
+}
+
+function resolveStatusError(
+  error: unknown,
+  statusMessages: Record<number, string>,
+): AuthError {
   if (error instanceof AuthError) return error
 
   const apiError = normalizeApiError(error)
@@ -38,15 +49,23 @@ export function resolveAuthError(error: unknown): AuthError {
   }
 
   if (apiError.message.toLowerCase().includes('timeout')) {
-    return new AuthError(STATUS_MESSAGES[408] ?? apiError.message, 408)
+    return new AuthError(statusMessages[408] ?? apiError.message, 408)
   }
 
   return new AuthError(
-    STATUS_MESSAGES[apiError.statusCode] ?? apiError.message,
+    statusMessages[apiError.statusCode] ?? apiError.message,
     apiError.statusCode,
     apiError.errors,
     apiError.code,
   )
+}
+
+export function resolveAuthError(error: unknown): AuthError {
+  return resolveStatusError(error, STATUS_MESSAGES)
+}
+
+export function resolveSignupError(error: unknown): AuthError {
+  return resolveStatusError(error, SIGNUP_STATUS_MESSAGES)
 }
 
 export function isAuthError(error: unknown): error is AuthError {
