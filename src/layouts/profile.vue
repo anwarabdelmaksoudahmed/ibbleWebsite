@@ -92,7 +92,7 @@ async function onLogout() {
         "
       />
 
-      <div class="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-6 lg:py-10">
+      <div class="relative mx-auto max-w-7xl px-4 py-[12px] sm:px-6  lg:px-6 ">
         <BaseErrorState
           v-if="isError && !user"
           variant="brand"
