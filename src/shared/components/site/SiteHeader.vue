@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import CartNavLink from '@modules/cart/components/CartNavLink.vue'
 import { ROUTES } from '@shared/constants/routes'
 import { SITE_SERVICE_LINKS, SITE_TOP_LINKS } from '@shared/constants/site-nav'
+import { pathMatchesPrefix, stripLocalePrefix } from '@shared/utils/locale-path'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const { authenticated, user, logout } = useAuth()
+const { authenticated, user } = useAuth()
 
 const mobileOpen = ref(false)
 const searchQuery = ref('')
 const searchCategory = ref('all')
+
+const displayName = computed(() => user.value?.name?.trim() ?? '')
+const hasDisplayName = computed(() => displayName.value.length > 0)
 
 watch(
   () => route.fullPath,
@@ -17,6 +22,14 @@ watch(
     mobileOpen.value = false
   },
 )
+
+/** `/services` must not stay active on `/services/*` sibling pages that have their own nav items. */
+function isServiceNavActive(to: string) {
+  if (to === '/services') {
+    return stripLocalePrefix(route.path) === '/services'
+  }
+  return pathMatchesPrefix(route.path, to)
+}
 
 function onSearch() {
   if (!searchQuery.value.trim()) return
@@ -45,56 +58,37 @@ function onSearch() {
           </NuxtLinkLocale>
         </nav>
 
-        <form
-          class="mx-auto hidden min-w-0 flex-1 max-w-xl overflow-hidden rounded-full bg-white shadow-sm md:flex"
-          @submit.prevent="onSearch"
-        >
-          <select
-            v-model="searchCategory"
-            class="shrink-0 border-e border-border/60 bg-transparent px-3 text-sm text-foreground outline-none"
-            :aria-label="t('site.search.category')"
-          >
-            <option value="all">{{ t('site.search.all') }}</option>
-            <option value="stores">{{ t('site.nav.stores') }}</option>
-            <option value="services">{{ t('site.nav.services') }}</option>
-          </select>
-          <input
-            v-model="searchQuery"
-            type="search"
-            :placeholder="t('site.search.placeholder')"
-            class="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-foreground-muted"
-          >
-          <button
-            type="submit"
-            class="flex items-center justify-center px-4 text-ibbil-green transition-colors hover:bg-ibbil-green/5"
-            :aria-label="t('common.search')"
-          >
-            <Icon name="lucide:search" class="h-4 w-4" />
-          </button>
-        </form>
+        <SiteSearchBar
+          v-model:query="searchQuery"
+          v-model:category="searchCategory"
+          variant="header"
+          @submit="onSearch"
+        />
 
         <div class="ms-auto flex items-center gap-1 sm:gap-2">
           <div class="hidden sm:block">
             <LocaleSwitcher variant="header" />
           </div>
 
-          <template v-if="authenticated">
-            <NuxtLinkLocale
-              :to="ROUTES.HOME"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
+          <NuxtLinkLocale
+            v-if="authenticated"
+            :to="ROUTES.PROFILE"
+            class="header-user-greeting inline-flex min-w-0 max-w-[11rem] items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white sm:max-w-[14rem] md:max-w-[16rem] lg:max-w-[18rem]"
+            :aria-label="hasDisplayName ? `${t('auth.welcomeBack')}، ${displayName}` : t('site.profile.breadcrumb')"
+          >
+            <Icon name="lucide:user" class="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span
+              v-if="hasDisplayName"
+              :key="displayName"
+              class="hidden min-w-0 items-baseline gap-1 sm:inline-flex"
             >
-              <Icon name="lucide:user" class="h-4 w-4" />
-              <span class="hidden max-w-[8rem] truncate sm:inline">{{ user?.name || t('auth.welcomeBack') }}</span>
-            </NuxtLinkLocale>
-            <button
-              type="button"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
-              @click="logout"
-            >
-              <Icon name="lucide:log-out" class="h-4 w-4" />
-              <span class="hidden lg:inline">{{ t('auth.logout') }}</span>
-            </button>
-          </template>
+              <span class="shrink-0 whitespace-nowrap">{{ t('auth.welcomeBack') }}،</span>
+              <span
+                class="header-user-name min-w-0 truncate font-semibold text-ibbil-gold"
+                :title="displayName"
+              >{{ displayName }}</span>
+            </span>
+          </NuxtLinkLocale>
           <NuxtLinkLocale
             v-else
             :to="ROUTES.AUTH.LOGIN"
@@ -104,13 +98,7 @@ function onSearch() {
             <span class="hidden sm:inline">{{ t('auth.login') }}</span>
           </NuxtLinkLocale>
 
-          <NuxtLinkLocale
-            to="/cart"
-            class="relative inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
-          >
-            <Icon name="lucide:shopping-cart" class="h-4 w-4" />
-            <span class="hidden lg:inline">{{ t('site.nav.cart') }}</span>
-          </NuxtLinkLocale>
+          <CartNavLink />
 
           <button
             type="button"
@@ -132,15 +120,24 @@ function onSearch() {
             v-for="link in SITE_SERVICE_LINKS"
             :key="link.key"
             :to="link.to"
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-ibbil-green-dark/90 transition-all hover:bg-black/10 hover:text-ibbil-green-dark"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-all"
+            :class="isServiceNavActive(link.to)
+              ? 'bg-ibbil-green text-white shadow-sm'
+              : 'text-ibbil-green-dark/90 hover:bg-black/10 hover:text-ibbil-green-dark'"
+            :aria-current="isServiceNavActive(link.to) ? 'page' : undefined"
           >
-            <Icon v-if="link.icon" :name="link.icon" class="h-4 w-4 opacity-80" />
+            <Icon
+              v-if="link.icon"
+              :name="link.icon"
+              class="h-4 w-4"
+              :class="isServiceNavActive(link.to) ? 'opacity-100' : 'opacity-80'"
+            />
             {{ t(link.key) }}
           </NuxtLinkLocale>
         </nav>
 
         <NuxtLinkLocale
-          :to="ROUTES.AUTH.REGISTER"
+          :to="ROUTES.JOIN"
           class="ms-auto hidden shrink-0 rounded-md bg-ibbil-green px-3 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ibbil-green-dark hover:shadow md:inline-flex"
         >
           {{ t('site.nav.joinMerchant') }}
@@ -157,17 +154,14 @@ function onSearch() {
       leave-to-class="opacity-0 -translate-y-2"
     >
       <div v-if="mobileOpen" class="border-b border-border bg-white xl:hidden">
-        <form class="flex gap-2 border-b border-border p-3 md:hidden" @submit.prevent="onSearch">
-          <input
-            v-model="searchQuery"
-            type="search"
-            :placeholder="t('site.search.placeholder')"
-            class="min-w-0 flex-1 rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-ibbil-green focus:ring-2 focus:ring-ibbil-green/20"
-          >
-          <button type="submit" class="rounded-lg bg-ibbil-green px-3 text-white">
-            <Icon name="lucide:search" class="h-4 w-4" />
-          </button>
-        </form>
+        <div class="border-b border-border p-3 md:hidden">
+          <SiteSearchBar
+            v-model:query="searchQuery"
+            v-model:category="searchCategory"
+            variant="mobile"
+            @submit="onSearch"
+          />
+        </div>
 
         <div class="flex items-center justify-between border-b border-border px-3 py-2 sm:hidden">
           <LocaleSwitcher variant="mobile" />
@@ -187,13 +181,22 @@ function onSearch() {
             v-for="link in SITE_SERVICE_LINKS"
             :key="`ms-${link.key}`"
             :to="link.to"
-            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-foreground hover:bg-surface-muted"
+            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors"
+            :class="isServiceNavActive(link.to)
+              ? 'bg-ibbil-green/10 font-medium text-ibbil-green'
+              : 'text-foreground hover:bg-surface-muted'"
+            :aria-current="isServiceNavActive(link.to) ? 'page' : undefined"
           >
-            <Icon v-if="link.icon" :name="link.icon" class="h-4 w-4 text-ibbil-gold" />
+            <Icon
+              v-if="link.icon"
+              :name="link.icon"
+              class="h-4 w-4"
+              :class="isServiceNavActive(link.to) ? 'text-ibbil-green' : 'text-ibbil-gold'"
+            />
             {{ t(link.key) }}
           </NuxtLinkLocale>
           <NuxtLinkLocale
-            :to="ROUTES.AUTH.REGISTER"
+            :to="ROUTES.JOIN"
             class="mt-2 flex items-center justify-center rounded-lg bg-ibbil-green px-3 py-2.5 text-sm font-semibold text-white"
           >
             {{ t('site.nav.joinMerchant') }}
@@ -203,3 +206,64 @@ function onSearch() {
     </Transition>
   </header>
 </template>
+
+<style scoped>
+.header-user-greeting {
+  animation: header-greeting-in 0.35s ease-out both;
+}
+
+.header-user-name {
+  animation: header-name-slide 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  transition: color 0.2s ease;
+}
+
+.header-user-greeting:hover .header-user-name {
+  color: #e8c078;
+}
+
+@keyframes header-greeting-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* LTR: name slides in from the right */
+@keyframes header-name-slide {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RTL: name slides in from the left (after the greeting) */
+:dir(rtl) .header-user-name {
+  animation-name: header-name-slide-rtl;
+}
+
+@keyframes header-name-slide-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-user-greeting,
+  .header-user-name {
+    animation: none;
+  }
+}
+</style>

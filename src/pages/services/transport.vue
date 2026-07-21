@@ -1,7 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'site' })
-</script>
+import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 
-<template>
-  <ComingSoonSection title-key="site.nav.transport" />
-</template>
+await navigateTo(TRANSPORT_ROUTES.ROOT, { redirectCode: 301 })
+</script>
