@@ -3,6 +3,7 @@ export const ROUTES = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
+    OTP: '/auth/otp',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
   },
@@ -26,11 +27,13 @@ export const ROUTES = {
     PREFERENCES: '/settings/preferences',
     SECURITY: '/settings/security',
   },
+  PROFILE: '/profile',
 } as const
 
 export const GUEST_ROUTES = [
   ROUTES.AUTH.LOGIN,
   ROUTES.AUTH.REGISTER,
+  ROUTES.AUTH.OTP,
   ROUTES.AUTH.FORGOT_PASSWORD,
   ROUTES.AUTH.RESET_PASSWORD,
 ] as const
@@ -40,4 +43,5 @@ export const PROTECTED_ROUTE_PREFIXES = [
   '/orders',
   '/customers',
   '/settings',
+  '/profile',
 ] as const

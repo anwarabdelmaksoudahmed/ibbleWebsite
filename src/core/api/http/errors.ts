@@ -18,6 +18,26 @@ export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError
 }
 
+export function getApiFieldErrors(error: ApiError): Record<string, string[]> {
+  return error.errors ?? {}
+}
+
+export function getApiFieldError(error: ApiError, field: string): string | undefined {
+  return error.errors?.[field]?.find(Boolean)
+}
+
+export function getApiErrorMessage(error: ApiError): string {
+  const fieldMessages = error.errors
+    ? Object.values(error.errors).flat().filter(Boolean)
+    : []
+
+  if (fieldMessages.length > 0) {
+    return fieldMessages.join(' · ')
+  }
+
+  return error.message
+}
+
 export function normalizeApiError(error: unknown): ApiError {
   if (isApiError(error)) return error
 

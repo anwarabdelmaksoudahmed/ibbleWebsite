@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import type { LoginCredentials, Permission } from '@modules/auth/types'
+import type { LoginCredentials, Permission, RegisterCredentials } from '@modules/auth/types'
 import { useAuthStore } from '@modules/auth/stores/auth.store'
 import {
   hasAllPermissions,
@@ -18,10 +18,22 @@ export function useAuth() {
   const roles = computed(() => authStore.roles)
   const permissions = computed(() => authStore.permissions)
   const isLoading = computed(() => authStore.isLoading)
-  const authenticated = computed(() => authStore.isAuthenticated)
+
+  /** True only when Pinia says logged-in AND a non-expired access token exists. */
+  const authenticated = computed(() => {
+    // Touch store fields so this recomputes after hydrate / login / logout.
+    void authStore.isAuthenticated
+    void authStore.accessToken
+    void authStore.sessionExpiresAt
+    return resolveAuthenticationState()
+  })
 
   async function login(credentials: LoginCredentials) {
     return authStore.login(credentials)
+  }
+
+  async function register(credentials: RegisterCredentials) {
+    return authStore.register(credentials)
   }
 
   async function logout() {
@@ -71,6 +83,7 @@ export function useAuth() {
     isLoading,
     isSessionExpired,
     login,
+    register,
     logout,
     refreshSession,
     loadCurrentUser,
