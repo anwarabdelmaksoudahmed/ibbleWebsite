@@ -2,6 +2,7 @@ export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export type ComponentVariant =
   | 'primary'
+  | 'brand'
   | 'secondary'
   | 'outline'
   | 'ghost'
@@ -33,6 +34,8 @@ export const INPUT_SIZE_CLASSES: Record<ComponentSize, string> = {
 
 export const VARIANT_CLASSES: Record<ComponentVariant, string> = {
   primary: 'bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500',
+  brand:
+    'rounded-xl bg-ibbil-green px-4 py-3.5 text-sm font-bold text-white shadow-md shadow-ibbil-green/20 transition-all hover:bg-ibbil-green-dark hover:shadow-lg active:scale-[0.99] focus-visible:ring-ibbil-green disabled:cursor-not-allowed disabled:opacity-60',
   secondary: 'bg-surface-muted text-foreground border border-border hover:bg-surface-elevated',
   outline: 'border border-border bg-transparent hover:bg-surface-muted text-foreground',
   ghost: 'bg-transparent hover:bg-surface-muted text-foreground',

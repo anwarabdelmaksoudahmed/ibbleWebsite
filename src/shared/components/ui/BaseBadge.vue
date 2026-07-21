@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<BaseBadgeProps>(), {
 
 const variantClasses: Record<ComponentVariant, string> = {
   primary: 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200',
+  brand: 'bg-ibbil-green/10 text-ibbil-green',
   secondary: 'bg-surface-muted text-foreground-muted',
   outline: 'border border-border text-foreground',
   ghost: 'bg-transparent text-foreground-muted',
