@@ -14,8 +14,8 @@ export const SITE_TOP_LINKS: SiteNavItem[] = [
 
 export const SITE_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
-  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
-  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
   { key: 'site.nav.services', to: '/services', icon: 'lucide:briefcase' },
@@ -25,24 +25,24 @@ export const SITE_SERVICE_LINKS: SiteNavItem[] = [
 /** Core services shown on the home page (avoids redundant “all services” entry). */
 export const HOME_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.stores', to: '/stores', icon: 'lucide:store' },
-  { key: 'site.nav.insurance', to: '/services/insurance', icon: 'lucide:heart-handshake' },
-  { key: 'site.nav.transport', to: '/services/transport', icon: 'lucide:truck' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
   { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
 ]
 
 export const SITE_FOOTER_STORES = [
-  { key: 'site.footer.camelStores', to: '/stores/camels' },
-  { key: 'site.footer.fodderStores', to: '/stores/fodder' },
-  { key: 'site.footer.productStores', to: '/stores/products' },
-  { key: 'site.footer.supplies', to: '/stores/supplies' },
+  { key: 'site.footer.camelStores', to: '/stores/camel' },
+  { key: 'site.footer.fodderStores', to: '/stores/feed' },
+  { key: 'site.footer.productStores', to: '/stores/camel_products' },
+  { key: 'site.footer.supplies', to: '/stores/camel_supplies' },
 ]
 
 export const SITE_FOOTER_SERVICES = [
   { key: 'site.nav.permits', to: '/services/permits' },
-  { key: 'site.nav.insurance', to: '/services/insurance' },
-  { key: 'site.nav.transport', to: '/services/transport' },
+  { key: 'site.nav.insurance', to: ROUTES.INSURANCE },
+  { key: 'site.nav.transport', to: ROUTES.TRANSPORT },
   { key: 'site.nav.veterinary', to: '/services/veterinary' },
 ]
 

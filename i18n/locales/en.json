@@ -7,17 +7,60 @@
     "edit": "Edit",
     "create": "Create",
     "search": "Search",
+    "clearSearch": "Clear search",
     "loading": "Loading...",
     "noResults": "No results found",
+    "emptyDescription": "There is nothing to display here yet.",
+    "errorDescription": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try again",
     "confirm": "Confirm",
     "back": "Back",
     "next": "Next",
     "previous": "Previous",
     "actions": "Actions",
+    "breadcrumb": "Breadcrumb",
+    "breadcrumbMore": "Show more path levels",
     "swiper": {
       "label": "Image gallery",
       "slideStatus": "Slide {current} of {total}"
+    },
+    "imageGallery": {
+      "thumbnails": "Image gallery",
+      "selectImage": "View image {index}"
+    },
+    "datePicker": {
+      "placeholder": "Select a date",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month"
+    },
+    "timePicker": {
+      "placeholder": "Select a time"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "pageStatus": "Page {current} of {total}",
+      "goToPage": "Go to page {page}"
     }
+  },
+  "maps": {
+    "origin": "Departure point",
+    "destination": "Arrival point",
+    "distance": "Trip distance",
+    "originPlaceholder": "Search for a city or location…",
+    "destinationPlaceholder": "Search for a city or location…",
+    "distancePlaceholder": "Calculated automatically from the map",
+    "originHint": "Pick a result from the suggestions for accurate distance",
+    "destinationHint": "Pick a result from the suggestions for accurate distance",
+    "distanceHint": "You can adjust the distance manually if needed",
+    "autoDistance": "Auto-calculated from Google Maps (editable)",
+    "mapLabel": "Trip route",
+    "calculating": "Calculating route…",
+    "swap": "Swap",
+    "loadError": "Could not load the map. You can enter locations and distance manually.",
+    "noRoute": "No driving route found between these points. Try other places or enter the distance manually.",
+    "kmUnit": "km"
   },
   "crud": {
     "createTitle": "Create",
@@ -39,6 +82,7 @@
     "secretPassword": "Password",
     "registerNewAccount": "Register a new account?",
     "email": "Email",
+    "emailPlaceholder": "anwar{'@'}gmail.com",
     "phone": "Phone Number",
     "phonePlaceholder": "5XXXXXXXX",
     "password": "Password",
@@ -53,28 +97,17 @@
     "hasAccount": "Already have an account?",
     "fullName": "Full Name",
     "fullNamePlaceholder": "Enter your full name",
-    "confirmPassword": "Confirm Password",
-    "confirmPasswordPlaceholder": "........",
-    "registerSubtitle": "Create a new account to access Ibbil platform services",
-    "registerComingSoon": "Registration is being activated. It will be connected to the server soon.",
-    "hero": {
-      "title": "Specialized camel services platform",
-      "subtitle": "Insurance, transport, permits, veterinary care and stores in one place.",
-      "rights": "All rights reserved for Ibbil Platform"
-    },
-    "features": {
-      "secure": "Bank-grade security & encrypted sessions",
-      "fast": "Lightning-fast performance at any scale",
-      "enterprise": "Built for multi-team enterprise workflows"
-    },
-    "emailPlaceholder": "anwar{'@'}gmail.com",
     "username": "Username",
     "usernamePlaceholder": "anwar",
     "nationalId": "National ID",
     "nationalIdPlaceholder": "1233333333",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "........",
     "registerAccount": "Register Account",
+    "registerSubtitle": "Create a new account to access Ibbil platform services",
     "registerSuccess": "Account created successfully. You can sign in now.",
     "registerOtpSent": "Account details submitted. Enter the verification code sent to your phone.",
+    "registerComingSoon": "Registration is being activated. It will be connected to the server soon.",
     "continueToOtp": "Continue to verification",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
@@ -138,9 +171,115 @@
       "resent": "A new verification code has been sent.",
       "changeDetails": "Change registration details",
       "sessionExpired": "Your registration session expired. Please fill the form again."
+    },
+    "hero": {
+      "title": "Specialized camel services platform",
+      "subtitle": "Insurance, transport, permits, veterinary care and stores in one place.",
+      "rights": "All rights reserved for Ibbil Platform"
+    },
+    "features": {
+      "secure": "Bank-grade security & encrypted sessions",
+      "fast": "Lightning-fast performance at any scale",
+      "enterprise": "Built for multi-team enterprise workflows"
+    }
+  },
+  "join": {
+    "seoTitle": "Join as a Merchant or Service Provider",
+    "seoDescription": "Register now on Ibbil as a merchant, independent driver, shipping company, veterinary doctor, or veterinary clinic.",
+    "title": "New registration to join as a merchant or service provider",
+    "subtitle": "Choose the service you provide, complete your details, and our team will contact you",
+    "services": {
+      "marketplace": {
+        "title": "Stores",
+        "description": "Showcase and sell your products on Ibbil"
+      },
+      "transportation": {
+        "title": "Transportation",
+        "description": "Join as an independent driver or shipping company"
+      },
+      "veterinary": {
+        "title": "Veterinary",
+        "description": "Join as a veterinary doctor or clinic"
+      }
+    },
+    "providerTypes": {
+      "merchant": "Merchant",
+      "driver": "Independent driver",
+      "company": "Shipping company",
+      "doctor": "Independent doctor",
+      "clinic": "Clinic"
+    },
+    "form": {
+      "chooseService": "Choose the service you provide",
+      "chooseProviderType": "Service type",
+      "sections": {
+        "storeOwner": "Store owner details",
+        "storeData": "Store details"
+      },
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Bandar Mohammed Altamimi",
+      "mobile": "Mobile number",
+      "phone": "Phone number",
+      "otherPhone": "Another phone number",
+      "nationalId": "National ID",
+      "email": "Email",
+      "storeType": "Store type",
+      "storeTypePlaceholder": "Choose the store type",
+      "storeNameAr": "Store name in Arabic",
+      "storeNameEn": "Store name in English",
+      "city": "City",
+      "cityPlaceholder": "Choose the city",
+      "storeAddress": "Store address",
+      "companyName": "Company name",
+      "companyAddress": "Company address",
+      "companyOwnerName": "Company owner name",
+      "clinicName": "Clinic name",
+      "clinicOwnerName": "Clinic owner name",
+      "commissionOrder": "I agree to add a {rate}% fee on the value of each order",
+      "commissionBooking": "I agree to add a {rate}% fee on the value of each booking",
+      "submit": "Register",
+      "next": "Next",
+      "hasAccount": "Already have an account?",
+      "placeholders": {
+        "storeNameAr": "e.g. متجر الصحراء للإبل",
+        "storeNameEn": "e.g. Desert Camel Store",
+        "address": "District, street, city",
+        "companyName": "e.g. Desert Transport Co.",
+        "clinicName": "e.g. Camel Care Clinic"
+      }
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name must not exceed 50 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Invalid phone number",
+      "countryCodeRequired": "Country code is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "storeTypeRequired": "Store type is required",
+      "storeNameMin": "Store name must be at least 2 characters",
+      "storeNameMax": "Store name must not exceed 100 characters",
+      "cityRequired": "City is required",
+      "addressMin": "Address must be at least 5 characters",
+      "addressMax": "Address must not exceed 255 characters",
+      "companyNameMin": "Company name must be at least 2 characters",
+      "companyNameMax": "Company name must not exceed 100 characters",
+      "clinicNameMin": "Clinic name must be at least 2 characters",
+      "clinicNameMax": "Clinic name must not exceed 100 characters",
+      "termsRequired": "You must agree to the commission rate to continue"
+    },
+    "success": {
+      "toast": "Your join request was submitted successfully",
+      "title": "Your request has been received",
+      "message": "Thank you for joining Ibbil. Our team will review your request and contact you shortly.",
+      "backHome": "Back to home",
+      "newRequest": "Submit another request"
     }
   },
   "site": {
+    "currency": {
+      "saudiRiyal": "Saudi Riyal"
+    },
     "nav": {
       "home": "Home",
       "about": "About Us",
@@ -190,6 +329,47 @@
       "servicesSubtitle": "Choose the service you need and get started instantly on Ibbil.",
       "exploreService": "Explore service",
       "servicesEyebrow": "What we offer",
+      "marketplaceEyebrow": "Ibbil Marketplace",
+      "marketplaceTitle": "Shop by category",
+      "marketplaceSubtitle": "Choose a category and explore trusted stores on the Ibbil platform.",
+      "marketplaceCta": "View all stores",
+      "marketplaceCategories": {
+        "camel": {
+          "title": "Camel Stores",
+          "text": "Buy, lease, and share camels",
+          "alt": "Illustration of a camel in the Ibbil marketplace"
+        },
+        "feed": {
+          "title": "Fodder",
+          "text": "Fodder and nutritional supplements",
+          "alt": "Illustration of fodder sacks"
+        },
+        "animalFood": {
+          "title": "Animal Food",
+          "text": "Specialized feed for camels and livestock",
+          "alt": "Illustration of a camel eating feed"
+        },
+        "products": {
+          "title": "Camel Products",
+          "text": "Milk, derivatives, and natural products",
+          "alt": "Illustration of camel milk products"
+        },
+        "supplies": {
+          "title": "Camel Supplies",
+          "text": "Grains, seeds, and feeding supplies",
+          "alt": "Illustration of camel supplies"
+        },
+        "accessories": {
+          "title": "Camel Accessories",
+          "text": "Care, riding, and handling accessories",
+          "alt": "Illustration of camel accessories"
+        },
+        "microchip": {
+          "title": "Microchips",
+          "text": "Smart identification and tracking technology",
+          "alt": "Illustration of a camel with a microchip"
+        }
+      },
       "serviceItems": {
         "stores": "Shop fodder, supplies, and camel products from trusted stores.",
         "insurance": "Clear insurance policies to protect your camels with confidence.",
@@ -203,7 +383,7 @@
         "lead": "Ibbil is the first platform to offer a complete commercial marketplace for all camel-related services in the Kingdom of Saudi Arabia.",
         "body": "It covers insurance, transport, and permits, as well as fodder and food stores, camel supplies, and veterinary services — in addition to camel trading, leasing, and sharing. Shop across many stores and benefit from services offered by merchants, veterinarians, and store owners on the Ibbil platform.",
         "cta": "Learn more",
-        "imageAlt": "A camel in a desert setting representing the Ibbil platform"
+        "imageAlt": "A man leading a camel across desert dunes at sunset — representing Ibbil platform heritage"
       },
       "ctaTitle": "Are you a merchant or service provider?",
       "ctaSubtitle": "Join Ibbil and grow your business with thousands of users.",
@@ -224,10 +404,14 @@
         "slidesLabel": "Hero image slides",
         "slideStatus": "Slide {current} of {total}",
         "slides": {
-          "desert": "Tourists riding camels across orange sand dunes under a cloudy sky",
-          "portrait": "Close-up portrait of a camel in the desert",
-          "dunes": "Camel walking across golden sand dunes",
-          "caravan": "Camel caravan crossing desert dunes"
+          "oasis": "A man with camels on sand dunes near a desert oasis",
+          "caravan": "A camel caravan crossing the desert at sunset",
+          "sunset": "A man leading a camel across golden dunes at sunset",
+          "heritage": "A large camel caravan crossing the desert",
+          "journey": "A desert oasis with tents and a camel caravan",
+          "expedition": "A man leading three camels across sand dunes",
+          "dunes": "A man leading a camel along a dune ridge",
+          "guide": "A man leading a camel across a wide desert valley"
         }
       },
       "highlights": {
@@ -249,16 +433,957 @@
       "title": "Coming Soon",
       "description": "This page is under development and will be available soon with a better experience."
     },
+    "transport": {
+      "seoTitle": "Camel Transport | Ibbil",
+      "seoDescription": "Transport your camels safely across Saudi Arabia with Ibbil: choose the truck, driver, and price that suit you.",
+      "heroTitle": "Transport camels whenever you want, anywhere",
+      "heroSubtitle": "You can now move your camels anywhere in the Kingdom easily and safely through Ibbil.",
+      "ctaPrimary": "Transport now",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "Camel transport truck on a desert road at golden hour",
+        "howToBook": "Camel owner managing a transport booking on a phone beside a loaded truck",
+        "service": "Transport driver handling a booking on a phone next to a camel truck"
+      },
+      "benefits": {
+        "choice": {
+          "title": "Freedom to choose",
+          "description": "Camel owners across Saudi Arabia can choose the truck, its size, the right driver, and a price that works for them."
+        },
+        "audience": {
+          "title": "Who can use transport",
+          "description": "All camel owners can transport camels safely within the Kingdom to any location by following clear transport steps."
+        },
+        "price": {
+          "title": "Pick a price that fits",
+          "description": "Once you choose the right truck, you can negotiate freely with your selected driver to agree on a suitable price."
+        }
+      },
+      "howTitle": "How do you transport?",
+      "howDescription": "Through Ibbil you can choose the truck you want, its type and size, then negotiate with the driver for the right price — so you get a reliable way to move camels anytime, anywhere in Saudi Arabia.",
+      "steps": {
+        "choose": {
+          "title": "1) Choose the truck",
+          "description": "Select the truck type and size that fit your camels and trip requirements."
+        },
+        "negotiate": {
+          "title": "2) Agree on the price",
+          "description": "Connect with the right driver and agree on a clear, fair price."
+        },
+        "book": {
+          "title": "3) Confirm and transport",
+          "description": "Confirm trip details, then move your camels safely to your destination in the Kingdom."
+        }
+      },
+      "footerTitle": "Camel Transport",
+      "footerDescription": "After completing the form, your transport price appears. If you accept it, you are redirected to payment via an approved Saudi method, then you receive an order invoice and can track the transport.",
+      "register": {
+        "seoTitle": "Camel Transport Request | Ibbil",
+        "seoDescription": "Complete your camel transport request in clear steps: delivery details, shipment type, and confirmation.",
+        "breadcrumb": "Transport request",
+        "progressLabel": "Transport request steps",
+        "next": "Next",
+        "prev": "Back",
+        "submit": "Confirm request",
+        "submitSuccess": "Your transport request was submitted successfully.",
+        "steps": {
+          "delivery": "Delivery details",
+          "shipmentType": "Choose shipment type",
+          "payment": "Payment"
+        },
+        "sections": {
+          "shipmentType": "Choose shipment type",
+          "shipmentTypeHint": "Select the truck size that best fits your camels and trip.",
+          "summary": "Request summary",
+          "summaryHint": "Review your details, then confirm to submit the transport request."
+        },
+        "form": {
+          "name": "Full name",
+          "namePlaceholder": "Enter full name",
+          "phone": "Mobile number",
+          "phonePlaceholder": "Enter mobile number",
+          "countryCode": "Country code",
+          "transportDate": "Transport date",
+          "transportDatePlaceholder": "Select transport date",
+          "transportTime": "Transport time",
+          "transportTimePlaceholder": "Select transport time",
+          "origin": "Pickup location",
+          "originPlaceholder": "Enter a location",
+          "destination": "Drop-off location",
+          "destinationPlaceholder": "Enter a location",
+          "distanceKm": "Trip distance in kilometers",
+          "distancePlaceholder": "Calculated automatically from the map",
+          "termsAccepted": "I confirm that the entered details are accurate and I accept the transport terms."
+        },
+        "hints": {
+          "origin": "Search and select the pickup point on the map.",
+          "destination": "Search and select the drop-off point on the map.",
+          "autoDistance": "Distance calculated automatically from the selected route."
+        },
+        "shipmentTypes": {
+          "small": {
+            "title": "Small truck",
+            "description": "Suitable for short trips and a small number of camels."
+          },
+          "medium": {
+            "title": "Medium truck",
+            "description": "Balanced capacity for most transport needs between cities."
+          },
+          "large": {
+            "title": "Large truck",
+            "description": "High capacity for long-distance trips and larger groups."
+          }
+        },
+        "validation": {
+          "transportDateRequired": "Transport date is required",
+          "transportDateInvalid": "Enter a valid transport date",
+          "transportTimeRequired": "Transport time is required",
+          "transportTimeInvalid": "Enter a valid transport time",
+          "originMin": "Pickup location must be at least 2 characters",
+          "originMax": "Pickup location is too long",
+          "destinationMin": "Drop-off location must be at least 2 characters",
+          "destinationMax": "Drop-off location is too long",
+          "distanceRequired": "Trip distance is required",
+          "distanceInvalid": "Enter a valid trip distance",
+          "shipmentTypeRequired": "Please choose a shipment type",
+          "termsRequired": "You must accept the terms to continue"
+        }
+      }
+    },
+    "veterinary": {
+      "seoTitle": "Veterinary Services | Ibbil",
+      "seoDescription": "Book a certified veterinarian for your camels: clinic visits, field calls, consultations, and medicine delivery through Ibbil.",
+      "heroTitle": "Request a veterinarian for your camels",
+      "heroSubtitle": "We connect you with certified doctors for your camels' comfort and care.",
+      "ctaPrimary": "Book an appointment",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "A veterinarian examining a camel at a desert farm at golden hour",
+        "careContent": "A veterinarian performing a close-up examination on a camel at a desert farm",
+        "howToBook": "A camel owner booking a veterinary appointment through the Ibbil app"
+      },
+      "benefits": {
+        "clinic": {
+          "title": "Clinic examination",
+          "description": "Choose an in-clinic checkup from certified veterinarians offering their services on the Ibbil platform."
+        },
+        "fieldVisit": {
+          "title": "Field visit",
+          "description": "Request a field or home visit to your location so your camels can be treated without transport."
+        },
+        "consultation": {
+          "title": "Consultation & medicine",
+          "description": "Get a medical consultation or have medicines dispensed and delivered to your home at a time that suits you."
+        }
+      },
+      "howTitle": "How to book",
+      "howDescription": "To keep your camels comfortable, Ibbil lets you choose the booking method you prefer — clinic visit, home visit, or medical consultation — and also dispense medicines through the veterinary platform on Ibbil.",
+      "steps": {
+        "chooseService": {
+          "title": "1) Choose a service",
+          "description": "Select the service you need: an in-clinic examination or a field visit to your location."
+        },
+        "chooseDate": {
+          "title": "2) Choose a date",
+          "description": "Pick a suitable appointment from the available slots with your chosen veterinarian."
+        },
+        "confirm": {
+          "title": "3) Confirm appointment",
+          "description": "Review your booking details and confirm the appointment to proceed to payment."
+        }
+      },
+      "footerTitle": "Veterinary Services",
+      "footerDescription": "After completing the form, your camel treatment price appears. If you accept it, you are redirected to payment via an approved Saudi method, then receive a treatment invoice and your chosen booking method.",
+      "book": {
+        "seoTitle": "Book a Veterinary Appointment | Ibbil",
+        "seoDescription": "Book a veterinary appointment in clear steps: service type, doctor, time slot, then payment.",
+        "breadcrumb": "Book appointment",
+        "progressLabel": "Veterinary booking steps",
+        "next": "Next",
+        "prev": "Back",
+        "pay": "Complete payment",
+        "steps": {
+          "serviceType": "Service type",
+          "doctor": "Choose doctor",
+          "appointment": "Set appointment",
+          "payment": "Confirm booking"
+        },
+        "sections": {
+          "serviceType": "Choose a service",
+          "serviceTypeHint": "Select whether you need a clinic visit or a field visit."
+        },
+        "serviceTypes": {
+          "clinic": {
+            "title": "Clinic examination"
+          },
+          "fieldVisit": {
+            "title": "Field visit"
+          }
+        },
+        "doctor": {
+          "label": "Doctor",
+          "typeIndividual": "Independent",
+          "typeEmployed": "Clinic",
+          "address": "Address",
+          "price": "Booking price",
+          "book": "Book appointment",
+          "ratingLabel": "Rating {count} out of 5",
+          "scheduledAppointment": "Scheduled appointment",
+          "searchPlaceholder": "Search by doctor or clinic name",
+          "city": "City",
+          "allCities": "All cities",
+          "sortLabel": "Sort",
+          "sort": {
+            "default": "Default order",
+            "priceAsc": "Price: low to high",
+            "priceDesc": "Price: high to low",
+            "nameAsc": "Name: A–Z"
+          },
+          "loadMore": "Load more",
+          "emptyTitle": "No doctors available",
+          "emptyDescription": "Try changing your search or filters, or check back later.",
+          "errorTitle": "Could not load doctors",
+          "errorDescription": "Something went wrong while loading doctors. Please try again."
+        },
+        "appointment": {
+          "title": "Choose appointment time",
+          "today": "Today",
+          "fromTo": "From {range}",
+          "bookDay": "Book",
+          "changeDay": "Change day",
+          "noDaysTitle": "No available days",
+          "noDaysDescription": "This doctor has no working schedule in the upcoming period.",
+          "slotsErrorTitle": "Could not load time slots",
+          "slotsErrorDescription": "Something went wrong while checking available times. Please try again.",
+          "unavailableTitle": "This day is unavailable",
+          "unavailableDescription": "Booking is not available for this day. Please choose another day.",
+          "noSlotsTitle": "No slots available",
+          "noSlotsDescription": "All slots on this day are booked. Try another day."
+        },
+        "payment": {
+          "title": "Booking details",
+          "subtitle": "Review your details and choose a payment method.",
+          "customerName": "Full name",
+          "customerNamePlaceholder": "Enter full name",
+          "customerPhone": "Mobile number",
+          "customerPhonePlaceholder": "Enter mobile number",
+          "address": "Visit address",
+          "addressPlaceholder": "Enter the field visit address",
+          "walletInsufficientBalance": "Wallet balance is insufficient for this booking.",
+          "success": "Your booking request was submitted successfully.",
+          "failed": "Could not complete the booking. Please try again."
+        },
+        "validation": {
+          "customerNameMin": "Name must be at least 2 characters",
+          "customerPhoneMin": "Enter a valid mobile number",
+          "countryCodeRequired": "Country code is required",
+          "addressMin": "Enter a clearer address for the field visit",
+          "paymentMethodRequired": "Please choose a payment method"
+        }
+      }
+    },
+    "insurance": {
+      "seoTitle": "Camel Insurance | Ibbil",
+      "seoDescription": "Request a camel transport insurance policy in Saudi Arabia through clear steps and secure payment.",
+      "heroTitle": "The first specialized camel transport insurance in the Kingdom",
+      "heroSubtitle": "Choose the right policy, submit your request in minutes, and pay securely to receive your insurance policy quickly.",
+      "ctaPrimary": "Insure now",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "Camel transport truck with digital insurance protection in the Saudi desert",
+        "policyReview": "Reviewing a camel transport insurance policy and comparing plan options",
+        "howToApply": "Submitting a camel transport insurance request through the Ibbil platform",
+        "payment": "Secure payment for camel transport insurance with approved payment methods"
+      },
+      "benefits": {
+        "owners": {
+          "title": "Who can benefit",
+          "description": "All camel owners in Saudi Arabia can issue a policy that covers transport between regions."
+        },
+        "transport": {
+          "title": "Camel transport coverage",
+          "description": "Purpose-built coverage to protect camels during transport with clear terms and a smooth request flow."
+        },
+        "bestPlans": {
+          "title": "Choose the right plan",
+          "description": "Compare available options and select the policy that matches your transport needs."
+        }
+      },
+      "howTitle": "How does it work?",
+      "howDescription": "Start your request from anywhere in the Kingdom, fill in the required details, then submit for review and issuance.",
+      "steps": {
+        "request": {
+          "title": "1) Submit request",
+          "description": "Enter the key transport details and provide camel and destination information."
+        },
+        "review": {
+          "title": "2) Review and approval",
+          "description": "The request is validated and reviewed to ensure accurate policy issuance."
+        },
+        "issue": {
+          "title": "3) Pay and issue policy",
+          "description": "Pay using approved methods, then receive your invoice and insurance policy instantly."
+        }
+      },
+      "footerTitle": "Camel Transport Insurance",
+      "footerDescription": "After completing the form, your policy price is shown and you are redirected to secure checkout. Once payment is complete, your invoice and policy are issued electronically.",
+      "register": {
+        "seoTitle": "Camel Transport Insurance Request | Ibbil",
+        "seoDescription": "Complete your camel transport insurance request in clear steps: customer details, shipment info, pricing, and payment.",
+        "breadcrumb": "Insurance request",
+        "title": "Camel Transport Insurance Request",
+        "subtitle": "Enter your details and follow the steps to issue your policy easily and securely.",
+        "progressLabel": "Insurance request steps",
+        "next": "Next",
+        "prev": "Back",
+        "pay": "Complete payment",
+        "steps": {
+          "customer": "Customer details",
+          "shipment": "Shipment information",
+          "pricing": "Shipping companies",
+          "payment": "Payment"
+        },
+        "form": {
+          "nationalId": "National ID",
+          "nationalIdPlaceholder": "Enter national ID",
+          "name": "Full name",
+          "namePlaceholder": "Enter full name",
+          "phone": "Mobile number",
+          "phonePlaceholder": "Enter mobile number",
+          "countryCode": "Country code",
+          "email": "Email",
+          "emailPlaceholder": "example{'@'}email.com",
+          "address": "Address",
+          "addressPlaceholder": "Enter address",
+          "serialNumber": "Chip / serial number",
+          "serialNumberPlaceholder": "Enter chip or serial number",
+          "cargoValue": "Cargo value",
+          "cargoValuePlaceholder": "Enter cargo value",
+          "status": "Status",
+          "cargoStatusEmpty": "—",
+          "cargoStatusDraft": "Draft",
+          "cargoStatusEditing": "Editing",
+          "cargoStatusChecking": "Checking chip number…",
+          "cargoStatusExists": "Chip number exists",
+          "cargoStatusNotExists": "Chip number does not exist",
+          "cargoStatusDuplicated": "Chip number is duplicated",
+          "cargoStatusReady": "Ready",
+          "cargoCount": "{count} cargo item(s)",
+          "transportDate": "Transport date",
+          "origin": "Departure point",
+          "originPlaceholder": "Search for a city or location…",
+          "destination": "Arrival point",
+          "destinationPlaceholder": "Search for a city or location…",
+          "distanceKm": "Trip distance",
+          "distanceKmPlaceholder": "Calculated automatically from the map",
+          "kmUnit": "km",
+          "totalCargoValue": "Total insured cargo value",
+          "iban": "Insured account number (IBAN)",
+          "ibanPlaceholder": "SAxx xxxx xxxx xxxx xxxx xxxx"
+        },
+        "sections": {
+          "cargo": "Insured cargo",
+          "cargoHint": "Add each cargo item with its serial number and value, then continue with trip details.",
+          "cargoList": "Added cargo items",
+          "trip": "Trip details",
+          "tripHint": "Set the transport date, then pick departure and arrival on the map to calculate distance automatically.",
+          "pricing": "Choose an insurance provider",
+          "pricingHint": "Compare available offers and select the provider that best fits your shipment.",
+          "payment": "Review and payment",
+          "paymentHint": "Review the policy summary, confirm the declarations, then choose a payment method to finish."
+        },
+        "payment": {
+          "companyTitle": "Insurance company details",
+          "quoteTitle": "Pricing details",
+          "grandTotal": "Total",
+          "totalIncludes": "This includes all fees",
+          "policyHolderId": "Policyholder ID",
+          "coverageLabel": "Coverage",
+          "coverageDescription": "All-risk land transport coverage (Institute Cargo Clause A)",
+          "deductibleLabel": "Deductible",
+          "dataAccurate": "I hereby declare that all information in this insurance application is correct and that the attached documents are valid.",
+          "termsPrefix": "I hereby agree to all",
+          "methodsTitle": "Payment method",
+          "methodsHint": "Choose a secure payment method to issue your policy.",
+          "methods": {
+            "card": "Credit / debit card",
+            "cardHint": "Pay via a secure gateway — card details are never stored on our servers.",
+            "wallet": "E-wallet",
+            "walletHint": "Pay using your Ibbil wallet balance.",
+            "walletBalance": "Available balance: {balance}",
+            "walletLoading": "Loading wallet balance…",
+            "walletInsufficient": "Insufficient wallet balance for this request"
+          },
+          "walletInsufficientBalance": "Your wallet balance is not enough to complete payment.",
+          "success": "Your insurance request was submitted successfully.",
+          "failed": "Payment could not be completed. Please try again.",
+          "missingProviderTitle": "No insurance provider selected",
+          "missingProviderDescription": "Go back to the pricing step and select a provider before completing payment."
+        },
+        "pricing": {
+          "loading": "Loading insurance offers…",
+          "errorTitle": "Could not load insurance providers",
+          "emptyTitle": "No providers available",
+          "emptyDescription": "No insurance offers were found for this shipment. Try adjusting the cargo value or trip details.",
+          "insuredSummary": "Insured amount: {amount}",
+          "insuredAmount": "Insured amount",
+          "certificateFees": "Certificate fees",
+          "coverage": "Land transport coverage",
+          "vat": "VAT {percent}%",
+          "total": "Total insurance amount",
+          "deductibleNote": "Deductible is {percent}% of the insured amount for any loss on a cargo item (minimum {min}).",
+          "providerHint": "Shariah-compliant transport insurance coverage",
+          "select": "Select",
+          "selected": "Selected",
+          "selectProviderAria": "Select {name}",
+          "termsLink": "Terms and conditions",
+          "termsTitle": "Terms and conditions — {name}",
+          "termsEmpty": "No terms and conditions are available for this provider.",
+          "termsClose": "Close"
+        },
+        "hints": {
+          "serialNumber": "Use the chip or serial number associated with the cargo",
+          "cargoValue": "Enter the insured value in Saudi Riyals",
+          "transportDate": "Select the planned transport date",
+          "origin": "Pick a result from the suggestions for accurate distance",
+          "destination": "Pick a result from the suggestions for accurate distance",
+          "distanceKm": "You can adjust the distance manually if needed",
+          "iban": "Enter a Saudi IBAN starting with SA (24 characters)"
+        },
+        "route": {
+          "mapLabel": "Trip route",
+          "calculating": "Calculating route…",
+          "autoDistance": "Auto-calculated from Google Maps (editable)",
+          "swap": "Swap",
+          "loadError": "Could not load the map. You can enter locations and distance manually.",
+          "noRoute": "No driving route found between these points. Try other places or enter the distance manually."
+        },
+        "actions": {
+          "saveCargo": "Save",
+          "saveChanges": "Save changes",
+          "addCargo": "Add cargo",
+          "editCargo": "Edit cargo",
+          "removeCargo": "Remove cargo",
+          "clearDraft": "Clear"
+        },
+        "empty": {
+          "cargoTitle": "No cargo added yet",
+          "cargoDescription": "Enter a serial number and value, then save to add your first insured cargo item."
+        },
+        "validation": {
+          "address": "Enter a valid address (at least 5 characters)",
+          "serialNumberRequired": "Serial number is required",
+          "serialNumberMax": "Serial number must be at most 64 characters",
+          "cargoValueRequired": "Cargo value is required",
+          "cargoValueInvalid": "Enter a valid cargo value greater than zero",
+          "cargoItemsRequired": "Add at least one cargo item before continuing",
+          "transportDateRequired": "Transport date is required",
+          "transportDateInvalid": "Enter a valid transport date",
+          "originMin": "Departure point must be at least 2 characters",
+          "originMax": "Departure point must be at most 255 characters",
+          "destinationMin": "Arrival point must be at least 2 characters",
+          "destinationMax": "Arrival point must be at most 255 characters",
+          "distanceRequired": "Trip distance is required",
+          "distanceInvalid": "Enter a valid distance greater than zero",
+          "providerRequired": "Select an insurance provider to continue",
+          "ibanRequired": "IBAN is required",
+          "ibanInvalid": "Enter a valid Saudi IBAN",
+          "dataAccurateRequired": "You must confirm the data is accurate to continue",
+          "termsRequired": "You must accept the terms and conditions to continue",
+          "paymentMethodRequired": "Select a payment method to continue"
+        }
+      }
+    },
     "stores": {
       "seoTitle": "Stores | Ibbil",
       "seoDescription": "Browse camel, fodder, supplies, and product store categories on the Ibbil platform.",
+      "categorySeoTitle": "{name} | Ibbil Stores",
       "eyebrow": "Ibbil Marketplace",
       "title": "Store Categories",
       "subtitle": "Pick a category and browse trusted stores.",
+      "categorySubtitle": "Browse trusted stores in this category.",
       "exploreCategory": "Browse stores",
+      "exploreStore": "Visit store",
+      "backToCategories": "Back to store categories",
       "errorTitle": "Could not load store categories",
       "emptyTitle": "No categories yet",
-      "emptyDescription": "No store categories are available to display. Please try again later."
+      "emptyDescription": "No store categories are available to display. Please try again later.",
+      "storesErrorTitle": "Could not load stores",
+      "storesEmptyTitle": "No stores yet",
+      "storesEmptyDescription": "No stores were found in this category yet. Please try again later.",
+      "clearFilters": "Clear filters",
+      "deliveryCities": "Delivery to {count} cities",
+      "productsCount": "{count} products",
+      "filters": {
+        "label": "Filters",
+        "all": "All",
+        "country": "Country",
+        "city": "City",
+        "x": "Sort",
+        "defaultSort": "Default sort",
+        "sortDesc": "Newest first",
+        "sortAsc": "Oldest first",
+        "search": "Search"
+      },
+      "view": {
+        "label": "View mode",
+        "grid": "Grid view",
+        "list": "List view"
+      },
+      "profile": {
+        "seoTitle": "{name} | Ibbil Stores",
+        "seoDescription": "Browse products, categories, and store details on the Ibbil marketplace.",
+        "errorTitle": "Could not load this store",
+        "backToCategory": "Back to category",
+        "summary": "Store summary",
+        "socialLinks": "Social links",
+        "rating": "Rating {rating} out of 5",
+        "categoriesTitle": "Categories",
+        "categoriesEmptyTitle": "No categories yet",
+        "categoriesEmptyDescription": "This store has not published product categories yet.",
+        "categoriesErrorTitle": "Could not load categories",
+        "productsTitle": "Products",
+        "productsEmptyTitle": "No products yet",
+        "productsEmptyDescription": "No products match this filter. Try another category or check back later.",
+        "productsErrorTitle": "Could not load products",
+        "clearCategoryFilter": "Show all products",
+        "tabs": {
+          "about": "About the store",
+          "policies": "Terms & policies"
+        },
+        "stats": {
+          "label": "Store statistics",
+          "products": "Products",
+          "views": "Views",
+          "reviews": "Reviews",
+          "favorites": "Favorites"
+        }
+      },
+      "productDetail": {
+        "seoTitle": "{name} | {store}",
+        "seoDescription": "Product details, price, and specifications on the Ibbil marketplace.",
+        "errorTitle": "Could not load this product",
+        "backToStore": "Back to store",
+        "back": "Back",
+        "currentPrice": "Current price",
+        "specifications": "Specifications",
+        "showMore": "Show more",
+        "showLess": "Show less",
+        "inStock": "In stock ({count} items)",
+        "galleryThumbnails": "Product images",
+        "selectImage": "View image {index}",
+        "relatedProducts": "Related products"
+      }
+    },
+    "commerce": {
+      "authRequired": "Please sign in to continue",
+      "cart": {
+        "add": "Add to cart",
+        "inCart": "In cart",
+        "addSuccess": "Product added to cart",
+        "alreadyInCart": "This product is already in your cart",
+        "missingStore": "Could not add this product — store information is missing",
+        "seoTitle": "Shopping Cart",
+        "seoDescription": "Review your items and continue checkout from Ibbil stores.",
+        "title": "Shopping Cart",
+        "subtitle": "{count} items in your cart",
+        "loading": "Loading your cart...",
+        "emptyTitle": "Your cart is empty",
+        "emptyDescription": "You haven’t added any products yet. Browse stores and pick what you need.",
+        "browseStores": "Browse stores",
+        "guestTitle": "Sign in to view your cart",
+        "guestDescription": "Your cart is linked to your account. Sign in to continue.",
+        "signIn": "Sign in",
+        "errorTitle": "Couldn’t load cart",
+        "errorDescription": "Something went wrong while fetching your cart. Please try again.",
+        "quantity": "Quantity",
+        "increase": "Increase quantity",
+        "decrease": "Decrease quantity",
+        "remove": "Remove",
+        "removeConfirmTitle": "Remove item?",
+        "removeConfirmMessage": "This product will be removed from your cart.",
+        "removeSuccess": "Product removed from cart",
+        "minQuantity": "Quantity cannot be less than 1. Use the remove button to delete this item from your cart.",
+        "navWithCount": "Shopping cart, {count} items",
+        "perUnit": "each",
+        "productCount": "{count} products",
+        "storeSubtotal": "Subtotal",
+        "continueShopping": "Continue shopping",
+        "checkout": "Checkout",
+        "checkoutSoon": "Checkout coming soon",
+        "summaryTitle": "Order summary",
+        "summaryHint": "You can checkout each store separately.",
+        "items": "Items",
+        "stores": "Stores",
+        "grandTotal": "Grand total"
+      },
+      "checkout": {
+        "seoTitle": "Checkout",
+        "seoDescription": "Choose a delivery address and payment method to complete your Ibbil store order.",
+        "title": "Checkout",
+        "subtitle": "Your order from {store}",
+        "loading": "Preparing checkout...",
+        "guestTitle": "Sign in to checkout",
+        "guestDescription": "Checkout requires a signed-in account.",
+        "errorTitle": "Couldn’t load checkout",
+        "errorDescription": "Something went wrong while preparing checkout. Please try again.",
+        "emptyTitle": "Nothing to checkout",
+        "emptyDescription": "Your cart is empty. Add products, then return to checkout.",
+        "missingStoreTitle": "Store not in cart",
+        "missingStoreDescription": "Products from this store are not currently in your cart.",
+        "addressesTitle": "Your addresses",
+        "addressesHint": "Select the delivery address for this order.",
+        "addressesErrorTitle": "Couldn’t load addresses",
+        "addressesErrorDescription": "Something went wrong while fetching your addresses. Please try again.",
+        "addNewAddress": "Add a new address",
+        "noAddressesTitle": "No saved addresses",
+        "noAddressesDescription": "Add a delivery address to continue checkout.",
+        "defaultAddress": "Default",
+        "editAddress": "Edit",
+        "addAddressTitle": "Add new address",
+        "editAddressTitle": "Edit address",
+        "addAddress": "Save address",
+        "saveAddress": "Save changes",
+        "addressCreateSuccess": "Address added successfully",
+        "addressUpdateSuccess": "Address updated successfully",
+        "selectAddressFirst": "Please select a delivery address first",
+        "form": {
+          "name": "Full name",
+          "namePlaceholder": "Your full name",
+          "email": "Email",
+          "emailPlaceholder": "optional{'@'}email.com",
+          "phone": "Phone number",
+          "phonePlaceholder": "5xxxxxxxx",
+          "countryCode": "Country code",
+          "country": "Country",
+          "countryPlaceholder": "Select country",
+          "city": "City",
+          "cityPlaceholder": "Select city",
+          "address": "Address details",
+          "addressPlaceholder": "Neighborhood, street, building…",
+          "zip": "Zip code",
+          "zipPlaceholder": "Optional",
+          "isDefault": "Set as default address"
+        },
+        "validation": {
+          "name": "Name is required",
+          "phone": "Phone number is required",
+          "address": "Address details are required",
+          "country": "Select a country",
+          "city": "Select a city"
+        },
+        "paymentTitle": "Payment methods",
+        "paymentHint": "Choose how you’d like to pay.",
+        "payment": {
+          "card": "Credit card",
+          "cardHint": "Pay securely with Mada, Visa, or Mastercard.",
+          "wallet": "E-wallet",
+          "walletHint": "Pay using your Ibbil wallet balance.",
+          "walletBalance": "Available balance: {balance}",
+          "walletLoading": "Loading wallet balance...",
+          "walletInsufficient": "Insufficient balance for this order"
+        },
+        "discountTitle": "Discount code",
+        "discountPlaceholder": "Enter discount code",
+        "discountApply": "Apply",
+        "discountApplied": "Applied",
+        "discountSoon": "Discount coupons coming soon",
+        "summaryTitle": "Order summary",
+        "products": "Products",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "vat": "VAT",
+        "total": "Total",
+        "placeOrder": "Place order",
+        "placeOrderSoon": "Order placement is being prepared and will be available soon",
+        "orderSuccess": "Your order was confirmed and payment completed successfully",
+        "orderFailed": "We could not complete your order. Please try again.",
+        "cartNotReady": "Your cart is not ready to checkout. Please refresh the page and try again.",
+        "cartRestoreFailed": "Payment was not completed and we could not restore your cart automatically. Please add your items again.",
+        "walletInsufficientBalance": "Your wallet balance is not enough to complete this order.",
+        "walletPin": {
+          "title": "Confirm wallet payment",
+          "description": "Enter your wallet PIN to complete payment.",
+          "label": "PIN code",
+          "placeholder": "•••••",
+          "confirm": "Confirm payment",
+          "validation": "PIN code is required",
+          "maxLength": "PIN code must be at most {max} digits"
+        },
+        "secureNote": "Your data is protected and used only to complete delivery and payment."
+      },
+      "wishlist": {
+        "add": "Add to wishlist",
+        "remove": "Remove from wishlist",
+        "addSuccess": "Product added to wishlist",
+        "removeSuccess": "Product removed from wishlist",
+        "alreadyFavourite": "This product is already in your wishlist"
+      }
+    },
+    "profile": {
+      "seoTitle": "My Profile | Ibbil",
+      "seoDescription": "Manage your Ibbil account, view activity, and access your services from one place.",
+      "breadcrumb": "My profile",
+      "guestName": "Ibbil member",
+      "errorTitle": "Could not load your profile",
+      "errorDescription": "Something went wrong while loading your profile. Please try again.",
+      "lastLogin": {
+        "value": "Last activity {date}",
+        "unknown": "Last activity unavailable"
+      },
+      "sidebar": {
+        "label": "Profile sidebar"
+      },
+      "nav": {
+        "label": "Profile navigation",
+        "overview": "Overview",
+        "wallet": "Wallet",
+        "insurance": "Insurance",
+        "marketplace": "My orders",
+        "transport": "Transportation",
+        "veterinary": "Veterinary",
+        "favorites": "Favorites"
+      },
+      "stats": {
+        "label": "Account statistics",
+        "orders": "Orders",
+        "favorites": "Favorites",
+        "wallet": "Wallet balance",
+        "insurance": "Insurance",
+        "transportation": "Transportation",
+        "veterinary": "Veterinary",
+        "marketplace": "Marketplace",
+        "bookings": "Bookings"
+      },
+      "marketplace": {
+        "seoTitle": "My Orders | Ibbil",
+        "seoDescription": "View and track your marketplace orders on Ibbil.",
+        "breadcrumb": "My orders",
+        "summaryLabel": "Orders",
+        "browseStores": "Browse stores",
+        "errorTitle": "Could not load your orders",
+        "errorDescription": "Something went wrong while loading your orders. Please try again.",
+        "emptyTitle": "No orders yet",
+        "emptyDescription": "You have no orders matching these filters. Browse the marketplace or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter orders",
+          "searchPlaceholder": "Search by order number, store, or product…",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "status": {
+          "pending": "Pending",
+          "processing": "Processing",
+          "shipped": "Shipped",
+          "delivered": "Delivered",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "card": {
+          "orderNumber": "Order {num}",
+          "unknownStore": "Store",
+          "orderedAt": "On {date}",
+          "productsCount": "{count} products",
+          "productsTitle": "Order products",
+          "detailsTitle": "Order details",
+          "noProducts": "No products in this order",
+          "qty": "Qty: {qty}",
+          "subtotal": "Subtotal",
+          "discount": "Discount",
+          "tax": "Tax",
+          "shipping": "Shipping",
+          "total": "Total",
+          "recipient": "Recipient",
+          "phone": "Phone",
+          "address": "Address",
+          "invoice": "Invoice",
+          "expand": "Show order details",
+          "collapse": "Hide order details"
+        }
+      },
+      "insurance": {
+        "seoTitle": "My Insurance | Ibbil",
+        "seoDescription": "View and manage your camel transport insurance policies on Ibbil.",
+        "breadcrumb": "Insurance",
+        "title": "Insurance details",
+        "summaryLabel": "Insurance",
+        "insureNow": "Insure now",
+        "errorTitle": "Could not load your policies",
+        "errorDescription": "Something went wrong while loading your insurance list. Please try again.",
+        "emptyTitle": "No insurance policies yet",
+        "emptyDescription": "You have no policies matching these filters. Start a new request or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter insurance policies",
+          "searchPlaceholder": "Search by policy number…",
+          "status": "Status",
+          "company": "Company",
+          "allStatuses": "All statuses",
+          "allCompanies": "All companies"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired"
+        },
+        "card": {
+          "policyNumber": "Policy #{id}",
+          "unknownProvider": "Insurance provider",
+          "dateRange": "From {date} to {date}",
+          "totalPrice": "Total insurance price",
+          "expand": "Show policy details",
+          "collapse": "Hide policy details",
+          "detailsTitle": "Policy details",
+          "feesTitle": "Fee breakdown",
+          "fullName": "Full name",
+          "phone": "Phone",
+          "email": "Email",
+          "address": "Address",
+          "iban": "IBAN",
+          "invoice": "Invoice PDF",
+          "policies": "Policy PDF",
+          "fees": {
+            "insuredAmount": "Insured amount",
+            "certificateFees": "Certificate fees",
+            "transportationCoverage": "Transport coverage",
+            "taxFees": "VAT",
+            "total": "Total"
+          }
+        }
+      },
+      "veterinary": {
+        "seoTitle": "My Veterinary Bookings | Ibbil",
+        "seoDescription": "View and track your veterinary clinic reservations on Ibbil.",
+        "breadcrumb": "Veterinary",
+        "summaryLabel": "Bookings",
+        "browseClinics": "Browse clinics",
+        "errorTitle": "Could not load your bookings",
+        "errorDescription": "Something went wrong while loading your veterinary reservations. Please try again.",
+        "emptyTitle": "No bookings yet",
+        "emptyDescription": "You have no bookings matching these filters. Browse clinics or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter veterinary bookings",
+          "searchPlaceholder": "Search by booking number, clinic, or doctor…",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "status": {
+          "active": "Active",
+          "pending": "Pending",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "card": {
+          "reservationNumber": "Booking #{id}",
+          "unknownClinic": "Veterinary clinic",
+          "unknownDoctor": "Doctor",
+          "bookedAt": "On {date}",
+          "total": "Total",
+          "paid": "Paid",
+          "unpaid": "Unpaid",
+          "expand": "Show booking details",
+          "collapse": "Hide booking details",
+          "visitTitle": "Visit details",
+          "detailsTitle": "Booking details",
+          "doctor": "Doctor",
+          "specialty": "Specialty",
+          "examineMethod": "Examination method",
+          "clinicAddress": "Clinic address",
+          "appointmentTime": "Appointment time",
+          "attendance": "Attendance",
+          "attended": "Attended",
+          "notAttended": "Did not attend",
+          "attendanceUnknown": "Not set",
+          "serviceType": "Service type",
+          "customer": "Customer",
+          "phone": "Phone",
+          "nationalId": "National ID",
+          "deposit": "Deposit",
+          "diagnosis": "Diagnosis",
+          "prescription": "Prescription",
+          "invoice": "Invoice"
+        }
+      },
+      "wallet": {
+        "seoTitle": "My Wallet | Ibbil",
+        "seoDescription": "View your wallet balance and transaction history on Ibbil.",
+        "breadcrumb": "Wallet",
+        "transactionsTitle": "Transactions",
+        "transactionsCount": "{count} transactions",
+        "errorTitle": "Could not load your wallet",
+        "errorDescription": "Something went wrong while loading your wallet data. Please try again.",
+        "emptyTitle": "No transactions yet",
+        "emptyDescription": "You have no transactions matching these filters. Clear the filters or try another status.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter transactions",
+          "searchPlaceholder": "Search by title, reference, or order…",
+          "paymentSource": "Payment method",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "paymentSource": {
+          "wallet": "Wallet",
+          "card": "Card"
+        },
+        "status": {
+          "completed": "Completed",
+          "pending": "Pending",
+          "failed": "Failed",
+          "cancelled": "Cancelled"
+        },
+        "type": {
+          "deposit": "Deposit",
+          "withdrawal": "Withdrawal"
+        },
+        "summary": {
+          "balanceLabel": "Current balance",
+          "pendingAmount": "Pending amount",
+          "bankInfo": "Bank account",
+          "accountName": "Account name",
+          "bankName": "Bank",
+          "iban": "IBAN",
+          "totalDeposit": "Total deposits",
+          "totalWithdraw": "Total withdrawals",
+          "depositCount": "Deposits",
+          "withdrawCount": "Withdrawals"
+        },
+        "card": {
+          "unknownTitle": "Transaction",
+          "transactionNumberLabel": "Transaction #",
+          "transactionNumber": "Transaction #{id}",
+          "createdAt": "On {date}",
+          "amount": "Amount",
+          "orderId": "Order #{id}",
+          "expand": "Show transaction details",
+          "collapse": "Hide transaction details",
+          "detailsTitle": "Transaction details",
+          "referenceId": "Reference ID",
+          "type": "Type",
+          "status": "Status",
+          "module": "Module",
+          "paymentMethod": "Payment method"
+        }
+      },
+      "favorites": {
+        "seoTitle": "My Favorites | Ibbil",
+        "seoDescription": "View and manage products you saved to your Ibbil wishlist.",
+        "breadcrumb": "Favorites",
+        "summaryLabel": "Favorites",
+        "errorTitle": "Could not load your favorites",
+        "errorDescription": "Something went wrong while loading your wishlist. Please try again.",
+        "emptyTitle": "No favorites yet",
+        "emptyDescription": "Save products you like from the marketplace and they will appear here.",
+        "emptySearchTitle": "No matching favorites",
+        "emptySearchDescription": "Try a different search term or clear the search to see all favorites.",
+        "clearSearch": "Clear search",
+        "browseStores": "Browse stores",
+        "filters": {
+          "label": "Search favorites",
+          "searchPlaceholder": "Search by product or store…"
+        }
+      }
     }
   },
   "nav": {
@@ -271,5 +1396,31 @@
     "generic": "Something went wrong",
     "notFound": "Page not found",
     "unauthorized": "You are not authorized to view this page"
+  },
+  "payment": {
+    "modal": {
+      "title": "Secure payment",
+      "secureTitle": "Encrypted & secure checkout",
+      "secureHint": "Your card details are processed directly by the payment provider.",
+      "summaryTitle": "Order summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "VAT",
+      "total": "Total",
+      "loadingWidget": "Preparing payment form...",
+      "verifying": "Verifying payment...",
+      "successTitle": "Payment successful",
+      "successHint": "Your payment was completed successfully.",
+      "failureTitle": "Payment failed",
+      "failureHint": "We could not complete your payment. Please try again.",
+      "retry": "Try again",
+      "done": "Done"
+    },
+    "callback": {
+      "verifying": "Verifying payment...",
+      "redirecting": "Returning to checkout...",
+      "missingSession": "Payment session expired. Please try again.",
+      "verificationFailed": "Payment verification failed. Please try again."
+    }
   }
 }
