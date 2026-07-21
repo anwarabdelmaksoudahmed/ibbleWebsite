@@ -53,6 +53,7 @@ export default defineNuxtConfig({
     dirs: [
       'shared/composables',
       'shared/maps/composables',
+      'shared/payment/composables',
       'shared/utils',
       'core/helpers',
       'modules/**/composables',
@@ -62,6 +63,7 @@ export default defineNuxtConfig({
   components: [
     { path: '~/shared/components', pathPrefix: false },
     { path: '~/shared/maps/components', pathPrefix: false },
+    { path: '~/shared/payment/components', pathPrefix: false },
     {
       path: '~/modules',
       pathPrefix: false,
