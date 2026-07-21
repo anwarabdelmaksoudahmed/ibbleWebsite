@@ -196,7 +196,7 @@ export default defineNuxtConfig({
     shim: false,
     tsConfig: {
       compilerOptions: {
-        types: ['@types/google.maps'],
+        types: ['google.maps'],
       },
     },
   },
