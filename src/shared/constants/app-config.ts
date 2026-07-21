@@ -7,8 +7,9 @@ export const APP_CONFIG = {
   TOAST_DURATION_MS: 5000,
   DATE_FORMAT: 'YYYY-MM-DD',
   DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
-  CURRENCY: 'USD',
-  LOCALE: 'en-US',
+  /** ISO 4217 code — use SAUDI_RIYAL_SIGN for UI display */
+  CURRENCY: 'SAR',
+  LOCALE: 'en-SA',
 } as const
 
 export const STORAGE_KEYS = {

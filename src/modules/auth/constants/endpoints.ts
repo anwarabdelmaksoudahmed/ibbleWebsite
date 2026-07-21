@@ -1,5 +1,6 @@
 export const AUTH_ENDPOINTS = {
   SSO_LOGIN: '/sso-login',
+  SSO_SIGNUP: '/sso-signup',
   /** TODO: Set when backend refresh endpoint is available */
   REFRESH: '/auth/refresh',
   /** TODO: Set when backend logout endpoint is available */

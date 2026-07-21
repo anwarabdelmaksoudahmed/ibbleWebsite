@@ -33,11 +33,12 @@ watch(searchQuery, (value: string) => emit('search', value))
 <template>
   <div class="space-y-4">
     <div v-if="searchable || $slots.toolbar" class="flex items-center justify-between gap-4">
-      <BaseInput
+      <BaseSearchInput
         v-if="searchable"
         v-model="searchQuery"
         :placeholder="searchPlaceholder"
-        class="max-w-xs"
+        size="sm"
+        root-class="max-w-xs !space-y-0"
       />
       <slot name="toolbar" />
     </div>

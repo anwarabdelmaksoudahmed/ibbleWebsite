@@ -53,6 +53,22 @@ export type LoginCredentials = {
   remember?: boolean
 }
 
+export type RegisterCredentials = {
+  name: string
+  phone: string
+  countryCode: string
+  password: string
+  confirmPassword: string
+  email?: string
+  nationalId?: string
+  avatar?: string
+  address?: string
+  otp?: string
+  otpCreatedAt?: string
+  status?: string
+  preferredDateType?: string
+}
+
 export type RefreshTokenResponse = Pick<InternalAuthModel, 'session'>
 
 export type AuthState = {

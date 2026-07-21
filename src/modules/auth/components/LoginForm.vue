@@ -3,7 +3,8 @@ import { phoneLoginSchema } from '@shared/schemas/auth.schema'
 import { ROUTES } from '@shared/constants/routes'
 import { useAuth } from '@modules/auth/composables/useAuth'
 import { isAuthError } from '@modules/auth/utils/errors'
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, type CountryCodeOption } from '@modules/auth/constants/country-codes'
+import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
+import { resolveAuthRedirect } from '@shared/utils/auth-redirect'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -19,33 +20,58 @@ const form = reactive({
 })
 
 const showPassword = ref(false)
+const touched = reactive<Record<string, boolean>>({})
 const fieldErrors = reactive<Record<string, string>>({})
 const formError = ref('')
 
-const selectedCountry = computed((): CountryCodeOption => {
-  return COUNTRY_CODES.find((country) => country.apiCode === form.countryCode) ?? DEFAULT_COUNTRY_CODE
-})
-
 function clearErrors() {
   formError.value = ''
-  Object.keys(fieldErrors).forEach((key) => {
-    delete fieldErrors[key]
-  })
+  for (const key of Object.keys(fieldErrors)) {
+    fieldErrors[key] = ''
+  }
 }
 
 function applyValidationErrors(issues: { path: PropertyKey[]; message: string }[]) {
   issues.forEach((issue) => {
     const field = String(issue.path[0] ?? '')
-    if (field) fieldErrors[field] = issue.message
+    if (field) fieldErrors[field] = t(issue.message)
+  })
+}
+
+function validateField(field: 'phone' | 'password' | 'countryCode') {
+  touched[field] = true
+  fieldErrors[field] = ''
+
+  const validation = phoneLoginSchema.safeParse(form)
+  if (!validation.success) {
+    const issue = validation.error.issues.find((item) => String(item.path[0]) === field)
+    if (issue) fieldErrors[field] = t(issue.message)
+  }
+}
+
+function mapApiFieldErrors(apiFieldErrors: Record<string, string[]>) {
+  const fieldMap: Record<string, string> = {
+    phone: 'phone',
+    password: 'password',
+    country_code: 'countryCode',
+  }
+
+  Object.entries(apiFieldErrors).forEach(([field, messages]) => {
+    const mapped = fieldMap[field] ?? field
+    fieldErrors[mapped] = messages[0] ?? ''
   })
 }
 
 async function handleSubmit() {
   clearErrors()
+  touched.phone = true
+  touched.password = true
+  touched.countryCode = true
 
   const validation = phoneLoginSchema.safeParse(form)
   if (!validation.success) {
     applyValidationErrors(validation.error.issues)
+    await goToFirstError({ root: '[data-validation-form]' })
     return
   }
 
@@ -59,21 +85,21 @@ async function handleSubmit() {
 
     toast.success(t('auth.loginSuccess'))
 
-    const redirect =
-      typeof route.query.redirect === 'string' ? route.query.redirect : localePath(ROUTES.HOME)
-    await navigateTo(redirect)
+    await navigateTo(
+      resolveAuthRedirect(route.query.redirect, localePath(ROUTES.HOME)),
+    )
   } catch (error) {
     if (isAuthError(error)) {
       formError.value = error.message
       if (error.fieldErrors) {
-        Object.entries(error.fieldErrors).forEach(([field, messages]) => {
-          fieldErrors[field] = messages[0] ?? error.message
-        })
+        mapApiFieldErrors(error.fieldErrors)
       }
+      await goToFirstError({ root: '[data-validation-form]' })
       return
     }
 
     formError.value = t('errors.generic')
+    await goToFirstError({ root: '[data-validation-form]' })
   }
 }
 </script>
@@ -85,7 +111,7 @@ async function handleSubmit() {
       <p class="mt-1 text-sm text-foreground-muted">{{ t('auth.loginSubtitle') }}</p>
     </div>
 
-    <form class="space-y-5 px-6 py-6 sm:px-8 sm:py-7" @submit.prevent="handleSubmit">
+    <form class="space-y-5 px-6 py-6 sm:px-8 sm:py-7" data-validation-form novalidate @submit.prevent="handleSubmit">
       <Transition
         enter-active-class="transition duration-200 ease-out"
         enter-from-class="opacity-0 -translate-y-1"
@@ -95,102 +121,73 @@ async function handleSubmit() {
           v-if="formError"
           class="rounded-xl border border-danger/25 bg-danger/5 px-3.5 py-2.5 text-sm text-danger"
           role="alert"
+          data-validation-error
+          tabindex="-1"
         >
           {{ formError }}
         </div>
       </Transition>
 
-      <div class="space-y-1.5">
-        <label for="login-phone" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.mobile') }}
-        </label>
-        <div
-          class="flex overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15"
-          :class="fieldErrors.phone ? 'border-danger' : 'border-border'"
-        >
-          <div class="flex items-center border-e border-border bg-[#f3f5f3] px-2.5">
-            <select
-              v-model="form.countryCode"
-              class="max-w-[7.5rem] bg-transparent py-3 text-sm font-medium text-foreground outline-none"
-              :aria-label="t('auth.countryCode')"
-            >
-              <option v-for="country in COUNTRY_CODES" :key="country.apiCode" :value="country.apiCode">
-                {{ country.flag }} {{ country.dialCode }}
-              </option>
-            </select>
-          </div>
-          <input
-            id="login-phone"
-            v-model="form.phone"
-            type="tel"
-            inputmode="numeric"
-            autocomplete="tel-national"
-            :placeholder="t('auth.phonePlaceholder')"
-            class="min-w-0 flex-1 bg-transparent px-3.5 py-3 text-sm text-foreground outline-none placeholder:text-foreground-muted"
-            :aria-invalid="!!fieldErrors.phone"
-          >
-        </div>
-        <p v-if="fieldErrors.phone" class="text-xs text-danger">{{ fieldErrors.phone }}</p>
-        <p v-else class="text-xs text-foreground-muted">{{ selectedCountry.flag }} {{ selectedCountry.dialCode }}</p>
-      </div>
+      <BasePhoneInput
+        id="login-phone"
+        v-model:phone="form.phone"
+        v-model:country-code="form.countryCode"
+        :label="t('auth.mobile')"
+        :hint="t('auth.hints.phone')"
+        :error="fieldErrors.phone"
+        :country-error="fieldErrors.countryCode"
+        :country-aria-label="t('auth.countryCode')"
+        required
+        @blur="validateField('phone')"
+        @country-change="touched.countryCode && validateField('countryCode')"
+      />
 
-      <div class="space-y-1.5">
-        <label for="login-password" class="block text-sm font-semibold text-ibbil-green">
-          {{ t('auth.secretPassword') }}
-        </label>
-        <div
-          class="relative overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15"
-          :class="fieldErrors.password ? 'border-danger' : 'border-border'"
-        >
-          <input
-            id="login-password"
-            v-model="form.password"
-            :type="showPassword ? 'text' : 'password'"
-            autocomplete="current-password"
-            :placeholder="t('auth.passwordPlaceholder')"
-            class="w-full bg-transparent px-3.5 py-3 pe-11 text-sm text-foreground outline-none placeholder:text-foreground-muted"
-            :aria-invalid="!!fieldErrors.password"
-          >
+      <BaseInput
+        id="login-password"
+        v-model="form.password"
+        :label="t('auth.secretPassword')"
+        :placeholder="t('auth.passwordPlaceholder')"
+        :error="fieldErrors.password"
+        :type="showPassword ? 'text' : 'password'"
+        autocomplete="current-password"
+        maxlength="64"
+        required
+        @blur="validateField('password')"
+      >
+        <template #suffix>
           <button
             type="button"
-            class="absolute top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green end-2.5"
-            :aria-label="showPassword ? 'Hide password' : 'Show password'"
+            class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+            :aria-label="showPassword ? t('auth.hidePassword') : t('auth.showPassword')"
             @click="showPassword = !showPassword"
           >
             <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
           </button>
-        </div>
-        <p v-if="fieldErrors.password" class="text-xs text-danger">{{ fieldErrors.password }}</p>
-      </div>
+        </template>
+      </BaseInput>
 
       <div class="flex items-center justify-between gap-3">
-        <label class="inline-flex cursor-pointer items-center gap-2 text-sm text-foreground-muted">
-          <input
-            v-model="form.remember"
-            type="checkbox"
-            class="size-4 rounded border-border text-ibbil-green focus:ring-ibbil-green"
-          >
-          {{ t('auth.rememberMe') }}
-        </label>
+        <BaseCheckbox
+          id="login-remember"
+          v-model="form.remember"
+          :label="t('auth.rememberMe')"
+        />
         <NuxtLinkLocale
           :to="ROUTES.AUTH.FORGOT_PASSWORD"
-          class="text-sm font-semibold text-ibbil-gold transition-colors hover:text-ibbil-gold-hover"
+          class="shrink-0 text-sm font-semibold text-ibbil-gold transition-colors hover:text-ibbil-gold-hover"
         >
           {{ t('auth.forgotPassword') }}
         </NuxtLinkLocale>
       </div>
 
-      <button
-        type="submit"
-        class="w-full rounded-xl bg-ibbil-green px-4 py-3.5 text-sm font-bold text-white shadow-md shadow-ibbil-green/20 transition-all hover:bg-ibbil-green-dark hover:shadow-lg active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
-        :disabled="isLoading"
-      >
-        <span v-if="isLoading" class="inline-flex items-center gap-2">
-          <Icon name="lucide:loader-2" class="h-4 w-4 animate-spin" />
+      <BaseButton type="submit" variant="brand" block :loading="isLoading">
+        <template v-if="!isLoading">
+          {{ t('auth.login') }}
+        </template>
+        <template v-else>
           {{ t('common.loading') }}
-        </span>
-        <span v-else>{{ t('auth.login') }}</span>
-      </button>
+        </template>
+      </BaseButton>
 
       <p class="text-center text-sm text-foreground-muted">
         {{ t('auth.noAccount') }}

@@ -6,6 +6,7 @@ export type BaseSkeletonProps = {
   height?: string
   rounded?: 'sm' | 'md' | 'lg' | 'full'
   lines?: number
+  variant?: 'pulse' | 'shimmer'
 }
 
 const props = withDefaults(defineProps<BaseSkeletonProps>(), {
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<BaseSkeletonProps>(), {
   height: '1rem',
   rounded: 'md',
   lines: 1,
+  variant: 'pulse',
 })
 
 const roundedClasses = {
@@ -21,6 +23,12 @@ const roundedClasses = {
   lg: 'rounded-lg',
   full: 'rounded-full',
 }
+
+const skeletonClass = computed(() => cn(
+  props.variant === 'pulse' && 'animate-pulse bg-surface-muted',
+  props.variant === 'shimmer' && 'skeleton-shimmer',
+  roundedClasses[props.rounded],
+))
 </script>
 
 <template>
@@ -28,13 +36,13 @@ const roundedClasses = {
     <div
       v-for="i in lines"
       :key="i"
-      :class="cn('animate-pulse bg-surface-muted', roundedClasses[rounded])"
+      :class="skeletonClass"
       :style="{ width: i === lines ? '75%' : width, height }"
     />
   </div>
   <div
     v-else
-    :class="cn('animate-pulse bg-surface-muted', roundedClasses[rounded])"
+    :class="skeletonClass"
     :style="{ width, height }"
     aria-hidden="true"
   />
