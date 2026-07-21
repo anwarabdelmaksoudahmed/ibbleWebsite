@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   imports: {
     dirs: [
       'shared/composables',
+      'shared/maps/composables',
       'shared/utils',
       'core/helpers',
       'modules/**/composables',
@@ -60,6 +61,7 @@ export default defineNuxtConfig({
 
   components: [
     { path: '~/shared/components', pathPrefix: false },
+    { path: '~/shared/maps/components', pathPrefix: false },
     {
       path: '~/modules',
       pathPrefix: false,
@@ -192,6 +194,11 @@ export default defineNuxtConfig({
     strict: true,
     typeCheck: true,
     shim: false,
+    tsConfig: {
+      compilerOptions: {
+        types: ['@types/google.maps'],
+      },
+    },
   },
 
   nitro: {
