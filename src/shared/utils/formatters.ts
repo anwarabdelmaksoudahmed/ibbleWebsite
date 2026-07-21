@@ -4,6 +4,7 @@ import timezone from 'dayjs/plugin/timezone'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { APP_CONFIG } from '@shared/constants/app-config'
+import { formatMoneyAmount } from '@shared/utils/format-money'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -30,9 +31,12 @@ export function formatRelative(date: string | Date | dayjs.Dayjs): string {
 
 export function formatCurrency(
   amount: number,
-  currency = APP_CONFIG.CURRENCY,
-  locale = APP_CONFIG.LOCALE,
+  currency: string = APP_CONFIG.CURRENCY,
+  locale: string = APP_CONFIG.LOCALE,
 ): string {
+  if (currency === 'SAR') {
+    return formatMoneyAmount(amount, locale.startsWith('ar') ? 'ar' : 'en')
+  }
   return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount)
 }
 

@@ -25,7 +25,9 @@ const { display } = useCountUp(root, {
 })
 
 const formatted = computed(() => {
-  const n = new Intl.NumberFormat(undefined).format(display.value)
+  const n = new Intl.NumberFormat(undefined, {
+    // numberingSystem: 'latn', //
+  }).format(display.value)
   return `${props.prefix}${n}${props.suffix}`
 })
 </script>
