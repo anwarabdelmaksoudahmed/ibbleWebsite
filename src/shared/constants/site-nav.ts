@@ -9,7 +9,7 @@ export type SiteNavItem = {
 export const SITE_TOP_LINKS: SiteNavItem[] = [
   { key: 'site.nav.home', to: ROUTES.HOME },
   { key: 'site.nav.about', to: '/about' },
-  { key: 'site.nav.contact', to: '/contact' },
+  { key: 'site.nav.contact', to: ROUTES.CONTACT },
 ]
 
 export const SITE_SERVICE_LINKS: SiteNavItem[] = [

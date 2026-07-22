@@ -1,7 +1,14 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'site' })
+
+const { t } = useI18n()
+
+useSeoMeta({
+  title: () => t('site.contact.seoTitle'),
+  description: () => t('site.contact.seoDescription'),
+})
 </script>
 
 <template>
-  <ComingSoonSection title-key="site.nav.contact" />
+  <ContactSection />
 </template>

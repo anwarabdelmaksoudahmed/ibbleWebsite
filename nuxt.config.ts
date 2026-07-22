@@ -168,7 +168,13 @@ export default defineNuxtConfig({
           'https://maps.gstatic.com',
         ],
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://maps.gstatic.com'],
-        'frame-src': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
+        'frame-src': [
+          "'self'",
+          'https://eu-test.oppwa.com',
+          'https://oppwa.com',
+          'https://www.google.com',
+          'https://maps.google.com',
+        ],
         'connect-src': [
           "'self'",
           'https://eu-test.oppwa.com',
@@ -203,7 +209,7 @@ export default defineNuxtConfig({
     shim: false,
     tsConfig: {
       compilerOptions: {
-        types: ['@types/google.maps'],
+        types: ['google.maps'],
       },
     },
   },

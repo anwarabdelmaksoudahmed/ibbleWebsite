@@ -1,5 +1,6 @@
 export const ROUTES = {
   HOME: '/',
+  CONTACT: '/contact',
   INSURANCE: '/insurance',
   INSURANCE_REGISTER: '/insurance/register-insurance',
   TRANSPORT: '/transport',
