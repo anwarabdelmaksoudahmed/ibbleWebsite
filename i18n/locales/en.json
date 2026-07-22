@@ -363,6 +363,37 @@
       "successDescription": "Complete sending from the opened email app. We'll reply as soon as possible.",
       "sendAnother": "Send another message"
     },
+    "about": {
+      "seoTitle": "About Us | Ibbil Platform",
+      "seoDescription": "Learn about Ibbil — Saudi Arabia's first integrated marketplace for camel services: insurance, transport, permits, stores, and veterinary care.",
+      "title": "About Us",
+      "subtitle": "The first integrated commercial marketplace for all camel-related services in the Kingdom of Saudi Arabia.",
+      "lead": "Ibbil is a specialized platform offering all camel-related services in the Kingdom of Saudi Arabia.",
+      "body": "It includes insurance, transport, and permits, as well as fodder and food stores, camel supplies, and veterinary services. Ibbil is also the main camel trading platform for buying, selling, leasing, and sharing.",
+      "imageAlt": "A man leading a camel across desert dunes at sunset — representing Ibbil platform heritage",
+      "pillarsTitle": "What drives us",
+      "pillarsSubtitle": "Our mission, vision, and values guide every service we build on the platform.",
+      "mission": {
+        "title": "Our Mission",
+        "text": "To connect camel owners, merchants, and service providers through one trusted digital platform that simplifies buying, selling, and managing every aspect of camel care."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "text": "To be the leading reference for camel services in Saudi Arabia and the Gulf, supporting heritage, innovation, and Saudi Vision 2030."
+      },
+      "values": {
+        "title": "Our Values",
+        "text": "Trust, transparency, and quality — from secure transactions and verified providers to responsive support for every user on the platform."
+      },
+      "highlightsTitle": "Why Ibbil",
+      "highlightsSubtitle": "A complete ecosystem built for the camel community.",
+      "cta": {
+        "title": "Ready to explore?",
+        "subtitle": "Browse our services or get in touch with the Ibbil team.",
+        "services": "Our Services",
+        "contact": "Contact Us"
+      }
+    },
     "home": {
       "seoTitle": "Ibbil Platform | Camel Services in Saudi Arabia",
       "seoDescription": "A specialized platform for camel services: insurance, transport, permits, veterinary care and stores.",
