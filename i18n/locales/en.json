@@ -394,6 +394,61 @@
         "contact": "Contact Us"
       }
     },
+    "services": {
+      "seoTitle": "Ibbil Platform Services | Insurance, Transport, Permits, Veterinary & Stores",
+      "seoDescription": "Explore Ibbil camel services in Saudi Arabia: insurance, transport, permits, veterinary care, and stores for feed and supplies.",
+      "heroTitle": "Complete services for the camel world",
+      "heroSubtitle": "From insurance and transport to permits, veterinary care, and stores — everything you need on one trusted platform.",
+      "ctaExplore": "Explore services",
+      "eyebrow": "What we offer",
+      "listTitle": "Choose your service",
+      "listSubtitle": "Services built for camel owners, merchants, and providers across the Kingdom.",
+      "howEyebrow": "Simple steps",
+      "howTitle": "How do you get started?",
+      "howSubtitle": "Pick a service, submit your request in clear steps, and track it through to completion on Ibbil.",
+      "footerTitle": "Do you offer a camel-related service?",
+      "footerDescription": "Join Ibbil as a merchant or service provider and grow your business with thousands of users across Saudi Arabia.",
+      "images": {
+        "hero": "Ibbil Platform truck transporting camels in a Saudi desert setting",
+        "howToApply": "Camel owner managing platform services on a tablet beside a digital permit"
+      },
+      "items": {
+        "stores": {
+          "description": "Shop feed, supplies, and camel products from trusted stores.",
+          "imageAlt": "Camel feed and supplies store with Ibbil Platform branding"
+        },
+        "insurance": {
+          "description": "Clear insurance policies to protect your camels during transport and operations.",
+          "imageAlt": "Reviewing a camel insurance policy in a professional office"
+        },
+        "transport": {
+          "description": "Safe, specialized camel transport between cities and regions with ready vehicles.",
+          "imageAlt": "Loading camels onto an Ibbil Platform transport truck in the desert"
+        },
+        "veterinary": {
+          "description": "On-site veterinary care and bookings with certified doctors.",
+          "imageAlt": "Veterinarian examining a camel at a desert field site"
+        },
+        "permits": {
+          "description": "Issue and manage permits electronically with simple, clear steps.",
+          "imageAlt": "Managing electronic camel permits on the Ibbil Platform"
+        }
+      },
+      "steps": {
+        "choose": {
+          "title": "1) Choose a service",
+          "description": "Browse platform services and pick what you need: insurance, transport, permits, veterinary care, or stores."
+        },
+        "request": {
+          "title": "2) Submit your request",
+          "description": "Enter the required details through a clear, secure form in minutes."
+        },
+        "track": {
+          "title": "3) Track and complete",
+          "description": "Follow your request status and receive the service or document in your platform account."
+        }
+      }
+    },
     "home": {
       "seoTitle": "Ibbil Platform | Camel Services in Saudi Arabia",
       "seoDescription": "A specialized platform for camel services: insurance, transport, permits, veterinary care and stores.",

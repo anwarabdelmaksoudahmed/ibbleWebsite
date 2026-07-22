@@ -29,6 +29,12 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n()
 
+const daySwiperBreakpoints = {
+  640: { slidesPerView: 1.45, spaceBetween: 14 },
+  768: { slidesPerView: 2.1, spaceBetween: 16 },
+  1024: { slidesPerView: 2.8, spaceBetween: 18 },
+}
+
 function formatDayLabel(day: VeterinaryAppointmentDay): string {
   if (day.isToday) return t('site.veterinary.book.appointment.today')
 
@@ -64,8 +70,8 @@ function daySummary(day: VeterinaryAppointmentDay): string {
   <div class="space-y-6">
     <VeterinaryDoctorSummary :doctor="doctor" :service-type="serviceType" compact />
 
-    <section class="space-y-4">
-      <h2 class="text-center text-lg font-extrabold text-ibbil-green sm:text-xl">
+    <section class="space-y-5">
+      <h2 class="text-center text-lg font-extrabold tracking-tight text-ibbil-green sm:text-xl">
         {{ t('site.veterinary.book.appointment.title') }}
       </h2>
 
@@ -78,29 +84,53 @@ function daySummary(day: VeterinaryAppointmentDay): string {
           :description="t('site.veterinary.book.appointment.noDaysDescription')"
         />
 
-        <div
+        <BaseSwiper
           v-else
-          class="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          :items="days"
+          :slides-per-view="1.08"
+          :space-between="12"
+          :breakpoints="daySwiperBreakpoints"
+          :navigation="days.length > 1"
+          :pagination="days.length > 1 ? 'bullets' : false"
+          controls-position="outside"
+          controls-variant="dark"
+          :label="t('site.veterinary.book.appointment.title')"
+          class="appointment-days-swiper"
+          swiper-class="!overflow-visible"
         >
-          <article
-            v-for="day in days"
-            :key="`${day.day}-${day.date}`"
-            class="min-w-[15rem] shrink-0 rounded-2xl border border-ibbil-green/10 bg-white p-5 shadow-sm"
-          >
-            <p class="text-sm font-bold text-ibbil-green">{{ formatDayLabel(day) }}</p>
-            <p class="mt-1 text-xs text-foreground-muted">{{ formatShortDate(day) }}</p>
-            <p class="mt-4 text-sm leading-relaxed text-foreground-muted">
-              {{ t('site.veterinary.book.appointment.fromTo', { range: daySummary(day) }) }}
-            </p>
-            <BaseButton
-              variant="brand"
-              class="mt-5 w-full !rounded-lg !py-2.5 !text-sm !font-bold"
-              @click="emit('openDay', day)"
+          <template #slide="{ item: day }">
+            <article
+              class="h-full rounded-2xl border border-ibbil-green/10 bg-white p-5 shadow-[0_12px_35px_-24px_rgba(45,83,61,0.55)] transition hover:-translate-y-0.5 hover:border-ibbil-green/20 hover:shadow-[0_18px_42px_-26px_rgba(45,83,61,0.55)]"
             >
-              {{ t('site.veterinary.book.appointment.bookDay') }}
-            </BaseButton>
-          </article>
-        </div>
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-bold text-ibbil-green">{{ formatDayLabel(day) }}</p>
+                  <p class="mt-1 text-xs text-foreground-muted">{{ formatShortDate(day) }}</p>
+                </div>
+                <span
+                  v-if="day.isToday"
+                  class="shrink-0 rounded-full bg-ibbil-gold/20 px-2.5 py-1 text-[11px] font-bold text-ibbil-green-dark"
+                >
+                  {{ t('site.veterinary.book.appointment.today') }}
+                </span>
+              </div>
+
+              <div class="mt-4 rounded-xl bg-ibbil-green/[0.045] px-3 py-2.5">
+                <p class="text-xs font-semibold text-ibbil-green/90">
+                  {{ t('site.veterinary.book.appointment.fromTo', { range: daySummary(day) }) }}
+                </p>
+              </div>
+
+              <BaseButton
+                variant="brand"
+                class="mt-5 w-full !rounded-lg !py-2.5 !text-sm !font-bold"
+                @click="emit('openDay', day)"
+              >
+                {{ t('site.veterinary.book.appointment.bookDay') }}
+              </BaseButton>
+            </article>
+          </template>
+        </BaseSwiper>
       </div>
 
       <div v-else class="space-y-4">
@@ -113,7 +143,7 @@ function daySummary(day: VeterinaryAppointmentDay): string {
 
         <div
           v-else
-          class="overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white shadow-sm"
+          class="overflow-hidden rounded-2xl border border-ibbil-green/10 bg-white shadow-[0_16px_40px_-28px_rgba(45,83,61,0.6)]"
         >
           <div class="grid lg:grid-cols-[12rem_minmax(0,1fr)]">
             <aside class="border-b border-ibbil-green/10 bg-ibbil-green/[0.06] p-5 lg:border-b-0 lg:border-e">
@@ -123,13 +153,14 @@ function daySummary(day: VeterinaryAppointmentDay): string {
               <p class="mt-1 text-sm text-foreground-muted">
                 {{ selectedDay ? formatShortDate(selectedDay) : '' }}
               </p>
-              <button
+              <BaseButton
                 type="button"
-                class="mt-4 text-sm font-bold text-ibbil-gold underline-offset-2 hover:underline"
+                variant="secondary"
+                class="mt-4 !w-full !rounded-lg !border-ibbil-green/20 !bg-white !py-2 !text-xs !font-bold !text-ibbil-green hover:!border-ibbil-green/35"
                 @click="emit('changeDay')"
               >
                 {{ t('site.veterinary.book.appointment.changeDay') }}
-              </button>
+              </BaseButton>
             </aside>
 
             <div class="p-5">
@@ -158,7 +189,7 @@ function daySummary(day: VeterinaryAppointmentDay): string {
                   v-for="slot in slots"
                   :key="`${slot.from}-${slot.to}`"
                   type="button"
-                  class="rounded-xl border border-ibbil-green/15 bg-[#fafbfa] px-4 py-3 text-sm font-bold text-ibbil-green transition-colors hover:border-ibbil-green hover:bg-ibbil-green/5"
+                  class="rounded-xl border border-ibbil-green/15 bg-[#fafbfa] px-4 py-3 text-sm font-bold text-ibbil-green transition hover:-translate-y-0.5 hover:border-ibbil-green hover:bg-ibbil-green/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-gold/55"
                   @click="emit('selectSlot', slot)"
                 >
                   {{ slot.label }}

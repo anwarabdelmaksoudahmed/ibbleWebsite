@@ -2,6 +2,7 @@ export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   CONTACT: '/contact',
+  SERVICES: '/services',
   INSURANCE: '/insurance',
   INSURANCE_REGISTER: '/insurance/register-insurance',
   TRANSPORT: '/transport',
