@@ -130,13 +130,8 @@ export default defineNuxtConfig({
     defaultLocale: 'ar',
     strategy: 'prefix_except_default',
     langDir: '../i18n/locales',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'ibble-locale',
-      redirectOn: 'root',
-      alwaysRedirect: false,
-      fallbackLocale: 'ar',
-    },
+
+    detectBrowserLanguage: false,
   },
 
   fonts: {
