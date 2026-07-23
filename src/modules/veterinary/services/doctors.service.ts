@@ -13,9 +13,7 @@ export class VeterinaryDoctorsService {
     }
 
     const config = useRuntimeConfig()
-    const baseUrl =
-      (config.public.veterinaryApiBaseUrl as string) || 'https://api-veterinary.ibbil.com/api'
-    this.api = new VeterinaryDoctorsApi(baseUrl)
+    this.api = new VeterinaryDoctorsApi(config.public.veterinaryApiBaseUrl as string)
   }
 
   async listDoctors(

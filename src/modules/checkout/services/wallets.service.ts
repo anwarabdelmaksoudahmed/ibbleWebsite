@@ -17,8 +17,7 @@ export class WalletsService {
     }
 
     const config = useRuntimeConfig()
-    const baseUrl = (config.public.webApiBaseUrl as string) || 'https://api-web.ibbil.com/api'
-    this.api = new WalletsApi(baseUrl)
+    this.api = new WalletsApi(config.public.webApiBaseUrl as string)
   }
 
   async list(): Promise<UserWallet[]> {

@@ -26,8 +26,7 @@ export class PaymentService {
     }
 
     const config = useRuntimeConfig()
-    const baseUrl = (config.public.webApiBaseUrl as string) || 'https://api-web.ibbil.com/api'
-    this.api = new PaymentApi(baseUrl)
+    this.api = new PaymentApi(config.public.webApiBaseUrl as string)
   }
 
   async initiate(request: PaymentRequest): Promise<PaymentSession> {

@@ -19,9 +19,7 @@ export class InsuranceService {
     }
 
     const config = useRuntimeConfig()
-    const baseUrl =
-      (config.public.insuranceApiBaseUrl as string) || 'https://api-insurance.ibbil.com/'
-    this.api = new InsuranceApi(baseUrl)
+    this.api = new InsuranceApi(config.public.insuranceApiBaseUrl as string)
   }
 
   /**

@@ -576,6 +576,95 @@
       "title": "Coming Soon",
       "description": "This page is under development and will be available soon with a better experience."
     },
+    "media": {
+      "seoTitle": "Media Center | Ibbil",
+      "seoDescription": "News, events, photo galleries, and videos from the camel world and the Ibbil platform.",
+      "eyebrow": "Media Center",
+      "title": "Media Center",
+      "subtitle": "Explore news, events, photo galleries, and videos from the camel world.",
+      "explore": "Explore",
+      "readMore": "Read more",
+      "viewGallery": "View gallery",
+      "watchVideo": "Watch video",
+      "backToHub": "Back to Media Center",
+      "viewAll": "View all {section}",
+      "sections": {
+        "news": {
+          "title": "News",
+          "description": "Latest coverage and updates from Ibbil and the camel world."
+        },
+        "photos": {
+          "title": "Photo Galleries",
+          "description": "Curated photo galleries from events and heritage moments."
+        },
+        "videos": {
+          "title": "Videos",
+          "description": "Video coverage and highlights from camel events."
+        },
+        "events": {
+          "title": "Events",
+          "description": "Featured events and occasions across the camel world."
+        }
+      },
+      "lightbox": {
+        "label": "Media viewer",
+        "close": "Close",
+        "prev": "Previous",
+        "next": "Next",
+        "counter": "{current} of {total}",
+        "openItem": "Open {title}"
+      },
+      "news": {
+        "seoTitle": "News | Media Center | Ibbil",
+        "seoDescription": "Browse Ibbil news and camel world coverage.",
+        "detailSeoTitle": "{title} | Ibbil News",
+        "title": "News",
+        "subtitle": "Latest news and coverage from the Ibbil platform.",
+        "errorTitle": "Could not load news",
+        "emptyTitle": "No news yet",
+        "emptyDescription": "No news articles are available yet. Please try again later.",
+        "backToList": "Back to news",
+        "detailErrorTitle": "Could not load this article"
+      },
+      "photos": {
+        "seoTitle": "Photo Galleries | Media Center | Ibbil",
+        "seoDescription": "Browse photo galleries from Ibbil events and coverage.",
+        "detailSeoTitle": "{title} | Photo Galleries",
+        "title": "Photo Galleries",
+        "subtitle": "Selected photo galleries from the camel world and its events.",
+        "errorTitle": "Could not load photo galleries",
+        "emptyTitle": "No photo galleries yet",
+        "emptyDescription": "No photo galleries are available yet. Please try again later.",
+        "backToList": "Back to photo galleries",
+        "detailErrorTitle": "Could not load this gallery",
+        "relatedTitle": "Related photos"
+      },
+      "videos": {
+        "seoTitle": "Videos | Media Center | Ibbil",
+        "seoDescription": "Watch video coverage and highlights from the camel world and Ibbil.",
+        "detailSeoTitle": "{title} | Ibbil Videos",
+        "title": "Videos",
+        "subtitle": "Video highlights and coverage from camel events.",
+        "errorTitle": "Could not load videos",
+        "emptyTitle": "No videos yet",
+        "emptyDescription": "No videos are available yet. Please try again later.",
+        "backToList": "Back to videos",
+        "detailErrorTitle": "Could not load this video",
+        "unsupported": "Your browser does not support this video."
+      },
+      "events": {
+        "seoTitle": "Events | Media Center | Ibbil",
+        "seoDescription": "Explore camel-world events and occasions on the Ibbil platform.",
+        "detailSeoTitle": "{title} | Ibbil Events",
+        "title": "Events",
+        "subtitle": "Featured events and occasions across the camel world.",
+        "errorTitle": "Could not load events",
+        "emptyTitle": "No events yet",
+        "emptyDescription": "No events are available yet. Please try again later.",
+        "backToList": "Back to events",
+        "detailErrorTitle": "Could not load this event"
+      }
+    },
     "transport": {
       "seoTitle": "Camel Transport | Ibbil",
       "seoDescription": "Transport your camels safely across Saudi Arabia with Ibbil: choose the truck, driver, and price that suit you.",

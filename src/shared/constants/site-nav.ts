@@ -19,7 +19,7 @@ export const SITE_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
   { key: 'site.nav.services', to: ROUTES.SERVICES, icon: 'lucide:briefcase' },
-  { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
+  { key: 'site.nav.media', to: ROUTES.MEDIA.ROOT, icon: 'lucide:newspaper' },
 ]
 
 /** Core services shown on the home page (avoids redundant “all services” entry). */
@@ -29,7 +29,7 @@ export const HOME_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
   { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
-  { key: 'site.nav.media', to: '/media', icon: 'lucide:newspaper' },
+  { key: 'site.nav.media', to: ROUTES.MEDIA.ROOT, icon: 'lucide:newspaper' },
 ]
 
 export const SITE_FOOTER_STORES = [

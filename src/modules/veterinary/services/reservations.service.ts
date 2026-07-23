@@ -18,9 +18,7 @@ export class VeterinaryReservationsService {
     }
 
     const config = useRuntimeConfig()
-    const baseUrl =
-      (config.public.veterinaryApiBaseUrl as string) || 'https://api-veterinary.ibbil.com/api'
-    this.api = new VeterinaryReservationsApi(baseUrl)
+    this.api = new VeterinaryReservationsApi(config.public.veterinaryApiBaseUrl as string)
   }
 
   async listCustomerReservations(
