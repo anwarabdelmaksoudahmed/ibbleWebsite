@@ -57,9 +57,7 @@ function goToJoin() {
 
         <div class="relative z-[1] mx-auto flex h-full w-full max-w-7xl items-center px-4 py-10 sm:px-6 lg:px-6">
           <div class="max-w-2xl text-white">
-            <p class="hero-fade mb-3 text-xs font-semibold tracking-[0.22em] text-ibbil-gold uppercase sm:text-sm">
-              {{ t('auth.platformName') }}
-            </p>
+       
             <h1
               id="services-hub-title"
               class="hero-fade text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl lg:text-4xl"

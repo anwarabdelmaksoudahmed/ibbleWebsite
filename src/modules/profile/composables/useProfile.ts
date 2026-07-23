@@ -18,7 +18,7 @@ const STAT_META: Array<{
   { key: 'wallet', icon: 'lucide:wallet', accent: 'green' },
   { key: 'insurance', icon: 'lucide:shield-check', accent: 'green' },
   { key: 'transportation', icon: 'lucide:truck', accent: 'neutral' },
-  { key: 'veterinary', icon: 'lucide:stethoscope', accent: 'neutral' },
+  { key: 'veterinary', icon: 'lucide:stethoscope', accent: 'green' },
   { key: 'marketplace', icon: 'lucide:store', accent: 'gold' },
   { key: 'bookings', icon: 'lucide:calendar-check', accent: 'green' },
 ]

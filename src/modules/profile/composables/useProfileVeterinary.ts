@@ -15,6 +15,10 @@ const EMPTY_PAGE = {
 
 const KNOWN_STATUSES = ['active', 'pending', 'completed', 'cancelled'] as const
 
+/**
+ * Client-side search across the current page only.
+ * Status is filtered server-side via `?status=` so pagination stays accurate.
+ */
 export function useProfileVeterinary() {
   const { t, te } = useI18n()
   const { authenticated } = useAuth()
@@ -26,6 +30,7 @@ export function useProfileVeterinary() {
 
   const filters = computed(() => ({
     page: page.value,
+    ...(status.value ? { status: status.value } : {}),
   }))
 
   const listQuery = useQuery({
@@ -47,12 +52,9 @@ export function useProfileVeterinary() {
 
   const items = computed(() => {
     const query = search.value.trim().toLowerCase()
-    const statusFilter = status.value
+    if (!query) return pageData.value.items
 
     return pageData.value.items.filter((item) => {
-      if (statusFilter && item.status !== statusFilter) return false
-      if (!query) return true
-
       const haystack = [
         item.id,
         item.clinicName,
@@ -87,7 +89,7 @@ export function useProfileVeterinary() {
     ]
   })
 
-  watch(status, () => {
+  watch([search, status], () => {
     page.value = 1
   })
 

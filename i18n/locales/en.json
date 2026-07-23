@@ -1559,6 +1559,10 @@
           "completed": "Completed",
           "cancelled": "Cancelled"
         },
+        "serviceTypes": {
+          "clinic_examine": "Clinic examination",
+          "outdoor_examine": "Home visit"
+        },
         "card": {
           "reservationNumber": "Booking #{id}",
           "unknownClinic": "Veterinary clinic",

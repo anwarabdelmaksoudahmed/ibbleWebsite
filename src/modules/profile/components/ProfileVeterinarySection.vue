@@ -71,7 +71,7 @@ function goToVeterinary() {
         <div
           v-for="i in 3"
           :key="i"
-          class="h-36 animate-pulse rounded-2xl border border-ibbil-green/10 bg-white dark:bg-surface-elevated"
+          class="h-40 animate-pulse rounded-2xl border border-ibbil-green/10 bg-white dark:bg-surface-elevated"
         />
       </template>
 

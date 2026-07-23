@@ -1559,6 +1559,10 @@
           "completed": "مكتمل",
           "cancelled": "ملغي"
         },
+        "serviceTypes": {
+          "clinic_examine": "كشف عيادة",
+          "outdoor_examine": "كشف منزلي"
+        },
         "card": {
           "reservationNumber": "حجز #{id}",
           "unknownClinic": "عيادة بيطرية",
