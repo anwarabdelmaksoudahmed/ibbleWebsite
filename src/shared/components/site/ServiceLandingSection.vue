@@ -11,6 +11,8 @@ export type ServiceLandingHeroSlide = {
 export type ServiceLandingBenefit = {
   key: string
   icon: string
+  /** Optional internal path — when set, the benefit card becomes a link. */
+  to?: string
 }
 
 export type ServiceLandingStepImage = {
@@ -49,7 +51,7 @@ const props = withDefaults(
   },
 )
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 const localePath = useLocalePath()
 
 const sectionRef = ref<HTMLElement | null>(null)
@@ -74,6 +76,11 @@ function tKey(suffix: string) {
 
 function tImageAlt(altKey: string) {
   return t(`${props.i18nPrefix}.images.${altKey}`)
+}
+
+function benefitExploreLabel() {
+  const key = `${props.i18nPrefix}.exploreBenefit`
+  return te(key) ? t(key) : t('site.home.exploreService')
 }
 </script>
 
@@ -154,26 +161,58 @@ function tImageAlt(altKey: string) {
 
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-6 lg:py-16">
 
-      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-5">
-        <BaseCard
-          v-for="(benefit, index) in benefits"
-          :key="benefit.key"
-          :padding="false"
-          class="section-fade h-full border-ibbil-green/10 bg-white/95"
-          :style="isVisible ? { animationDelay: `${120 + index * 90}ms` } : undefined"
-        >
-          <div class="p-5 sm:p-6">
-            <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-ibbil-green/8 text-ibbil-green">
-              <Icon :name="benefit.icon" class="h-5 w-5" aria-hidden="true" />
-            </span>
-            <h2 class="text-lg font-bold tracking-tight text-ibbil-green">
-              {{ t(`${i18nPrefix}.benefits.${benefit.key}.title`) }}
-            </h2>
-            <p class="mt-2 text-sm leading-relaxed text-foreground-muted">
-              {{ t(`${i18nPrefix}.benefits.${benefit.key}.description`) }}
-            </p>
-          </div>
-        </BaseCard>
+      <div
+        class="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:gap-5"
+        :class="benefits.length > 3 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'"
+      >
+        <template v-for="(benefit, index) in benefits" :key="benefit.key">
+          <NuxtLinkLocale
+            v-if="benefit.to"
+            :to="benefit.to"
+            class="section-fade block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green focus-visible:ring-offset-2"
+            :style="isVisible ? { animationDelay: `${120 + index * 90}ms` } : undefined"
+          >
+            <BaseCard
+              :padding="false"
+              class="h-full border-ibbil-green/10 bg-white/95 transition-all duration-300 hover:-translate-y-1 hover:border-ibbil-gold/45 hover:shadow-[0_18px_36px_-22px_rgba(45,83,61,0.45)]"
+            >
+              <div class="p-5 sm:p-6">
+                <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-ibbil-green/8 text-ibbil-green">
+                  <Icon :name="benefit.icon" class="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h2 class="text-lg font-bold tracking-tight text-ibbil-green">
+                  {{ t(`${i18nPrefix}.benefits.${benefit.key}.title`) }}
+                </h2>
+                <p class="mt-2 text-sm leading-relaxed text-foreground-muted">
+                  {{ t(`${i18nPrefix}.benefits.${benefit.key}.description`) }}
+                </p>
+                <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-ibbil-green">
+                  {{ benefitExploreLabel() }}
+                  <DirectionalArrow variant="chevron" size="sm" animated />
+                </span>
+              </div>
+            </BaseCard>
+          </NuxtLinkLocale>
+
+          <BaseCard
+            v-else
+            :padding="false"
+            class="section-fade h-full border-ibbil-green/10 bg-white/95"
+            :style="isVisible ? { animationDelay: `${120 + index * 90}ms` } : undefined"
+          >
+            <div class="p-5 sm:p-6">
+              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-ibbil-green/8 text-ibbil-green">
+                <Icon :name="benefit.icon" class="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h2 class="text-lg font-bold tracking-tight text-ibbil-green">
+                {{ t(`${i18nPrefix}.benefits.${benefit.key}.title`) }}
+              </h2>
+              <p class="mt-2 text-sm leading-relaxed text-foreground-muted">
+                {{ t(`${i18nPrefix}.benefits.${benefit.key}.description`) }}
+              </p>
+            </div>
+          </BaseCard>
+        </template>
       </div>
 
       <div class="mt-10 grid items-center gap-7 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-ibbil-green/10 sm:p-6 lg:mt-14 lg:grid-cols-2 lg:gap-10 lg:p-8">
@@ -231,6 +270,10 @@ function tImageAlt(altKey: string) {
             </p>
           </div>
         </BaseCard>
+      </div>
+
+      <div v-if="$slots.default" class="mt-10 lg:mt-14">
+        <slot />
       </div>
     </div>
 

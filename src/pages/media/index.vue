@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MediaHubSection from '@modules/media/components/MediaHubSection.vue'
+import MediaPageSection from '@modules/media/components/MediaPageSection.vue'
 
 definePageMeta({ layout: 'site' })
 
@@ -12,5 +12,5 @@ useSeoMeta({
 </script>
 
 <template>
-  <MediaHubSection />
+  <MediaPageSection />
 </template>

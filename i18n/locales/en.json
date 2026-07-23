@@ -579,6 +579,11 @@
     "media": {
       "seoTitle": "Media Center | Ibbil",
       "seoDescription": "News, events, photo galleries, and videos from the camel world and the Ibbil platform.",
+      "heroTitle": "Media Center for the camel world",
+      "heroSubtitle": "Follow the latest news and events, and explore photo galleries and videos from Ibbil coverage and heritage occasions.",
+      "ctaPrimary": "Browse news",
+      "ctaSecondary": "Photo galleries",
+      "exploreBenefit": "Explore section",
       "eyebrow": "Media Center",
       "title": "Media Center",
       "subtitle": "Explore news, events, photo galleries, and videos from the camel world.",
@@ -588,6 +593,54 @@
       "watchVideo": "Watch video",
       "backToHub": "Back to Media Center",
       "viewAll": "View all {section}",
+      "latestEyebrow": "Latest",
+      "latestTitle": "Latest media content",
+      "latestSubtitle": "A quick look at the newest news, galleries, videos, and events.",
+      "latestEmptyTitle": "No content to show yet",
+      "latestEmptyDescription": "The latest media content will appear here as soon as it is available.",
+      "images": {
+        "caravan": "A camel caravan crossing sand dunes at sunset",
+        "heritage": "A man leading a decorated camel at a heritage desert event",
+        "digital": "A user browsing Ibbil platform services on a tablet in the desert",
+        "camel": "A camel in the Saudi desert at sunset",
+        "veterinary": "On-site veterinary care for a camel in a desert setting"
+      },
+      "benefits": {
+        "news": {
+          "title": "News",
+          "description": "Latest coverage and updates from Ibbil and the camel world."
+        },
+        "photos": {
+          "title": "Photo Galleries",
+          "description": "Curated photo galleries from events and heritage moments."
+        },
+        "videos": {
+          "title": "Videos",
+          "description": "Video coverage and highlights from camel events."
+        },
+        "events": {
+          "title": "Events",
+          "description": "Featured events and occasions across the camel world."
+        }
+      },
+      "howTitle": "How do you explore the Media Center?",
+      "howDescription": "Pick a section, browse the latest content, then open details or galleries for a clearer photo and video experience.",
+      "steps": {
+        "browse": {
+          "title": "1) Choose a section",
+          "description": "Go to news, photos, videos, or events based on what you want to explore."
+        },
+        "explore": {
+          "title": "2) Browse content",
+          "description": "Review cards and galleries in a fast, responsive layout with lazy-loaded images."
+        },
+        "watch": {
+          "title": "3) Open details",
+          "description": "View articles, galleries, or videos with a clearer presentation and comfortable viewing experience."
+        }
+      },
+      "footerTitle": "Follow coverage of the camel world",
+      "footerDescription": "From news and events to photo galleries and videos — all media content in one place with a clear, easy browsing experience.",
       "sections": {
         "news": {
           "title": "News",
