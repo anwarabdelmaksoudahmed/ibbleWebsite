@@ -55,6 +55,8 @@ useHead(() => ({
 
 <template>
   <div>
+    <AboutNewsTickerSection />
+
     <AboutSection />
     <HomeStatsSection />
   </div>

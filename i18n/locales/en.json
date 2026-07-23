@@ -387,6 +387,19 @@
       },
       "highlightsTitle": "Why Ibbil",
       "highlightsSubtitle": "A complete ecosystem built for the camel community.",
+      "newsTicker": {
+        "label": "Latest",
+        "ariaLabel": "Platform news and updates",
+        "items": {
+          "insurance": "Comprehensive camel insurance — protect your herd with trusted policies",
+          "transport": "Safe camel transport across all regions of the Kingdom",
+          "stores": "Browse feed, supplies, and camel products from verified stores",
+          "veterinary": "Book certified veterinarians for on-site camel care",
+          "permits": "Issue and manage electronic permits in simple, clear steps",
+          "join": "Join Ibbil as a merchant or service provider and grow your business",
+          "vision": "Supporting camel heritage and Saudi Vision 2030"
+        }
+      },
       "cta": {
         "title": "Ready to explore?",
         "subtitle": "Browse our services or get in touch with the Ibbil team.",
