@@ -1,4 +1,4 @@
-import type { AxiosInstance } from 'axios'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { MEDIA_ENDPOINTS } from '@modules/media/constants/endpoints'
 import type {
@@ -8,6 +8,11 @@ import type {
   MediaListQueryParams,
   MediaPaginatedApiResponse,
 } from '@modules/media/types/api.types'
+
+type MediaRequestOptions = {
+  apiLocale?: string
+  signal?: AbortSignal
+}
 
 export class MediaApi {
   private readonly client: AxiosInstance
@@ -25,100 +30,107 @@ export class MediaApi {
     }
   }
 
-  listNews(params: MediaListQueryParams = {}): Promise<MediaPaginatedApiResponse<MediaArticleApiDto>> {
+  private requestConfig(options?: MediaRequestOptions): AxiosRequestConfig {
+    return {
+      baseURL: this.baseUrl,
+      skipErrorToast: true,
+      ...(options?.apiLocale ? { apiLocale: options.apiLocale } : {}),
+      ...(options?.signal ? { signal: options.signal } : {}),
+    }
+  }
+
+  listNews(
+    params: MediaListQueryParams = {},
+    options?: MediaRequestOptions,
+  ): Promise<MediaPaginatedApiResponse<MediaArticleApiDto>> {
     return this.client
       .get<MediaPaginatedApiResponse<MediaArticleApiDto>>(MEDIA_ENDPOINTS.NEWS, {
-        baseURL: this.baseUrl,
+        ...this.requestConfig(options),
         params: this.listParams(params),
-        skipErrorToast: true,
       })
       .then((response) => response.data)
   }
 
-  getNews(id: string): Promise<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto> {
+  getNews(
+    id: string,
+    options?: MediaRequestOptions,
+  ): Promise<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto> {
     return this.client
       .get<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto>(
         MEDIA_ENDPOINTS.NEWS_BY_ID(id),
-        {
-          baseURL: this.baseUrl,
-          skipErrorToast: true,
-        },
+        this.requestConfig(options),
       )
       .then((response) => response.data)
   }
 
   listEvents(
     params: MediaListQueryParams = {},
+    options?: MediaRequestOptions,
   ): Promise<MediaPaginatedApiResponse<MediaArticleApiDto>> {
     return this.client
       .get<MediaPaginatedApiResponse<MediaArticleApiDto>>(MEDIA_ENDPOINTS.EVENTS, {
-        baseURL: this.baseUrl,
+        ...this.requestConfig(options),
         params: this.listParams(params),
-        skipErrorToast: true,
       })
       .then((response) => response.data)
   }
 
-  getEvent(id: string): Promise<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto> {
+  getEvent(
+    id: string,
+    options?: MediaRequestOptions,
+  ): Promise<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto> {
     return this.client
       .get<MediaItemApiResponse<MediaArticleApiDto> | MediaArticleApiDto>(
         MEDIA_ENDPOINTS.EVENTS_BY_ID(id),
-        {
-          baseURL: this.baseUrl,
-          skipErrorToast: true,
-        },
+        this.requestConfig(options),
       )
       .then((response) => response.data)
   }
 
   listImageGalleries(
     params: MediaListQueryParams = {},
+    options?: MediaRequestOptions,
   ): Promise<MediaPaginatedApiResponse<MediaGalleryApiDto>> {
     return this.client
       .get<MediaPaginatedApiResponse<MediaGalleryApiDto>>(MEDIA_ENDPOINTS.IMAGE_GALLERIES, {
-        baseURL: this.baseUrl,
+        ...this.requestConfig(options),
         params: this.listParams(params),
-        skipErrorToast: true,
       })
       .then((response) => response.data)
   }
 
   getImageGallery(
     id: string,
+    options?: MediaRequestOptions,
   ): Promise<MediaItemApiResponse<MediaGalleryApiDto> | MediaGalleryApiDto> {
     return this.client
       .get<MediaItemApiResponse<MediaGalleryApiDto> | MediaGalleryApiDto>(
         MEDIA_ENDPOINTS.IMAGE_GALLERY_BY_ID(id),
-        {
-          baseURL: this.baseUrl,
-          skipErrorToast: true,
-        },
+        this.requestConfig(options),
       )
       .then((response) => response.data)
   }
 
   listVideoGalleries(
     params: MediaListQueryParams = {},
+    options?: MediaRequestOptions,
   ): Promise<MediaPaginatedApiResponse<MediaGalleryApiDto>> {
     return this.client
       .get<MediaPaginatedApiResponse<MediaGalleryApiDto>>(MEDIA_ENDPOINTS.VIDEO_GALLERIES, {
-        baseURL: this.baseUrl,
+        ...this.requestConfig(options),
         params: this.listParams(params),
-        skipErrorToast: true,
       })
       .then((response) => response.data)
   }
 
   getVideoGallery(
     id: string,
+    options?: MediaRequestOptions,
   ): Promise<MediaItemApiResponse<MediaGalleryApiDto> | MediaGalleryApiDto> {
     return this.client
       .get<MediaItemApiResponse<MediaGalleryApiDto> | MediaGalleryApiDto>(
         MEDIA_ENDPOINTS.VIDEO_GALLERY_BY_ID(id),
-        {
-          baseURL: this.baseUrl,
-          skipErrorToast: true,
-        },
+        this.requestConfig(options),
       )
       .then((response) => response.data)
   }
