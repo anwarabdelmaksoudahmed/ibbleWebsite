@@ -1,6 +1,5 @@
 import { PROFILE_ROUTES } from '@modules/profile/constants/routes'
 import type { ProfileNavItem } from '@modules/profile/types'
-import { ROUTES } from '@shared/constants/routes'
 
 export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
   {
@@ -31,7 +30,7 @@ export const PROFILE_SIDEBAR_NAV: ProfileNavItem[] = [
     id: 'transport',
     icon: 'lucide:truck',
     labelKey: 'site.profile.nav.transport',
-    to: ROUTES.TRANSPORT,
+    to: PROFILE_ROUTES.TRANSPORTATION,
   },
   {
     id: 'veterinary',

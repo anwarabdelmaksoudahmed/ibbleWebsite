@@ -1594,6 +1594,52 @@
           "invoice": "الفاتورة"
         }
       },
+      "transportation": {
+        "seoTitle": "رحلاتي | إبل",
+        "seoDescription": "عرض ومتابعة رحلات نقل الإبل الخاصة بك على منصة إبل.",
+        "breadcrumb": "النقل",
+        "summaryLabel": "الرحلات",
+        "bookTrip": "اطلب رحلة",
+        "errorTitle": "تعذّر تحميل الرحلات",
+        "errorDescription": "حدث خطأ أثناء تحميل قائمة الرحلات. يرجى المحاولة مرة أخرى.",
+        "emptyTitle": "لا توجد رحلات حالياً",
+        "emptyDescription": "لا توجد رحلات مطابقة لهذه الفلاتر. اطلب رحلة جديدة أو امسح الفلاتر.",
+        "clearFilters": "مسح الفلاتر",
+        "filters": {
+          "label": "تصفية الرحلات",
+          "searchPlaceholder": "ابحث بالمسار أو المركبة أو السائق…",
+          "status": "الحالة",
+          "allStatuses": "كل الحالات"
+        },
+        "status": {
+          "upcoming": "قادمة",
+          "ongoing": "جارية",
+          "completed": "مكتملة",
+          "cancelled": "ملغاة"
+        },
+        "card": {
+          "tripNumber": "رحلة #{id}",
+          "unknownVehicle": "مركبة نقل",
+          "unknownDriver": "السائق",
+          "scheduledAt": "بتاريخ {date}",
+          "from": "من",
+          "to": "إلى",
+          "total": "الإجمالي",
+          "expand": "عرض تفاصيل الرحلة",
+          "collapse": "إخفاء تفاصيل الرحلة",
+          "routeTitle": "تفاصيل المسار",
+          "detailsTitle": "تفاصيل الرحلة",
+          "distance": "المسافة",
+          "distanceValue": "{value} كم",
+          "camels": "عدد الإبل",
+          "date": "التاريخ",
+          "driver": "السائق",
+          "phone": "الجوال",
+          "vehicleModel": "الموديل",
+          "plateNumber": "رقم اللوحة",
+          "year": "سنة الصنع"
+        }
+      },
       "wallet": {
         "seoTitle": "محفظتي | إبل",
         "seoDescription": "عرض رصيد محفظتك وحركاتك المالية على منصة إبل.",

@@ -1594,6 +1594,52 @@
           "invoice": "Invoice"
         }
       },
+      "transportation": {
+        "seoTitle": "My Trips | Ibbil",
+        "seoDescription": "View and track your camel transportation trips on Ibbil.",
+        "breadcrumb": "Transport",
+        "summaryLabel": "Trips",
+        "bookTrip": "Book a trip",
+        "errorTitle": "Could not load your trips",
+        "errorDescription": "Something went wrong while loading your transportation trips. Please try again.",
+        "emptyTitle": "No trips yet",
+        "emptyDescription": "You have no trips matching these filters. Book a new trip or clear the filters.",
+        "clearFilters": "Clear filters",
+        "filters": {
+          "label": "Filter trips",
+          "searchPlaceholder": "Search by route, vehicle, or driver…",
+          "status": "Status",
+          "allStatuses": "All statuses"
+        },
+        "status": {
+          "upcoming": "Upcoming",
+          "ongoing": "Ongoing",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "card": {
+          "tripNumber": "Trip #{id}",
+          "unknownVehicle": "Transport vehicle",
+          "unknownDriver": "Driver",
+          "scheduledAt": "On {date}",
+          "from": "From",
+          "to": "To",
+          "total": "Total",
+          "expand": "Show trip details",
+          "collapse": "Hide trip details",
+          "routeTitle": "Route details",
+          "detailsTitle": "Trip details",
+          "distance": "Distance",
+          "distanceValue": "{value} km",
+          "camels": "Camels",
+          "date": "Date",
+          "driver": "Driver",
+          "phone": "Phone",
+          "vehicleModel": "Model",
+          "plateNumber": "Plate number",
+          "year": "Year"
+        }
+      },
       "wallet": {
         "seoTitle": "My Wallet | Ibbil",
         "seoDescription": "View your wallet balance and transaction history on Ibbil.",

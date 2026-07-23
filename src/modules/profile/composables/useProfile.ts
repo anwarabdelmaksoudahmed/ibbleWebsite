@@ -4,6 +4,8 @@ import { normalizeApiError } from '@core/api/http/errors'
 import { PROFILE_SIDEBAR_NAV } from '@modules/profile/constants/nav'
 import { getInsuranceService } from '@modules/insurance/services/insurance.service'
 import { INSURANCE_QUERY_KEYS } from '@modules/insurance/constants/query-keys'
+import { getTransportTripsService } from '@modules/transport/services/trips.service'
+import { TRANSPORT_QUERY_KEYS } from '@modules/transport/constants/query-keys'
 import { getVeterinaryReservationsService } from '@modules/veterinary/services/reservations.service'
 import { VETERINARY_QUERY_KEYS } from '@modules/veterinary/constants/query-keys'
 import type { ProfileStat, ProfileStatKey } from '@modules/profile/types'
@@ -17,7 +19,7 @@ const STAT_META: Array<{
   { key: 'favorites', icon: 'lucide:heart', accent: 'gold' },
   { key: 'wallet', icon: 'lucide:wallet', accent: 'green' },
   { key: 'insurance', icon: 'lucide:shield-check', accent: 'green' },
-  { key: 'transportation', icon: 'lucide:truck', accent: 'neutral' },
+  { key: 'transportation', icon: 'lucide:truck', accent: 'green' },
   { key: 'veterinary', icon: 'lucide:stethoscope', accent: 'green' },
   { key: 'marketplace', icon: 'lucide:store', accent: 'gold' },
   { key: 'bookings', icon: 'lucide:calendar-check', accent: 'green' },
@@ -35,6 +37,19 @@ export function useProfile() {
   const insuranceQuery = useQuery({
     queryKey: INSURANCE_QUERY_KEYS.userList({ page: 1 }),
     queryFn: () => getInsuranceService().listUserInsurances({ page: 1 }),
+    enabled: computed(() => import.meta.client && authSessionReady.value && authenticated.value),
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    retry: (failureCount, error) => {
+      const status = normalizeApiError(error).statusCode
+      if (status === 401 || status === 403) return false
+      return failureCount < 2
+    },
+  })
+
+  const transportationQuery = useQuery({
+    queryKey: TRANSPORT_QUERY_KEYS.userTrips({ page: 1 }),
+    queryFn: () => getTransportTripsService().listUserTrips({ page: 1 }),
     enabled: computed(() => import.meta.client && authSessionReady.value && authenticated.value),
     staleTime: 30_000,
     refetchOnWindowFocus: false,
@@ -68,6 +83,8 @@ export function useProfile() {
         value = primaryWallet.value?.balance ?? null
       } else if (meta.key === 'insurance') {
         value = insuranceQuery.data.value?.count ?? null
+      } else if (meta.key === 'transportation') {
+        value = transportationQuery.data.value?.count ?? null
       } else if (meta.key === 'veterinary') {
         value = veterinaryQuery.data.value?.count ?? null
       }
@@ -94,24 +111,18 @@ export function useProfile() {
     }
   })
 
+  // Secondary list counts hydrate into stats independently — don't block the profile shell.
   const isLoading = computed(
     () =>
       authSessionReady.value &&
       authenticated.value &&
-      (walletLoading.value ||
-        wishlistLoading.value ||
-        insuranceQuery.isPending.value ||
-        veterinaryQuery.isPending.value ||
-        (insuranceQuery.isFetching.value && !insuranceQuery.isFetched.value) ||
-        (veterinaryQuery.isFetching.value && !veterinaryQuery.isFetched.value)),
+      (walletLoading.value || wishlistLoading.value),
   )
 
   const isError = computed(
     () =>
       walletError.value ||
-      wishlistError.value ||
-      insuranceQuery.isError.value ||
-      veterinaryQuery.isError.value,
+      wishlistError.value,
   )
 
   async function refetch() {
@@ -119,6 +130,7 @@ export function useProfile() {
       refetchWallet(),
       refetchWishlist(),
       insuranceQuery.refetch(),
+      transportationQuery.refetch(),
       veterinaryQuery.refetch(),
     ])
   }

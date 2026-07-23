@@ -26,6 +26,30 @@ function processQueue(error: unknown, token: string | null): void {
   failedQueue = []
 }
 
+function normalizeBase(url: string): string {
+  return url.trim().replace(/\/+$/, '')
+}
+
+/**
+ * Only marketplace + auth hosts own the login session.
+ * 401 from insurance / veterinary / transportation / web must not force logout.
+ */
+function isSessionAuthRequest(config: InternalAxiosRequestConfig): boolean {
+  try {
+    const runtimeConfig = useRuntimeConfig()
+    const apiBase = normalizeBase(String(runtimeConfig.public.apiBaseUrl ?? ''))
+    const authBase = normalizeBase(String(runtimeConfig.public.authBaseUrl ?? ''))
+    const requestBase = normalizeBase(String(config.baseURL || apiBase))
+
+    if (!requestBase) return true
+    if (apiBase && (requestBase === apiBase || requestBase.startsWith(`${apiBase}/`))) return true
+    if (authBase && (requestBase === authBase || requestBase.startsWith(`${authBase}/`))) return true
+    return false
+  } catch {
+    return true
+  }
+}
+
 async function forceLogout(): Promise<void> {
   const authStore = useAuthStore()
   authStore.clearSession()
@@ -106,6 +130,12 @@ export function setupResponseInterceptor(client: AxiosInstance): void {
       const status = error.response?.status
 
       if (status === 401 && !originalRequest.skipAuth && !originalRequest._retry) {
+        // Secondary services (transport / veterinary / insurance / …) can reject
+        // the shared token without meaning the marketplace session is dead.
+        if (!isSessionAuthRequest(originalRequest)) {
+          return Promise.reject(normalizeApiError(error))
+        }
+
         const hadToken = Boolean(originalRequest.headers?.Authorization)
 
         // No token was sent (stale Pinia auth) — clear local session quietly.

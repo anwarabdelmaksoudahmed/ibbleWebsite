@@ -5,6 +5,7 @@ export const PROFILE_ROUTES = {
   INSURANCE: `${ROUTES.PROFILE}/insurance`,
   MARKETPLACE: `${ROUTES.PROFILE}/marketplace`,
   WALLET: `${ROUTES.PROFILE}/wallet`,
+  TRANSPORTATION: `${ROUTES.PROFILE}/transportation`,
   VETERINARY: `${ROUTES.PROFILE}/user-veterinary`,
   FAVOURITE: `${ROUTES.PROFILE}/favourite`,
 } as const
