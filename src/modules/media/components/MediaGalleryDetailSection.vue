@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const { gallery, isLoading, errorMessage, refresh } = useMediaGalleryDetail(
   () => props.id,
   () => props.kind,
@@ -20,14 +21,14 @@ const dateLabel = useMediaDateLabel(
   () => gallery.value?.publishDate || gallery.value?.createdAt,
 )
 
-const backTo = computed(() =>
+const sectionRoute = computed(() =>
   props.kind === 'video' ? MEDIA_ROUTES.VIDEOS : MEDIA_ROUTES.PHOTOS,
 )
 
-const backLabel = computed(() =>
+const sectionLabel = computed(() =>
   props.kind === 'video'
-    ? t('site.media.videos.backToList')
-    : t('site.media.photos.backToList'),
+    ? t('site.media.videos.title')
+    : t('site.media.photos.title'),
 )
 
 const errorTitle = computed(() =>
@@ -35,6 +36,20 @@ const errorTitle = computed(() =>
     ? t('site.media.videos.detailErrorTitle')
     : t('site.media.photos.detailErrorTitle'),
 )
+
+const breadcrumbItems = computed(() => {
+  const items: { label: string; to?: string }[] = [
+    { label: t('site.nav.home'), to: localePath('/') },
+    { label: t('site.nav.media'), to: localePath(MEDIA_ROUTES.ROOT) },
+    { label: sectionLabel.value, to: localePath(sectionRoute.value) },
+  ]
+
+  if (gallery.value?.title) {
+    items.push({ label: gallery.value.title })
+  }
+
+  return items
+})
 
 const assets = computed<MediaAsset[]>(() => {
   const items = gallery.value?.media ?? []
@@ -76,14 +91,8 @@ function openLightbox(index: number) {
       "
     />
 
-    <div class="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
-      <NuxtLinkLocale
-        :to="backTo"
-        class="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ibbil-green/80 transition hover:text-ibbil-green"
-      >
-        <DirectionalArrow variant="chevron" size="sm" direction="back" />
-        {{ backLabel }}
-      </NuxtLinkLocale>
+    <div class="relative mx-auto max-w-6xl px-4 py-[12px] sm:px-6 lg:pb-14">
+      <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
       <MarketplaceFetchLoader v-if="isLoading && !gallery" />
 

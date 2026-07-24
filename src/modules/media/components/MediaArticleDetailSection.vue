@@ -9,6 +9,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const { article, isLoading, errorMessage, refresh } = useMediaArticleDetail(
   () => props.id,
   () => props.kind,
@@ -18,14 +19,14 @@ const dateLabel = useMediaDateLabel(
   () => article.value?.publishDate || article.value?.createdAt,
 )
 
-const backTo = computed(() =>
+const sectionRoute = computed(() =>
   props.kind === 'events' ? MEDIA_ROUTES.EVENTS : MEDIA_ROUTES.NEWS,
 )
 
-const backLabel = computed(() =>
+const sectionLabel = computed(() =>
   props.kind === 'events'
-    ? t('site.media.events.backToList')
-    : t('site.media.news.backToList'),
+    ? t('site.media.events.title')
+    : t('site.media.news.title'),
 )
 
 const errorTitle = computed(() =>
@@ -33,6 +34,20 @@ const errorTitle = computed(() =>
     ? t('site.media.events.detailErrorTitle')
     : t('site.media.news.detailErrorTitle'),
 )
+
+const breadcrumbItems = computed(() => {
+  const items: { label: string; to?: string }[] = [
+    { label: t('site.nav.home'), to: localePath('/') },
+    { label: t('site.nav.media'), to: localePath(MEDIA_ROUTES.ROOT) },
+    { label: sectionLabel.value, to: localePath(sectionRoute.value) },
+  ]
+
+  if (article.value?.title) {
+    items.push({ label: article.value.title })
+  }
+
+  return items
+})
 </script>
 
 <template>
@@ -46,14 +61,8 @@ const errorTitle = computed(() =>
       "
     />
 
-    <div class="relative mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
-      <NuxtLinkLocale
-        :to="backTo"
-        class="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ibbil-green/80 transition hover:text-ibbil-green"
-      >
-        <DirectionalArrow variant="chevron" size="sm" direction="back" />
-        {{ backLabel }}
-      </NuxtLinkLocale>
+    <div class="relative mx-auto max-w-4xl px-4 py-[12px] sm:px-6 lg:pb-14">
+      <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
 
       <MarketplaceFetchLoader v-if="isLoading && !article" />
 

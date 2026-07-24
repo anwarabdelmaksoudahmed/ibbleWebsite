@@ -2,7 +2,7 @@
 import MarketplaceFetchLoader from '@shared/components/site/MarketplaceFetchLoader.vue'
 import { MEDIA_ROUTES } from '@modules/media/constants/routes'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
     subtitle?: string
@@ -17,13 +17,11 @@ withDefaults(
     page: number
     totalPages: number
     showRefreshOverlay?: boolean
-    showBackLink?: boolean
   }>(),
   {
     subtitle: '',
     emptyIcon: 'lucide:newspaper',
     showRefreshOverlay: false,
-    showBackLink: true,
   },
 )
 
@@ -33,6 +31,13 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
+
+const breadcrumbItems = computed(() => [
+  { label: t('site.nav.home'), to: localePath('/') },
+  { label: t('site.nav.media'), to: localePath(MEDIA_ROUTES.ROOT) },
+  { label: props.title },
+])
 
 const sectionRef = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
@@ -61,20 +66,13 @@ useIntersectionObserver(
       "
     />
 
-    <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-6 lg:py-14">
+    <div class="relative mx-auto max-w-7xl px-4 py-[12px] sm:px-6 lg:px-6 lg:pb-14">
+      <BaseBreadcrumb :items="breadcrumbItems" class="mb-6" />
+
       <header
-        class="mx-auto mb-8 max-w-2xl text-center"
+        class="mb-8"
         :class="isVisible ? 'media-reveal' : 'opacity-0'"
       >
-        <NuxtLinkLocale
-          v-if="showBackLink"
-          :to="MEDIA_ROUTES.ROOT"
-          class="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ibbil-green/80 transition hover:text-ibbil-green"
-        >
-          <DirectionalArrow variant="chevron" size="sm" direction="back" />
-          {{ t('site.media.backToHub') }}
-        </NuxtLinkLocale>
-
         <h1
           :id="titleId"
           class="text-2xl font-extrabold tracking-tight text-ibbil-green sm:text-3xl"
@@ -84,15 +82,15 @@ useIntersectionObserver(
 
         <p
           v-if="subtitle"
-          class="mx-auto mt-2.5 max-w-md text-sm leading-relaxed text-foreground-muted sm:text-base"
+          class="mt-2.5 max-w-2xl text-sm leading-relaxed text-foreground-muted sm:text-base"
         >
           {{ subtitle }}
         </p>
 
-        <div class="relative mx-auto mt-3 flex h-3 w-28 items-center justify-center" aria-hidden="true">
+        <div class="relative mt-3 flex h-3 w-28 items-center" aria-hidden="true">
           <span class="h-px w-full bg-ibbil-green/20" />
           <span
-            class="absolute h-1 w-10 origin-center rounded-full bg-ibbil-gold"
+            class="absolute start-0 h-1 w-10 origin-start rounded-full bg-ibbil-gold"
             :class="isVisible ? 'media-accent-grow' : 'scale-x-0'"
           />
         </div>
