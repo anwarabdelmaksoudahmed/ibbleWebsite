@@ -1,10 +1,4 @@
 import { z } from 'zod'
-import {
-  TRANSPORT_SHIPMENT_TYPES,
-  type TransportShipmentTypeId,
-} from '@modules/transport/constants/routes'
-
-const shipmentTypeIdList = TRANSPORT_SHIPMENT_TYPES.map((item) => item.id)
 
 export const transportDeliverySchema = z.object({
   name: z
@@ -50,11 +44,8 @@ export const transportDeliverySchema = z.object({
 export const transportShipmentTypeSchema = z.object({
   shipmentTypeId: z
     .string()
-    .refine(
-      (value): value is TransportShipmentTypeId =>
-        shipmentTypeIdList.includes(value as TransportShipmentTypeId),
-      'site.transport.register.validation.shipmentTypeRequired',
-    ),
+    .trim()
+    .min(1, 'site.transport.register.validation.shipmentTypeRequired'),
 })
 
 export const transportPaymentSchema = z.object({

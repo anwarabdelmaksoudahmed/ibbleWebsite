@@ -806,18 +806,12 @@
           "autoDistance": "Distance calculated automatically from the selected route."
         },
         "shipmentTypes": {
-          "small": {
-            "title": "Small truck",
-            "description": "Suitable for short trips and a small number of camels."
-          },
-          "medium": {
-            "title": "Medium truck",
-            "description": "Balanced capacity for most transport needs between cities."
-          },
-          "large": {
-            "title": "Large truck",
-            "description": "High capacity for long-distance trips and larger groups."
-          }
+          "loading": "Loading vehicle types…",
+          "emptyTitle": "No vehicle types available",
+          "emptyDescription": "No active vehicle types were found. Please try again later.",
+          "errorTitle": "Couldn’t load vehicle types",
+          "capacity": "Capacity {count}",
+          "pricePerKm": "{price} / km"
         },
         "validation": {
           "transportDateRequired": "Transport date is required",

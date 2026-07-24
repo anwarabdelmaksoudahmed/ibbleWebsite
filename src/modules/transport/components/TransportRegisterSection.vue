@@ -4,6 +4,7 @@ import TransportPaymentStep from '@modules/transport/components/TransportPayment
 import TransportShipmentTypeStep from '@modules/transport/components/TransportShipmentTypeStep.vue'
 import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 import { useTransportRegisterWizard } from '@modules/transport/composables/useTransportRegisterWizard'
+import { useTransportVehicleTypes } from '@modules/transport/composables/useTransportVehicleTypes'
 import { ROUTES } from '@shared/constants/routes'
 
 const { t } = useI18n()
@@ -20,7 +21,6 @@ const {
   shipmentTypeError,
   termsAccepted,
   termsError,
-  isFirstStep,
   isLastStep,
   next,
   prev,
@@ -30,6 +30,28 @@ const {
   setTermsAccepted,
   clearPersistedDraft,
 } = useTransportRegisterWizard()
+
+const {
+  vehicleTypes,
+  isLoading: vehicleTypesLoading,
+  errorMessage: vehicleTypesError,
+  refetch: refetchVehicleTypes,
+} = useTransportVehicleTypes()
+
+const selectedVehicleType = computed(() =>
+  vehicleTypes.value.find((item) => item.id === shipmentTypeId.value),
+)
+
+const shipmentTypeName = computed(() => selectedVehicleType.value?.name ?? '')
+
+const allowedShipmentTypeIds = computed(() => vehicleTypes.value.map((item) => item.id))
+
+watch(vehicleTypes, (types) => {
+  if (!shipmentTypeId.value) return
+  if (types.length && !types.some((item) => item.id === shipmentTypeId.value)) {
+    shipmentTypeId.value = ''
+  }
+})
 
 const submitting = ref(false)
 
@@ -47,7 +69,9 @@ const nextLabel = computed(() =>
 
 async function onNext() {
   if (!isLastStep.value) {
-    await next()
+    await next(
+      activeStep.value === 'shipmentType' ? allowedShipmentTypeIds.value : undefined,
+    )
     return
   }
 
@@ -67,13 +91,6 @@ async function submitRequest() {
     submitting.value = false
   }
 }
-
-function onBack() {
-  if (isFirstStep.value) {
-    return navigateTo(localePath(TRANSPORT_ROUTES.ROOT))
-  }
-  prev()
-}
 </script>
 
 <template>
@@ -81,8 +98,6 @@ function onBack() {
     <div class="mx-auto max-w-7xl px-4 py-[12px] sm:px-6  lg:px-6">
       <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <BaseBreadcrumb :items="breadcrumbItems" />
-
- 
       </div>
 
       <FormWizardShell
@@ -107,15 +122,19 @@ function onBack() {
 
         <TransportShipmentTypeStep
           v-else-if="activeStep === 'shipmentType'"
+          :options="vehicleTypes"
           :selected-id="shipmentTypeId"
+          :loading="vehicleTypesLoading"
+          :error-message="vehicleTypesError"
           :error="shipmentTypeError"
           @select="selectShipmentType"
+          @retry="refetchVehicleTypes()"
         />
 
         <TransportPaymentStep
           v-else-if="activeStep === 'payment'"
           :delivery="delivery"
-          :shipment-type-id="shipmentTypeId"
+          :shipment-type-name="shipmentTypeName"
           :terms-accepted="termsAccepted"
           :terms-error="termsError"
           @update:terms-accepted="setTermsAccepted"

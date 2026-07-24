@@ -56,3 +56,34 @@ export type TransportTripsQueryParams = {
   page?: number
   status?: string
 }
+
+export type TransportAllowedVehicleTypeTranslationApiDto = {
+  id?: number | string | null
+  name?: string | null
+  allowedVehicleTypeId?: number | string | null
+  lang?: string | null
+}
+
+export type TransportAllowedVehicleTypeApiDto = {
+  id: number | string
+  name?: string | null
+  status?: number | string | null
+  translations?: TransportAllowedVehicleTypeTranslationApiDto[] | null
+  image?: string | null
+  kilometerPrice?: string | number | null
+  capacity?: number | string | null
+  numberOfVehicles?: number | string | null
+  numberOfTrips?: number | string | null
+}
+
+export type TransportAllowedVehicleTypesApiResponse = {
+  message?: string
+  data?: TransportAllowedVehicleTypeApiDto[]
+  meta?: TransportTripsApiMeta
+  status?: number
+}
+
+export type TransportAllowedVehicleTypesQueryParams = {
+  /** Active types only — API expects `filters[status]=1` */
+  status?: number | string
+}

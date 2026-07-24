@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { TransportDeliveryFormValues } from '@modules/transport/schemas/register.schema'
-import type { TransportShipmentTypeId } from '@modules/transport/constants/routes'
 
 const props = defineProps<{
   delivery: TransportDeliveryFormValues
-  shipmentTypeId: TransportShipmentTypeId | ''
+  shipmentTypeName: string
   termsAccepted: boolean
   termsError?: string
 }>()
@@ -63,9 +62,7 @@ const summaryItems = computed(() => [
   },
   {
     label: t('site.transport.register.sections.shipmentType'),
-    value: props.shipmentTypeId
-      ? t(`site.transport.register.shipmentTypes.${props.shipmentTypeId}.title`)
-      : '—',
+    value: props.shipmentTypeName || '—',
   },
 ])
 </script>

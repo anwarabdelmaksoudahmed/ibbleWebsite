@@ -35,3 +35,11 @@ export type TransportTripsPage = {
   currentPage: number
   itemsPerPage: number
 }
+
+export type TransportVehicleType = {
+  id: string
+  name: string
+  image: string
+  capacity: number
+  kilometerPrice: number
+}

@@ -2,6 +2,8 @@ import type { AxiosInstance } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { TRANSPORT_ENDPOINTS } from '@modules/transport/constants/endpoints'
 import type {
+  TransportAllowedVehicleTypesApiResponse,
+  TransportAllowedVehicleTypesQueryParams,
   TransportTripsApiResponse,
   TransportTripsQueryParams,
 } from '@modules/transport/types/api.types'
@@ -15,6 +17,12 @@ function serializeTripsQuery(params: Record<string, unknown>): string {
   const page = encodeURIComponent(String(params.page ?? 1))
   const status = encodeURIComponent(String(params.status ?? ''))
   return `filters[status]=${status}&page=${page}`
+}
+
+/** Build `filters[status]=1` for allowed vehicle types. */
+function serializeStatusFilter(params: Record<string, unknown>): string {
+  const status = encodeURIComponent(String(params.status ?? 1))
+  return `filters[status]=${status}`
 }
 
 export class TransportTripsApi {
@@ -43,6 +51,28 @@ export class TransportTripsApi {
         },
         skipErrorToast: true,
       })
+      .then((response) => response.data)
+  }
+
+  listAllowedVehicleTypes(
+    params: TransportAllowedVehicleTypesQueryParams = {},
+    options?: { signal?: AbortSignal },
+  ): Promise<TransportAllowedVehicleTypesApiResponse> {
+    return this.client
+      .get<TransportAllowedVehicleTypesApiResponse>(
+        TRANSPORT_ENDPOINTS.ALLOWED_VEHICLE_TYPES,
+        {
+          baseURL: this.baseUrl,
+          signal: options?.signal,
+          params: {
+            status: params.status ?? 1,
+          },
+          paramsSerializer: {
+            serialize: serializeStatusFilter,
+          },
+          skipErrorToast: true,
+        },
+      )
       .then((response) => response.data)
   }
 }

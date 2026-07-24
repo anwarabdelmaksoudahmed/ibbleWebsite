@@ -5,7 +5,6 @@ import { goToFirstError } from '@shared/utils/go-to-first-error'
 import {
   TRANSPORT_REGISTER_STEPS,
   type TransportRegisterStep,
-  type TransportShipmentTypeId,
 } from '@modules/transport/constants/routes'
 import {
   transportDeliverySchema,
@@ -61,7 +60,7 @@ export function useTransportRegisterWizard() {
   const deliveryErrors = reactive<Partial<Record<TransportDeliveryField, string>>>({})
   const touchedDelivery = reactive<Partial<Record<TransportDeliveryField, boolean>>>({})
 
-  const shipmentTypeId = ref<TransportShipmentTypeId | ''>('')
+  const shipmentTypeId = ref('')
   const shipmentTypeError = ref<string | undefined>()
   const touchedShipmentType = ref(false)
 
@@ -180,14 +179,23 @@ export function useTransportRegisterWizard() {
     )
   }
 
-  function validateShipmentType(): boolean {
+  function validateShipmentType(allowedIds?: readonly string[]): boolean {
     const result = transportShipmentTypeSchema.safeParse({
       shipmentTypeId: shipmentTypeId.value,
     })
-    shipmentTypeError.value = result.success
-      ? undefined
-      : t(result.error.issues[0]!.message)
-    return result.success
+
+    if (!result.success) {
+      shipmentTypeError.value = t(result.error.issues[0]!.message)
+      return false
+    }
+
+    if (allowedIds && !allowedIds.includes(result.data.shipmentTypeId)) {
+      shipmentTypeError.value = t('site.transport.register.validation.shipmentTypeRequired')
+      return false
+    }
+
+    shipmentTypeError.value = undefined
+    return true
   }
 
   function validateTerms(): boolean {
@@ -210,13 +218,13 @@ export function useTransportRegisterWizard() {
     }
   })
 
-  async function validateCurrentStep(): Promise<boolean> {
+  async function validateCurrentStep(allowedShipmentTypeIds?: readonly string[]): Promise<boolean> {
     switch (activeStep.value) {
       case 'delivery':
         return validateAllDeliveryFields()
       case 'shipmentType':
         touchedShipmentType.value = true
-        return validateShipmentType()
+        return validateShipmentType(allowedShipmentTypeIds)
       case 'payment':
         touchedTerms.value = true
         return validateTerms()
@@ -225,8 +233,8 @@ export function useTransportRegisterWizard() {
     }
   }
 
-  async function next() {
-    if (!(await validateCurrentStep())) {
+  async function next(allowedShipmentTypeIds?: readonly string[]) {
+    if (!(await validateCurrentStep(allowedShipmentTypeIds))) {
       await goToFirstError({ root: '[data-form-wizard-step]' })
       return false
     }
@@ -247,7 +255,7 @@ export function useTransportRegisterWizard() {
     delivery.distanceKm = String(value)
   }
 
-  function selectShipmentType(id: TransportShipmentTypeId) {
+  function selectShipmentType(id: string) {
     shipmentTypeId.value = id
     touchedShipmentType.value = true
     validateShipmentType()
