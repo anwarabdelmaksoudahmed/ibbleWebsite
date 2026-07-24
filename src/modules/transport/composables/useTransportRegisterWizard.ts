@@ -20,6 +20,7 @@ import {
   saveRegisterDraft,
   type TransportRegisterDraft,
 } from '@modules/transport/utils/register-draft-storage'
+import { readLatestTripPaymentSnapshot } from '@modules/transport/utils/trip-payment-snapshot'
 
 const DELIVERY_FIELDS = [
   'name',
@@ -102,7 +103,10 @@ export function useTransportRegisterWizard() {
   }
 
   function applyDraft(draft: TransportRegisterDraft) {
-    currentStep.value = draft.currentStep
+    // Never restore the payment step from draft — payment only opens after driver accept.
+    const paymentIndex = TRANSPORT_REGISTER_STEPS.indexOf('payment')
+    const maxFormStep = Math.max(0, paymentIndex - 1)
+    currentStep.value = Math.min(draft.currentStep, maxFormStep)
     Object.assign(delivery, draft.delivery)
     shipmentTypeId.value = draft.shipmentTypeId
     termsAccepted.value = false
@@ -113,9 +117,52 @@ export function useTransportRegisterWizard() {
     }
   }
 
+  const paymentTripId = ref('')
+
+  function goToPaymentStep(tripId: string) {
+    paymentTripId.value = String(tripId || '').trim()
+    const paymentIndex = TRANSPORT_REGISTER_STEPS.indexOf('payment')
+    if (paymentIndex >= 0) currentStep.value = paymentIndex
+  }
+
+  function clearPaymentStep() {
+    paymentTripId.value = ''
+  }
+
+  /** Cancel payment flow and restart the register wizard from delivery. */
+  function resetToStart() {
+    currentStep.value = 0
+    paymentTripId.value = ''
+    Object.assign(delivery, createEmptyDeliveryForm())
+    shipmentTypeId.value = ''
+    shipmentTypeError.value = undefined
+    touchedShipmentType.value = false
+    termsAccepted.value = false
+    termsError.value = undefined
+    touchedTerms.value = false
+    for (const field of DELIVERY_FIELDS) {
+      deliveryErrors[field] = undefined
+      touchedDelivery[field] = false
+    }
+    clearPersistedDraft()
+    prefillFromUser()
+  }
+
+  if (import.meta.client) {
+    const draft = readRegisterDraft()
+    if (draft) applyDraft(draft)
+
+    const pendingPayment = readLatestTripPaymentSnapshot()
+    if (pendingPayment) {
+      goToPaymentStep(pendingPayment.tripId)
+    }
+  }
+
   function buildDraftSnapshot(): Omit<TransportRegisterDraft, 'version' | 'savedAt'> {
+    const paymentIndex = TRANSPORT_REGISTER_STEPS.indexOf('payment')
+    const maxFormStep = Math.max(0, paymentIndex - 1)
     return {
-      currentStep: currentStep.value,
+      currentStep: Math.min(currentStep.value, maxFormStep),
       delivery: { ...delivery },
       shipmentTypeId: shipmentTypeId.value,
       termsAccepted: false,
@@ -133,11 +180,6 @@ export function useTransportRegisterWizard() {
   function clearPersistedDraft() {
     persistDraft.cancel()
     clearRegisterDraft()
-  }
-
-  if (import.meta.client) {
-    const draft = readRegisterDraft()
-    if (draft) applyDraft(draft)
   }
 
   onMounted(prefillFromUser)
@@ -272,19 +314,23 @@ export function useTransportRegisterWizard() {
         touchedShipmentType.value = true
         return validateShipmentType(allowedShipmentTypeIds)
       case 'payment':
-        touchedTerms.value = true
-        return validateTerms()
+        // Payment step is post-accept; no form validation here.
+        return Boolean(paymentTripId.value)
       default:
         return false
     }
   }
 
-  async function next(allowedShipmentTypeIds?: readonly string[]) {
+  async function next(
+    allowedShipmentTypeIds?: readonly string[],
+    options?: { advance?: boolean },
+  ) {
     if (!(await validateCurrentStep(allowedShipmentTypeIds))) {
       await goToFirstError({ root: '[data-form-wizard-step]' })
       return false
     }
-    if (!isLastStep.value) currentStep.value += 1
+    const shouldAdvance = options?.advance !== false
+    if (shouldAdvance && !isLastStep.value) currentStep.value += 1
     return true
   }
 
@@ -339,6 +385,7 @@ export function useTransportRegisterWizard() {
     shipmentTypeError,
     termsAccepted,
     termsError,
+    paymentTripId,
     isFirstStep,
     isLastStep,
     next,
@@ -349,6 +396,9 @@ export function useTransportRegisterWizard() {
     setDestinationPlace,
     selectShipmentType,
     setTermsAccepted,
+    goToPaymentStep,
+    clearPaymentStep,
+    resetToStart,
     clearPersistedDraft,
   }
 }

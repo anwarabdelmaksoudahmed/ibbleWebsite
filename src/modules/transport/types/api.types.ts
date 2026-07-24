@@ -167,3 +167,60 @@ export type RegisterFcmTokenApiPayload = {
   device_id: string
 }
 
+export type PayTransportTripApiPayload = {
+  payment_method_id: number
+  PIN_code?: string
+}
+
+/** Wallet settles immediately. */
+export type PayTransportTripWalletApiResponse = {
+  message?: string
+  data?: {
+    id?: number | string
+    status?: string | null
+  }
+  status?: number
+}
+
+/**
+ * Card payments return HyperPay initiation fields (same shape as marketplace / insurance).
+ */
+export type PayTransportTripCardApiResponse = {
+  message?: string
+  amount: number
+  currency: string
+  payment_type: string
+  merchant_transaction_id: number | string
+  description: string
+  module: string
+  payment_method_id: number | string
+  address: {
+    customer_email: string
+    country: string
+    state: string
+    street1: string
+    postcode: string
+    first_name: string
+    last_name: string
+  }
+  invoice?: unknown | null
+}
+
+export type PayTransportTripApiResponse =
+  | PayTransportTripCardApiResponse
+  | PayTransportTripWalletApiResponse
+
+export type TransportVehicleApiDto = {
+  id?: number | string
+  model?: string | null
+  year?: string | number | null
+  plateNumber?: string | null
+  images?: string[] | null
+}
+
+export type TransportVehicleApiResponse = {
+  message?: string
+  data?: TransportVehicleApiDto
+  status?: number
+}
+

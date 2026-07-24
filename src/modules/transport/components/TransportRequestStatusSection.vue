@@ -3,6 +3,7 @@ import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 import { useTransportRequestStatus } from '@modules/transport/composables/useTransportRequestStatus'
 import { PROFILE_ROUTES } from '@modules/profile/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
+import { formatMoneyAmount } from '@shared/utils/format-money'
 
 const props = defineProps<{
   requestId: string
@@ -13,10 +14,14 @@ const localePath = useLocalePath()
 
 const {
   request,
-  pushOfferId,
+  pendingOffer,
+  offerModalOpen,
   pushPermission,
-  isAccepting,
-  acceptOffer,
+  isResponding,
+  respondingStatus,
+  acceptPendingOffer,
+  rejectPendingOffer,
+  dismissOfferModal,
   enableNotifications,
 } = useTransportRequestStatus(() => props.requestId)
 
@@ -26,17 +31,17 @@ const breadcrumbItems = computed(() => [
   { label: t('site.transport.request.breadcrumb') },
 ])
 
+const offerPriceLabel = computed(() => {
+  const raw = pendingOffer.value?.price
+  if (raw == null || raw === '') return null
+  const amount = Number(raw)
+  if (!Number.isFinite(amount)) return String(raw)
+  return formatMoneyAmount(amount, locale.value)
+})
+
 function formatMoney(value: number): string {
   if (!value) return '—'
-  try {
-    return new Intl.NumberFormat(locale.value === 'ar' ? 'ar-SA' : 'en-SA', {
-      style: 'currency',
-      currency: 'SAR',
-      maximumFractionDigits: 2,
-    }).format(value)
-  } catch {
-    return String(value)
-  }
+  return formatMoneyAmount(value, locale.value)
 }
 
 function formatDateTime(value: string): string {
@@ -77,12 +82,14 @@ function formatDateTime(value: string): string {
               >
                 <span
                   class="size-1.5 rounded-full bg-ibbil-green"
-                  :class="isAccepting ? 'animate-ping' : 'animate-pulse'"
+                  :class="isResponding ? 'animate-ping' : 'animate-pulse'"
                 />
                 {{
-                  isAccepting
+                  isResponding
                     ? t('site.transport.request.acceptingOffer')
-                    : t('site.transport.request.waitingPush')
+                    : pendingOffer
+                      ? t('site.transport.request.offerPendingDecision')
+                      : t('site.transport.request.waitingPush')
                 }}
               </p>
             </div>
@@ -148,33 +155,27 @@ function formatDateTime(value: string): string {
 
         <div class="rounded-2xl border border-ibbil-green/10 bg-white p-5 dark:bg-surface-elevated sm:p-6">
           <BaseEmptyState
-            v-if="!pushOfferId"
             variant="brand"
             icon="lucide:bell"
             class="!py-10"
-            :title="t('site.transport.request.waitingTitle')"
-            :description="t('site.transport.request.waitingDescription')"
+            :title="
+              pendingOffer
+                ? t('site.transport.request.offerPendingTitle')
+                : t('site.transport.request.waitingTitle')
+            "
+            :description="
+              pendingOffer
+                ? t('site.transport.request.offerPendingHint')
+                : t('site.transport.request.waitingDescription')
+            "
           />
 
-          <div
-            v-else
-            class="flex flex-col gap-3 rounded-2xl border border-ibbil-green/10 bg-[#fafbfa] p-4 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div class="min-w-0">
-              <p class="text-sm font-bold text-ibbil-green">
-                {{ t('site.transport.request.driverOffer') }}
-              </p>
-              <p class="mt-0.5 text-xs text-foreground-muted">
-                #{{ pushOfferId }}
-              </p>
-            </div>
-
+          <div v-if="pendingOffer && !offerModalOpen" class="mt-4 flex justify-center">
             <BaseButton
               class="!bg-ibbil-green !text-white hover:!bg-ibbil-green-dark"
-              :loading="isAccepting"
-              @click="acceptOffer(pushOfferId)"
+              @click="offerModalOpen = true"
             >
-              {{ t('site.transport.request.acceptOffer') }}
+              {{ t('site.transport.request.reviewOffer') }}
             </BaseButton>
           </div>
         </div>
@@ -197,5 +198,66 @@ function formatDateTime(value: string): string {
         </div>
       </div>
     </div>
+
+    <BaseModal
+      v-model:open="offerModalOpen"
+      :title="t('site.transport.request.offerModalTitle')"
+      size="md"
+      :closable="!isResponding"
+      @close="dismissOfferModal"
+    >
+      <div class="space-y-4">
+        <p class="text-sm text-foreground-muted">
+          {{ t('site.transport.request.offerModalHint') }}
+        </p>
+
+        <dl class="grid gap-3 rounded-2xl border border-ibbil-green/10 bg-[#fafbfa] p-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-xs font-semibold text-foreground-muted">
+              {{ t('site.transport.request.driverOffer') }}
+            </dt>
+            <dd class="mt-1 text-sm font-bold text-ibbil-green" dir="ltr">
+              #{{ pendingOffer?.offerId || '—' }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs font-semibold text-foreground-muted">
+              {{ t('site.transport.request.offerPrice') }}
+            </dt>
+            <dd class="mt-1 inline-flex items-center gap-1 text-sm font-bold text-ibbil-green">
+              <template v-if="offerPriceLabel">
+                <span dir="ltr">{{ offerPriceLabel }}</span>
+                <SaudiRiyalSymbol />
+              </template>
+              <template v-else>
+                {{ formatMoney(request?.price ?? 0) }}
+              </template>
+            </dd>
+          </div>
+        </dl>
+
+        <div class="flex flex-wrap justify-end gap-2 pt-1">
+          <BaseButton
+            type="button"
+            variant="outline"
+            class="!border-red-200 !text-red-700 hover:!bg-red-50"
+            :disabled="isResponding"
+            :loading="respondingStatus === 'rejected'"
+            @click="rejectPendingOffer"
+          >
+            {{ t('site.transport.request.rejectOffer') }}
+          </BaseButton>
+          <BaseButton
+            type="button"
+            class="!bg-ibbil-green !text-white hover:!bg-ibbil-green-dark"
+            :disabled="isResponding"
+            :loading="respondingStatus === 'accepted'"
+            @click="acceptPendingOffer"
+          >
+            {{ t('site.transport.request.acceptOffer') }}
+          </BaseButton>
+        </div>
+      </div>
+    </BaseModal>
   </section>
 </template>

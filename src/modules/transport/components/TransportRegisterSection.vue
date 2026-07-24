@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import TransportDeliveryStep from '@modules/transport/components/TransportDeliveryStep.vue'
-import TransportPaymentStep from '@modules/transport/components/TransportPaymentStep.vue'
 import TransportShipmentTypeStep from '@modules/transport/components/TransportShipmentTypeStep.vue'
+import TransportTripPaymentSection from '@modules/transport/components/TransportTripPaymentSection.vue'
 import { TRANSPORT_QUERY_KEYS } from '@modules/transport/constants/query-keys'
 import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 import { useTransportRegisterWizard } from '@modules/transport/composables/useTransportRegisterWizard'
@@ -10,6 +10,7 @@ import { useTransportVehicleTypes } from '@modules/transport/composables/useTran
 import { getTransportTripsService } from '@modules/transport/services/trips.service'
 import { buildCreateTripRequestPayload } from '@modules/transport/utils/build-trip-request-payload'
 import { saveTripRequestSnapshot } from '@modules/transport/utils/trip-request-snapshot'
+import { readLatestTripPaymentSnapshot } from '@modules/transport/utils/trip-payment-snapshot'
 import { getApiErrorMessage, normalizeApiError } from '@core/api/http/errors'
 import { ROUTES } from '@shared/constants/routes'
 import { useFirebaseMessaging } from '@shared/firebase/useFirebaseMessaging'
@@ -29,9 +30,7 @@ const {
   deliveryErrors,
   shipmentTypeId,
   shipmentTypeError,
-  termsAccepted,
-  termsError,
-  isLastStep,
+  paymentTripId,
   next,
   prev,
   touchDeliveryField,
@@ -39,8 +38,9 @@ const {
   setOriginPlace,
   setDestinationPlace,
   selectShipmentType,
-  setTermsAccepted,
+  goToPaymentStep,
   clearPersistedDraft,
+  resetToStart,
 } = useTransportRegisterWizard()
 
 const {
@@ -54,8 +54,6 @@ const selectedVehicleType = computed(() =>
   vehicleTypes.value.find((item) => item.id === shipmentTypeId.value),
 )
 
-const shipmentTypeName = computed(() => selectedVehicleType.value?.name ?? '')
-
 const allowedShipmentTypeIds = computed(() => vehicleTypes.value.map((item) => item.id))
 
 watch(vehicleTypes, (types) => {
@@ -66,6 +64,7 @@ watch(vehicleTypes, (types) => {
 })
 
 const submitting = ref(false)
+const isPaymentStep = computed(() => activeStep.value === 'payment')
 
 const breadcrumbItems = computed(() => [
   { label: t('site.nav.home'), to: localePath(ROUTES.HOME) },
@@ -74,24 +73,29 @@ const breadcrumbItems = computed(() => [
 ])
 
 const nextLabel = computed(() =>
-  isLastStep.value
+  activeStep.value === 'shipmentType'
     ? t('site.transport.register.submit')
     : t('site.transport.register.next'),
 )
 
+onMounted(() => {
+  const pending = readLatestTripPaymentSnapshot()
+  if (pending) goToPaymentStep(pending.tripId)
+})
+
 async function onNext() {
-  if (!isLastStep.value) {
-    await next(
-      activeStep.value === 'shipmentType' ? allowedShipmentTypeIds.value : undefined,
-    )
+  if (activeStep.value === 'delivery') {
+    await next()
     return
   }
 
-  await submitRequest()
+  if (activeStep.value === 'shipmentType') {
+    await submitRequest()
+  }
 }
 
 async function submitRequest() {
-  const valid = await next()
+  const valid = await next(allowedShipmentTypeIds.value, { advance: false })
   if (!valid) return
 
   if (!authenticated.value) {
@@ -111,7 +115,6 @@ async function submitRequest() {
 
   submitting.value = true
   try {
-    // Register FCM before create+navigate so waiting page does not race IndexedDB getToken().
     console.log('[TripRequest] syncing FCM before create')
     try {
       await syncFcmToken()
@@ -171,7 +174,8 @@ async function submitRequest() {
         :next-label="nextLabel"
         :prev-label="t('site.transport.register.prev')"
         :show-prev="false"
-        :hide-next-arrow="isLastStep"
+        :show-next="!isPaymentStep"
+        :hide-next-arrow="activeStep === 'shipmentType'"
         :loading="submitting"
         :progress-label="t('site.transport.register.progressLabel')"
         @next="onNext"
@@ -198,13 +202,11 @@ async function submitRequest() {
           @retry="refetchVehicleTypes()"
         />
 
-        <TransportPaymentStep
-          v-else-if="activeStep === 'payment'"
-          :delivery="delivery"
-          :shipment-type-name="shipmentTypeName"
-          :terms-accepted="termsAccepted"
-          :terms-error="termsError"
-          @update:terms-accepted="setTermsAccepted"
+        <TransportTripPaymentSection
+          v-else-if="activeStep === 'payment' && paymentTripId"
+          :trip-id="paymentTripId"
+          embedded
+          @cancelled="resetToStart"
         />
       </FormWizardShell>
     </div>

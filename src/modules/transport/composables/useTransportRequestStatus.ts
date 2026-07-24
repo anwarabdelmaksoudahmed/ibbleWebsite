@@ -1,19 +1,29 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { getApiErrorMessage, normalizeApiError } from '@core/api/http/errors'
-import { PROFILE_ROUTES } from '@modules/profile/constants/routes'
 import { TRANSPORT_QUERY_KEYS } from '@modules/transport/constants/query-keys'
+import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 import { getTransportTripsService } from '@modules/transport/services/trips.service'
 import { useFirebaseMessaging } from '@shared/firebase/useFirebaseMessaging'
+import type { TransportPushPayload } from '@shared/firebase/messaging'
 import {
   clearTripRequestSnapshot,
   readTripRequestSnapshot,
   type TransportTripRequestSnapshot,
 } from '@modules/transport/utils/trip-request-snapshot'
+import { saveTripPaymentSnapshot } from '@modules/transport/utils/trip-payment-snapshot'
+import type { AcceptedTransportTrip } from '@modules/transport/types'
+
+export type PendingDriverOffer = {
+  offerId: string
+  tripRequestId?: string
+  price?: string
+  distance?: number
+}
 
 /**
  * Waiting room after trip-request create.
- * Firebase push delivers the driver offer → PATCH /offers/:id creates the trip.
+ * Firebase push delivers a driver offer → user accepts/rejects via modal.
  */
 export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
   const { t } = useI18n()
@@ -25,8 +35,10 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
   const { onTransportPush, syncToken, permission } = useFirebaseMessaging()
 
   const snapshot = ref<TransportTripRequestSnapshot | null>(null)
-  const pushOfferId = ref<string | null>(null)
-  const isAccepting = ref(false)
+  const pendingOffer = ref<PendingDriverOffer | null>(null)
+  const offerModalOpen = ref(false)
+  const isResponding = ref(false)
+  const dismissedOfferIds = new Set<string>()
   const handledOfferIds = new Set<string>()
 
   onMounted(() => {
@@ -39,72 +51,129 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     void syncToken()
   })
 
-  const acceptMutation = useMutation({
-    mutationFn: (input: { offerId: string; tripRequestId: string; distance: number }) => {
+  const respondMutation = useMutation({
+    mutationFn: (input: {
+      offerId: string
+      tripRequestId: string
+      distance: number
+      status: 'accepted' | 'rejected'
+    }) => {
       console.log('[Waiting] PATCH /offers/:id', input)
       return getTransportTripsService().acceptOffer(input.offerId, {
         tripRequestId: input.tripRequestId,
-        status: 'accepted',
+        status: input.status,
         distance: input.distance,
       })
     },
-    onSuccess: async (trip) => {
-      console.log('[Waiting] accept success', trip)
-      clearTripRequestSnapshot()
-      await queryClient.invalidateQueries({ queryKey: TRANSPORT_QUERY_KEYS.root })
-      toast.success(trip.message || t('site.transport.request.acceptSuccess'))
-      await navigateTo(localePath(PROFILE_ROUTES.TRANSPORTATION))
-    },
     onError: (error) => {
-      console.error('[Waiting] accept failed', error)
+      console.error('[Waiting] offer response failed', error)
       toast.error(getApiErrorMessage(normalizeApiError(error)))
     },
   })
 
-  async function acceptOffer(offerId: string, distanceMeters?: number) {
-    const normalized = String(offerId || '').trim()
-    if (!normalized || handledOfferIds.has(normalized) || isAccepting.value) {
-      console.log('[Waiting] acceptOffer skipped', {
-        offerId: normalized,
-        alreadyHandled: handledOfferIds.has(normalized),
-        isAccepting: isAccepting.value,
+  async function goToPayment(trip: AcceptedTransportTrip) {
+    clearTripRequestSnapshot()
+    saveTripPaymentSnapshot({
+      tripId: trip.id,
+      vehicleId: trip.vehicleId,
+      price: trip.price || snapshot.value?.price || 0,
+    })
+    await queryClient.invalidateQueries({ queryKey: TRANSPORT_QUERY_KEYS.root })
+    toast.success(trip.message || t('site.transport.request.acceptSuccess'))
+    console.log('[Waiting] navigate register payment step', { tripId: trip.id, price: trip.price })
+    await navigateTo(localePath(TRANSPORT_ROUTES.REGISTER))
+  }
+
+  function showOfferModal(payload: TransportPushPayload) {
+    const offerId = String(payload.offerId || '').trim()
+    if (!offerId) return
+    if (handledOfferIds.has(offerId) || dismissedOfferIds.has(offerId)) {
+      console.log('[Waiting] offer ignored (already handled/dismissed)', offerId)
+      return
+    }
+
+    // If another offer modal is open, ignore newer ones until user responds.
+    if (offerModalOpen.value && pendingOffer.value?.offerId !== offerId) {
+      console.log('[Waiting] offer deferred — modal already open', {
+        open: pendingOffer.value?.offerId,
+        incoming: offerId,
       })
       return
     }
 
+    pendingOffer.value = {
+      offerId,
+      tripRequestId: payload.tripRequestId,
+      price: payload.price,
+      distance: payload.distance,
+    }
+    offerModalOpen.value = true
+    toast.info(t('site.transport.request.offerReceived'))
+    console.log('[Waiting] offer modal opened', pendingOffer.value)
+  }
+
+  async function respondToOffer(status: 'accepted' | 'rejected') {
+    const offer = pendingOffer.value
+    if (!offer?.offerId || isResponding.value) return
+
     const distance =
-      distanceMeters ??
+      offer.distance ??
       snapshot.value?.distanceMeters ??
       0
 
-    console.log('[Waiting] acceptOffer', {
-      offerId: normalized,
-      tripRequestId: id.value,
-      distance,
-    })
-
-    handledOfferIds.add(normalized)
-    isAccepting.value = true
-    pushOfferId.value = normalized
+    isResponding.value = true
     try {
-      await acceptMutation.mutateAsync({
-        offerId: normalized,
+      const trip = await respondMutation.mutateAsync({
+        offerId: offer.offerId,
         tripRequestId: id.value,
         distance,
+        status,
       })
+
+      handledOfferIds.add(offer.offerId)
+      offerModalOpen.value = false
+      pendingOffer.value = null
+
+      if (status === 'accepted') {
+        await goToPayment(trip)
+        return
+      }
+
+      dismissedOfferIds.add(offer.offerId)
+      toast.success(t('site.transport.request.rejectSuccess'))
+      console.log('[Waiting] offer rejected', offer.offerId)
     } catch {
-      handledOfferIds.delete(normalized)
+      // keep modal open for retry
     } finally {
-      isAccepting.value = false
+      isResponding.value = false
     }
   }
 
-  async function goToTrips() {
-    console.log('[Waiting] trip created push → profile trips', { requestId: id.value })
+  async function acceptPendingOffer() {
+    await respondToOffer('accepted')
+  }
+
+  async function rejectPendingOffer() {
+    await respondToOffer('rejected')
+  }
+
+  function dismissOfferModal() {
+    // Closing without accept/reject just hides UI; offer can be reopened if push repeats.
+    // Prefer explicit reject for API cleanup.
+    offerModalOpen.value = false
+  }
+
+  async function goToPaymentFromPush(tripId: string) {
+    console.log('[Waiting] trip created push → register payment step', { tripId })
     clearTripRequestSnapshot()
+    saveTripPaymentSnapshot({
+      tripId,
+      vehicleId: '',
+      price: snapshot.value?.price || 0,
+    })
     await queryClient.invalidateQueries({ queryKey: TRANSPORT_QUERY_KEYS.root })
     toast.success(t('site.transport.request.tripCreatedPush'))
-    await navigateTo(localePath(PROFILE_ROUTES.TRANSPORTATION))
+    await navigateTo(localePath(TRANSPORT_ROUTES.REGISTER))
   }
 
   const stopPush = onTransportPush((payload) => {
@@ -118,14 +187,17 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
       return
     }
 
-    if (payload.tripId || payload.status === 'accepted' || payload.type === 'trip_created') {
-      void goToTrips()
+    if (payload.tripId) {
+      void goToPaymentFromPush(payload.tripId)
+      return
+    }
+
+    if (payload.status === 'accepted' || payload.type === 'trip_created') {
       return
     }
 
     if (payload.offerId) {
-      toast.info(t('site.transport.request.offerReceived'))
-      void acceptOffer(payload.offerId, payload.distance)
+      showOfferModal(payload)
     } else {
       console.warn('[Waiting] push without offerId', payload)
     }
@@ -137,15 +209,18 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
 
   return {
     request: snapshot,
-    pushOfferId,
+    pendingOffer,
+    offerModalOpen,
     pushPermission: permission,
-    isAccepting: computed(() => isAccepting.value || acceptMutation.isPending.value),
-    acceptingOfferId: computed(() =>
-      acceptMutation.isPending.value
-        ? String(acceptMutation.variables.value?.offerId ?? pushOfferId.value ?? '')
-        : '',
+    isResponding: computed(() => isResponding.value || respondMutation.isPending.value),
+    respondingStatus: computed(() =>
+      respondMutation.isPending.value
+        ? (respondMutation.variables.value?.status ?? null)
+        : null,
     ),
-    acceptOffer,
+    acceptPendingOffer,
+    rejectPendingOffer,
+    dismissOfferModal,
     enableNotifications: syncToken,
   }
 }

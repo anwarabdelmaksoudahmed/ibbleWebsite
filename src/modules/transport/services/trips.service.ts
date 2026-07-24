@@ -4,11 +4,14 @@ import type {
   TransportOffer,
   TransportTripRequest,
   TransportTripsPage,
+  TransportVehicleDetails,
   TransportVehicleType,
 } from '@modules/transport/types'
 import type {
   AcceptTransportOfferApiPayload,
   CreateTransportTripRequestApiPayload,
+  PayTransportTripApiPayload,
+  PayTransportTripApiResponse,
   TransportAllowedVehicleTypesQueryParams,
   TransportTripsQueryParams,
 } from '@modules/transport/types/api.types'
@@ -18,6 +21,10 @@ import {
   mapTransportOffersResponse,
   mapTransportTripRequestResponse,
 } from '@modules/transport/utils/trip-request-mappers'
+import {
+  mapTransportVehicleResponse,
+  unwrapPayTransportTripResponse,
+} from '@modules/transport/utils/trip-payment-mappers'
 import { mapTransportVehicleTypes } from '@modules/transport/utils/vehicle-type-mappers'
 import { buildFcmDevicePayload } from '@shared/firebase/device'
 
@@ -89,6 +96,23 @@ export class TransportTripsService {
       device_id: payload.device_id,
     })
     await this.api.registerFcmToken(payload)
+  }
+
+  async payTrip(
+    tripId: string | number,
+    payload: PayTransportTripApiPayload,
+  ): Promise<PayTransportTripApiResponse> {
+    const response = await this.api.payTrip(tripId, payload)
+    return unwrapPayTransportTripResponse(response)
+  }
+
+  async cancelTrip(tripId: string | number): Promise<void> {
+    await this.api.cancelTrip(tripId)
+  }
+
+  async getVehicle(vehicleId: string | number): Promise<TransportVehicleDetails> {
+    const response = await this.api.getVehicle(vehicleId)
+    return mapTransportVehicleResponse(response)
   }
 }
 

@@ -76,3 +76,11 @@ export type AcceptedTransportTrip = {
   price: number
   message: string
 }
+
+export type TransportVehicleDetails = {
+  id: string
+  model: string
+  year: string
+  plateNumber: string
+  images: string[]
+}

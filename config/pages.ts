@@ -73,12 +73,14 @@ function registerPagesFromDir(
     const fullPath = resolve(dir, entry.name)
 
     if (entry.isDirectory()) {
+      const dirSegment = fileNameToRouteSegment(entry.name)
+      const dirNamePart = fileNameToRouteNamePart(entry.name)
       registerPagesFromDir(
         pages,
         fullPath,
-        `${basePath}/${entry.name}`,
+        `${basePath}/${dirSegment}`,
         moduleName,
-        `${namePrefix}-${entry.name}`,
+        `${namePrefix}-${dirNamePart}`,
       )
       continue
     }
