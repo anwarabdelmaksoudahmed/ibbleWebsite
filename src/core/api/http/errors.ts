@@ -6,12 +6,20 @@ export class ApiError extends Error {
   errors?: Record<string, string[]>
 
   constructor(response: ApiErrorResponse) {
-    super(response.message)
+    super(normalizeMessage(response.message))
     this.name = 'ApiError'
     this.statusCode = response.statusCode
     this.code = response.code
     this.errors = response.errors
   }
+}
+
+function normalizeMessage(message: unknown): string {
+  if (Array.isArray(message)) {
+    return message.map(String).filter(Boolean).join(' · ')
+  }
+  if (typeof message === 'string' && message.trim()) return message
+  return 'An unexpected error occurred'
 }
 
 export function isApiError(error: unknown): error is ApiError {
@@ -43,14 +51,29 @@ export function normalizeApiError(error: unknown): ApiError {
 
   if (error && typeof error === 'object' && 'response' in error) {
     const axiosError = error as {
-      response?: { status: number; data?: Partial<ApiErrorResponse> }
+      response?: {
+        status: number
+        data?: Partial<ApiErrorResponse> & { error?: string }
+      }
       message?: string
     }
 
+    const data = axiosError.response?.data
+    const message = normalizeMessage(
+      data?.message ?? data?.error ?? axiosError.message ?? 'An unexpected error occurred',
+    )
+
+    // Nest class-validator often returns `message: string[]` with no `errors` map.
+    const errors =
+      data?.errors ??
+      (Array.isArray(data?.message)
+        ? { validation: data.message.map(String) }
+        : undefined)
+
     return new ApiError({
-      message: axiosError.response?.data?.message ?? axiosError.message ?? 'An unexpected error occurred',
-      code: axiosError.response?.data?.code,
-      errors: axiosError.response?.data?.errors,
+      message,
+      code: data?.code,
+      errors,
       statusCode: axiosError.response?.status ?? 500,
     })
   }

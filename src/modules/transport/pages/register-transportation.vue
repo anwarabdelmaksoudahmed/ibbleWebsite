@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'site',
+  middleware: ['auth'],
   // Client-only: wizard draft lives in sessionStorage (avoids SSR hydration mismatch).
   ssr: false,
 })

@@ -3,6 +3,17 @@ export type LoginApiRequest = {
   user: string
   password: string
   country_code: string
+  /** Web FCM token so backend can bind this browser device on login */
+  fcm_token?: string
+  device_type?: string
+  device_id?: string
+}
+
+/** PATCH /v1/fcm-tokens — multi-device aware payload */
+export type UpdateFcmTokenApiPayload = {
+  fcm_token: string
+  device_type: string
+  device_id: string
 }
 
 export type LoginApiUserDto = {

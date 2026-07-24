@@ -46,6 +46,8 @@ const emit = defineEmits<{
   'update:origin': [value: string]
   'update:destination': [value: string]
   'update:distanceKm': [value: string | number]
+  'update:originPlace': [place: PlaceSelection | null]
+  'update:destinationPlace': [place: PlaceSelection | null]
   'origin-blur': []
   'destination-blur': []
   'distance-blur': []
@@ -215,12 +217,14 @@ async function calculateRoute() {
 
 function onOriginSelect(place: PlaceSelection | null) {
   originPlace.value = place
+  emit('update:originPlace', place)
   if (place) emit('origin-blur')
   void calculateRoute()
 }
 
 function onDestinationSelect(place: PlaceSelection | null) {
   destinationPlace.value = place
+  emit('update:destinationPlace', place)
   if (place) emit('destination-blur')
   void calculateRoute()
 }
@@ -240,6 +244,8 @@ function swapPoints() {
   emit('update:destination', nextDestination)
   originPlace.value = nextOriginPlace
   destinationPlace.value = nextDestinationPlace
+  emit('update:originPlace', nextOriginPlace)
+  emit('update:destinationPlace', nextDestinationPlace)
   void calculateRoute()
 }
 

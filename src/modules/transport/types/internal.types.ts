@@ -43,3 +43,36 @@ export type TransportVehicleType = {
   capacity: number
   kilometerPrice: number
 }
+
+export type TransportTripRequest = {
+  id: string
+  status: string
+  dateTime: string
+  userName: string
+  phone: string
+  price: number
+  startPoint: string
+  endPoint: string
+  startAddress: string
+  endAddress: string
+  distanceMeters: number | null
+}
+
+export type TransportOffer = {
+  id: string
+  status: string
+  price: number
+  tripRequestId: string
+  driverName: string
+  vehicleName: string
+  vehicleImage: string
+}
+
+export type AcceptedTransportTrip = {
+  id: string
+  vehicleId: string
+  status: string
+  distanceMeters: number | null
+  price: number
+  message: string
+}

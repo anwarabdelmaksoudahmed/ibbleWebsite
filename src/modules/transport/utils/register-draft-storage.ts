@@ -3,7 +3,7 @@ import { TRANSPORT_REGISTER_STEPS } from '@modules/transport/constants/routes'
 import { sessionStorageHelper } from '@shared/utils/storage'
 
 const STORAGE_KEY = 'ibble:transport-register-draft'
-const DRAFT_VERSION = 2 as const
+const DRAFT_VERSION = 3 as const
 const DRAFT_TTL_MS = 12 * 60 * 60 * 1000
 
 const registerDraftSchema = z.object({
@@ -23,6 +23,10 @@ const registerDraftSchema = z.object({
     origin: z.string().max(255),
     destination: z.string().max(255),
     distanceKm: z.string().max(32),
+    originLat: z.number().finite().nullable().catch(null),
+    originLng: z.number().finite().nullable().catch(null),
+    destinationLat: z.number().finite().nullable().catch(null),
+    destinationLng: z.number().finite().nullable().catch(null),
   }),
   shipmentTypeId: z.string().max(64).catch(''),
   termsAccepted: z.boolean().catch(false),

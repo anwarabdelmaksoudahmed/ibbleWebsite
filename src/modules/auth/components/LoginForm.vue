@@ -5,12 +5,18 @@ import { useAuth } from '@modules/auth/composables/useAuth'
 import { isAuthError } from '@modules/auth/utils/errors'
 import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
 import { resolveAuthRedirect } from '@shared/utils/auth-redirect'
+import { prefetchFirebaseMessagingToken } from '@shared/firebase/messaging'
 
 const { t } = useI18n()
 const route = useRoute()
 const localePath = useLocalePath()
 const toast = useToast()
 const { login, isLoading } = useAuth()
+
+onMounted(() => {
+  // Warm permission + SW + token before submit (same approach as legacy site).
+  prefetchFirebaseMessagingToken()
+})
 
 const form = reactive({
   phone: '',

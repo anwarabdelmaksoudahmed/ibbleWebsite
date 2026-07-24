@@ -87,3 +87,83 @@ export type TransportAllowedVehicleTypesQueryParams = {
   /** Active types only — API expects `filters[status]=1` */
   status?: number | string
 }
+
+export type CreateTransportTripRequestApiPayload = {
+  userName: string
+  phone: string
+  countryCode: string
+  dateTime: string
+  startPoint: string
+  endPoint: string
+  startAddress: string
+  endAddress: string
+  price: string
+  vehicleTypeId: number
+}
+
+export type TransportTripRequestApiDto = {
+  id: number | string
+  status?: string | null
+  dateTime?: string | null
+  userName?: string | null
+  phone?: string | null
+  price?: string | number | null
+  startPoint?: string | null
+  endPoint?: string | null
+  startAddress?: string | null
+  endAddress?: string | null
+  distance?: string | number | null
+  allowedVehicleTypeId?: number | string | null
+  created_at?: string | null
+}
+
+export type TransportTripRequestApiResponse = {
+  message?: string
+  data?: TransportTripRequestApiDto
+  status?: number
+}
+
+export type TransportOfferApiDto = {
+  id: number | string
+  status?: string | null
+  price?: string | number | null
+  tripRequestId?: number | string | null
+  driverId?: number | string | null
+  driverName?: string | null
+  vehicleId?: number | string | null
+  vehicleName?: string | null
+  vehicleImage?: string | null
+  created_at?: string | null
+}
+
+export type TransportOffersApiResponse = {
+  message?: string
+  data?: TransportOfferApiDto[] | TransportOfferApiDto
+  meta?: TransportTripsApiMeta
+  status?: number
+}
+
+export type AcceptTransportOfferApiResponse = {
+  message?: string
+  data?: {
+    id?: number | string
+    vehicleId?: number | string | null
+    status?: string | null
+    distance?: string | number | null
+    price?: string | number | null
+  }
+  status?: number
+}
+
+export type AcceptTransportOfferApiPayload = {
+  tripRequestId: number | string
+  status: 'accepted' | 'rejected'
+  distance: number
+}
+
+export type RegisterFcmTokenApiPayload = {
+  fcm_token: string
+  device_type: string
+  device_id: string
+}
+

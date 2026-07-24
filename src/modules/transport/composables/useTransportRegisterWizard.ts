@@ -2,6 +2,7 @@ import { APP_CONFIG } from '@shared/constants/app-config'
 import { DEFAULT_COUNTRY_CODE } from '@shared/constants/country-codes'
 import { debounce } from '@shared/utils/debounce'
 import { goToFirstError } from '@shared/utils/go-to-first-error'
+import type { PlaceSelection } from '@shared/maps/types'
 import {
   TRANSPORT_REGISTER_STEPS,
   type TransportRegisterStep,
@@ -29,6 +30,10 @@ const DELIVERY_FIELDS = [
   'origin',
   'destination',
   'distanceKm',
+  'originLat',
+  'originLng',
+  'destinationLat',
+  'destinationLng',
 ] as const satisfies readonly TransportDeliveryField[]
 
 function createEmptyDeliveryForm(): TransportDeliveryFormValues {
@@ -41,6 +46,10 @@ function createEmptyDeliveryForm(): TransportDeliveryFormValues {
     origin: '',
     destination: '',
     distanceKm: '',
+    originLat: null,
+    originLng: null,
+    destinationLat: null,
+    destinationLng: null,
   }
 }
 
@@ -150,6 +159,43 @@ export function useTransportRegisterWizard() {
   )
 
   function validateDeliveryField(field: TransportDeliveryField) {
+    if (field === 'origin') {
+      const text = transportDeliverySchema.shape.origin.safeParse(delivery.origin)
+      if (!text.success) {
+        deliveryErrors.origin = t(text.error.issues[0]!.message)
+        return
+      }
+      if (delivery.originLat == null || delivery.originLng == null) {
+        deliveryErrors.origin = t('site.transport.register.validation.locationRequired')
+        return
+      }
+      deliveryErrors.origin = undefined
+      return
+    }
+
+    if (field === 'destination') {
+      const text = transportDeliverySchema.shape.destination.safeParse(delivery.destination)
+      if (!text.success) {
+        deliveryErrors.destination = t(text.error.issues[0]!.message)
+        return
+      }
+      if (delivery.destinationLat == null || delivery.destinationLng == null) {
+        deliveryErrors.destination = t('site.transport.register.validation.locationRequired')
+        return
+      }
+      deliveryErrors.destination = undefined
+      return
+    }
+
+    if (
+      field === 'originLat' ||
+      field === 'originLng' ||
+      field === 'destinationLat' ||
+      field === 'destinationLng'
+    ) {
+      return
+    }
+
     const result = transportDeliverySchema.shape[field].safeParse(delivery[field])
     deliveryErrors[field] = result.success ? undefined : t(result.error.issues[0]!.message)
   }
@@ -165,7 +211,7 @@ export function useTransportRegisterWizard() {
     for (const field of DELIVERY_FIELDS) {
       validateDeliveryField(field)
     }
-    return DELIVERY_FIELDS.every((field) => !deliveryErrors[field])
+    return !DELIVERY_FIELDS.some((field) => deliveryErrors[field])
   }
 
   for (const field of DELIVERY_FIELDS) {
@@ -255,6 +301,22 @@ export function useTransportRegisterWizard() {
     delivery.distanceKm = String(value)
   }
 
+  function setOriginPlace(place: PlaceSelection | null) {
+    delivery.originLat = place?.location.lat ?? null
+    delivery.originLng = place?.location.lng ?? null
+    if (touchedDelivery.origin || deliveryErrors.origin) {
+      validateDeliveryField('origin')
+    }
+  }
+
+  function setDestinationPlace(place: PlaceSelection | null) {
+    delivery.destinationLat = place?.location.lat ?? null
+    delivery.destinationLng = place?.location.lng ?? null
+    if (touchedDelivery.destination || deliveryErrors.destination) {
+      validateDeliveryField('destination')
+    }
+  }
+
   function selectShipmentType(id: string) {
     shipmentTypeId.value = id
     touchedShipmentType.value = true
@@ -283,6 +345,8 @@ export function useTransportRegisterWizard() {
     prev,
     touchDeliveryField,
     setDistanceKm,
+    setOriginPlace,
+    setDestinationPlace,
     selectShipmentType,
     setTermsAccepted,
     clearPersistedDraft,

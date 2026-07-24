@@ -1,6 +1,8 @@
 export const AUTH_ENDPOINTS = {
   SSO_LOGIN: '/sso-login',
   SSO_SIGNUP: '/sso-signup',
+  /** Legacy website: PATCH v1/fcm-tokens { fcm_token } */
+  FCM_TOKENS: '/v1/fcm-tokens',
   /** TODO: Set when backend refresh endpoint is available */
   REFRESH: '/auth/refresh',
   /** TODO: Set when backend logout endpoint is available */

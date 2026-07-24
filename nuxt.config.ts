@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['lodash-es', 'dayjs', 'axios', 'zod'],
+      include: ['lodash-es', 'dayjs', 'axios', 'zod', 'firebase/app', 'firebase/messaging'],
     },
   },
 
@@ -93,6 +93,14 @@ export default defineNuxtConfig({
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER,
       hyperPayWidgetBaseUrl: process.env.NUXT_PUBLIC_HYPERPAY_WIDGET_BASE_URL,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+      firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
+      firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+      firebaseMeasurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+      firebaseVapidKey: process.env.NUXT_PUBLIC_FIREBASE_VAPID_KEY,
     },
   },
 
@@ -153,6 +161,8 @@ export default defineNuxtConfig({
           'https://oppwa.com',
           'https://maps.googleapis.com',
           'https://maps.gstatic.com',
+          'https://www.gstatic.com',
+          'https://www.googleapis.com',
         ],
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://maps.gstatic.com'],
         'frame-src': [
@@ -169,8 +179,11 @@ export default defineNuxtConfig({
           'https://oppwa.com',
           'https://maps.googleapis.com',
           'https://places.googleapis.com',
+          'https://fcmregistrations.googleapis.com',
+          'https://firebaseinstallations.googleapis.com',
           'https:',
         ],
+        'worker-src': ["'self'", 'blob:'],
         'form-action': ["'self'", 'https://eu-test.oppwa.com', 'https://oppwa.com'],
         // Allow HTTP LAN access in dev (`nuxt dev --host`); browsers otherwise
         // upgrade CSS/JS/images to HTTPS and they fail to load.

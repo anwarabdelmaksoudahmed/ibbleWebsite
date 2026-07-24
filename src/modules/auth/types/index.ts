@@ -11,6 +11,7 @@ export type {
   LoginApiResponseV2,
   RefreshTokenApiResponse,
   CurrentUserApiResponse,
+  UpdateFcmTokenApiPayload,
 } from './api.types'
 
 export type {

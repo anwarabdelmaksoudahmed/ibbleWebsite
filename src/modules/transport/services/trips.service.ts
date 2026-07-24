@@ -1,11 +1,25 @@
 import { TransportTripsApi } from '@modules/transport/api/trips.api'
-import type { TransportTripsPage, TransportVehicleType } from '@modules/transport/types'
 import type {
+  AcceptedTransportTrip,
+  TransportOffer,
+  TransportTripRequest,
+  TransportTripsPage,
+  TransportVehicleType,
+} from '@modules/transport/types'
+import type {
+  AcceptTransportOfferApiPayload,
+  CreateTransportTripRequestApiPayload,
   TransportAllowedVehicleTypesQueryParams,
   TransportTripsQueryParams,
 } from '@modules/transport/types/api.types'
 import { mapTransportTripsPage } from '@modules/transport/utils/trip-mappers'
+import {
+  mapAcceptedTransportTrip,
+  mapTransportOffersResponse,
+  mapTransportTripRequestResponse,
+} from '@modules/transport/utils/trip-request-mappers'
 import { mapTransportVehicleTypes } from '@modules/transport/utils/vehicle-type-mappers'
+import { buildFcmDevicePayload } from '@shared/firebase/device'
 
 export class TransportTripsService {
   private readonly api: TransportTripsApi
@@ -34,6 +48,47 @@ export class TransportTripsService {
   ): Promise<TransportVehicleType[]> {
     const response = await this.api.listAllowedVehicleTypes(params, options)
     return mapTransportVehicleTypes(response.data, options?.locale ?? 'ar')
+  }
+
+  async createTripRequest(
+    payload: CreateTransportTripRequestApiPayload,
+  ): Promise<TransportTripRequest> {
+    const response = await this.api.createTripRequest(payload)
+    return mapTransportTripRequestResponse(response)
+  }
+
+  async getTripRequest(
+    id: string | number,
+    options?: { signal?: AbortSignal },
+  ): Promise<TransportTripRequest> {
+    const response = await this.api.getTripRequest(id, options)
+    return mapTransportTripRequestResponse(response)
+  }
+
+  async listOffersByTripRequest(
+    tripRequestId: string | number,
+    options?: { signal?: AbortSignal },
+  ): Promise<TransportOffer[]> {
+    const response = await this.api.listOffersByTripRequest(tripRequestId, options)
+    return mapTransportOffersResponse(response)
+  }
+
+  async acceptOffer(
+    offerId: string | number,
+    payload: AcceptTransportOfferApiPayload,
+  ): Promise<AcceptedTransportTrip> {
+    const response = await this.api.acceptOffer(offerId, payload)
+    return mapAcceptedTransportTrip(response)
+  }
+
+  async registerFcmToken(token: string): Promise<void> {
+    const payload = buildFcmDevicePayload(token)
+    console.log('[FCM] transport register payload', {
+      fcm_token_preview: payload.fcm_token.slice(0, 16),
+      device_type: payload.device_type,
+      device_id: payload.device_id,
+    })
+    await this.api.registerFcmToken(payload)
   }
 }
 

@@ -14,6 +14,8 @@ import {
   mapRefreshTokenApiResponse,
 } from '@modules/auth/utils/mappers'
 import { AuthEndpointNotAvailableError, resolveAuthError, resolveSignupError } from '@modules/auth/utils/errors'
+import { buildFcmDevicePayload } from '@shared/firebase/device'
+import { resolveFirebaseMessagingTokenForLogin } from '@shared/firebase/messaging'
 
 export class AuthService {
   private readonly api: AuthApi
@@ -25,17 +27,52 @@ export class AuthService {
   }
 
   async login(credentials: LoginCredentials): Promise<InternalAuthModel> {
+    const device = await this.resolveLoginDeviceFields()
     const payload: LoginApiRequest = {
       user: credentials.phone,
       password: credentials.password,
       country_code: credentials.countryCode,
+      fcm_token: device.fcm_token,
+      device_type: device.device_type,
+      device_id: device.device_id,
     }
+
+    console.log('[Auth] login payload device fields', {
+      fcm_token_length: payload.fcm_token?.length ?? 0,
+      fcm_token_preview: payload.fcm_token?.slice(0, 16) || '',
+      device_type: payload.device_type,
+      device_id: payload.device_id,
+    })
 
     try {
       const response = await this.api.login(payload)
       return mapLoginApiResponse(response)
     } catch (error) {
       throw resolveAuthError(error)
+    }
+  }
+
+  /** Best-effort FCM + stable web device id for SSO login (matches legacy site). */
+  private async resolveLoginDeviceFields(): Promise<{
+    fcm_token: string
+    device_type: string
+    device_id: string
+  }> {
+    const empty = buildFcmDevicePayload('')
+    if (!import.meta.client) {
+      return { fcm_token: '', device_type: empty.device_type, device_id: empty.device_id }
+    }
+
+    try {
+      const token = await resolveFirebaseMessagingTokenForLogin(10_000)
+      if (!token) {
+        console.warn('[Auth] login without FCM token (permission/SW/secure context — not account-related)')
+        return { fcm_token: '', device_type: empty.device_type, device_id: empty.device_id }
+      }
+      return buildFcmDevicePayload(token)
+    } catch (err) {
+      console.warn('[Auth] failed to resolve FCM for login', err)
+      return { fcm_token: '', device_type: empty.device_type, device_id: empty.device_id }
     }
   }
 
@@ -90,4 +127,23 @@ export class AuthService {
       throw resolveAuthError(error)
     }
   }
+
+  async updateFcmToken(fcmToken: string): Promise<void> {
+    const payload = buildFcmDevicePayload(fcmToken)
+    console.log('[FCM] auth register payload', {
+      fcm_token_preview: payload.fcm_token.slice(0, 16),
+      device_type: payload.device_type,
+      device_id: payload.device_id,
+    })
+    await this.api.updateFcmToken(payload)
+  }
+}
+
+let authService: AuthService | null = null
+
+export function getAuthService(): AuthService {
+  if (!authService) {
+    authService = new AuthService()
+  }
+  return authService
 }

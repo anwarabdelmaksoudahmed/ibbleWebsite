@@ -10,6 +10,7 @@ import type {
   RefreshTokenApiResponse,
   SignupApiRequest,
   SignupApiResponse,
+  UpdateFcmTokenApiPayload,
 } from '@modules/auth/types/api.types'
 
 export class AuthApi {
@@ -74,5 +75,15 @@ export class AuthApi {
         const payload = response.data
         return 'data' in payload ? payload.data : payload
       })
+  }
+
+  /** PATCH /v1/fcm-tokens { fcm_token, device_type, device_id } */
+  updateFcmToken(payload: UpdateFcmTokenApiPayload): Promise<unknown> {
+    return this.client
+      .patch(AUTH_ENDPOINTS.FCM_TOKENS, payload, {
+        baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
   }
 }

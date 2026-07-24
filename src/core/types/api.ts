@@ -19,7 +19,7 @@ export type PaginationMeta = {
 }
 
 export type ApiErrorResponse = {
-  message: string
+  message: string | string[]
   code?: string
   errors?: Record<string, string[]>
   statusCode: number

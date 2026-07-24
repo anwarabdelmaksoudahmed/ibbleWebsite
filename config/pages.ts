@@ -6,6 +6,11 @@ import type { NuxtPage } from 'nuxt/schema'
 /**
  * Scans module page directories and registers routes with Nuxt.
  * Pattern: src/modules/{module}/pages/{path}.vue -> /{module}/{path}
+ *
+ * Dynamic file segments are converted for vue-router:
+ * - `[id].vue`      -> `/:id`
+ * - `[...slug].vue` -> `/:slug(.*)*`
+ * - `[[...slug]].vue` -> `/:slug(.*)*?`
  */
 export function extendModulePages(pages: NuxtPage[], srcDir: string) {
   const modulesDir = resolve(srcDir, 'modules')
@@ -24,11 +29,38 @@ export function extendModulePages(pages: NuxtPage[], srcDir: string) {
   }
 }
 
+function fileNameToRouteSegment(fileName: string): string {
+  if (fileName.startsWith('[[...') && fileName.endsWith(']]')) {
+    return `:${fileName.slice(5, -2)}(.*)*?`
+  }
+  if (fileName.startsWith('[...') && fileName.endsWith(']')) {
+    return `:${fileName.slice(4, -1)}(.*)*`
+  }
+  if (fileName.startsWith('[') && fileName.endsWith(']')) {
+    return `:${fileName.slice(1, -1)}`
+  }
+  return fileName
+}
+
+function fileNameToRouteNamePart(fileName: string): string {
+  if (fileName.startsWith('[[...') && fileName.endsWith(']]')) {
+    return fileName.slice(5, -2)
+  }
+  if (fileName.startsWith('[...') && fileName.endsWith(']')) {
+    return fileName.slice(4, -1)
+  }
+  if (fileName.startsWith('[') && fileName.endsWith(']')) {
+    return fileName.slice(1, -1)
+  }
+  return fileName
+}
+
 function registerPagesFromDir(
   pages: NuxtPage[],
   dir: string,
   basePath: string,
   moduleName: string,
+  namePrefix = moduleName,
 ) {
   let entries: Dirent[]
   try {
@@ -41,15 +73,27 @@ function registerPagesFromDir(
     const fullPath = resolve(dir, entry.name)
 
     if (entry.isDirectory()) {
-      registerPagesFromDir(pages, fullPath, `${basePath}/${entry.name}`, moduleName)
+      registerPagesFromDir(
+        pages,
+        fullPath,
+        `${basePath}/${entry.name}`,
+        moduleName,
+        `${namePrefix}-${entry.name}`,
+      )
       continue
     }
 
     if (!entry.name.endsWith('.vue')) continue
 
-    const pageName = entry.name.replace('.vue', '')
-    const routePath = pageName === 'index' ? basePath : `${basePath}/${pageName}`
-    const routeName = `${moduleName}-${pageName === 'index' ? 'index' : pageName}`
+    const pageName = entry.name.replace(/\.vue$/, '')
+    const segment = fileNameToRouteSegment(pageName)
+    const routePath = pageName === 'index' ? basePath : `${basePath}/${segment}`
+    const routeName =
+      pageName === 'index'
+        ? namePrefix === moduleName
+          ? `${moduleName}-index`
+          : namePrefix
+        : `${namePrefix}-${fileNameToRouteNamePart(pageName)}`
 
     pages.push({
       name: routeName,

@@ -3,6 +3,7 @@ import type {
   TransportDeliveryField,
   TransportDeliveryFormValues,
 } from '@modules/transport/schemas/register.schema'
+import type { PlaceSelection } from '@shared/maps/types'
 import TripRoutePicker from '@shared/maps/components/TripRoutePicker.vue'
 
 defineProps<{
@@ -12,6 +13,8 @@ defineProps<{
 
 const emit = defineEmits<{
   'update:distanceKm': [value: string | number]
+  'update:originPlace': [place: PlaceSelection | null]
+  'update:destinationPlace': [place: PlaceSelection | null]
   'field-blur': [field: TransportDeliveryField]
 }>()
 
@@ -50,6 +53,8 @@ const today = computed(() => {
       @update:origin="model.origin = $event"
       @update:destination="model.destination = $event"
       @update:distance-km="emit('update:distanceKm', $event)"
+      @update:origin-place="emit('update:originPlace', $event)"
+      @update:destination-place="emit('update:destinationPlace', $event)"
       @origin-blur="emit('field-blur', 'origin')"
       @destination-blur="emit('field-blur', 'destination')"
       @distance-blur="emit('field-blur', 'distanceKm')"

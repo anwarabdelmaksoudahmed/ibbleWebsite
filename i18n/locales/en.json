@@ -770,7 +770,8 @@
         "next": "Next",
         "prev": "Back",
         "submit": "Confirm request",
-        "submitSuccess": "Your transport request was submitted successfully.",
+        "submitSuccess": "Your transport request was submitted successfully. Waiting for driver offers.",
+        "authRequired": "Please sign in to submit a transport request.",
         "steps": {
           "delivery": "Delivery details",
           "shipmentType": "Choose shipment type",
@@ -825,8 +826,36 @@
           "distanceRequired": "Trip distance is required",
           "distanceInvalid": "Enter a valid trip distance",
           "shipmentTypeRequired": "Please choose a shipment type",
-          "termsRequired": "You must accept the terms to continue"
+          "termsRequired": "You must accept the terms to continue",
+          "locationRequired": "Please select a location from the suggestions"
         }
+      },
+      "request": {
+        "seoTitle": "Transport Request Status | Ibbil",
+        "seoDescription": "Track your camel transport request and accept driver offers in real time.",
+        "breadcrumb": "Request status",
+        "loading": "Loading your request…",
+        "errorTitle": "Couldn’t load this request",
+        "title": "Waiting for drivers",
+        "subtitle": "Your request was sent. Keep this page open — we listen for the Firebase notification when a driver responds.",
+        "status": "Status: {status}",
+        "waitingPush": "Listening for driver response…",
+        "acceptingOffer": "Confirming driver offer…",
+        "estimatedPrice": "Estimated price",
+        "offersTitle": "Driver offers",
+        "offersHint": "When a driver offer arrives via notification it is accepted automatically. You can also accept manually.",
+        "driverOffer": "Driver offer",
+        "waitingTitle": "Waiting for Firebase notification",
+        "waitingDescription": "Allow notifications if prompted. When the driver responds we call the offer endpoint and create your trip.",
+        "enableNotificationsTitle": "Enable notifications",
+        "enableNotificationsHint": "Allow browser notifications so you get the driver response immediately.",
+        "enableNotifications": "Enable notifications",
+        "acceptOffer": "Accept offer",
+        "acceptSuccess": "Trip created successfully.",
+        "offerReceived": "A driver offer arrived — confirming…",
+        "tripCreatedPush": "Your trip was created. Opening your trips…",
+        "goToTrips": "My trips",
+        "backHome": "Back to transport"
       }
     },
     "veterinary": {

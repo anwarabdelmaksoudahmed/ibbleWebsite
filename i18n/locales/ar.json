@@ -770,7 +770,8 @@
         "next": "التالي",
         "prev": "الرجوع",
         "submit": "تأكيد الطلب",
-        "submitSuccess": "تم إرسال طلب النقل بنجاح.",
+        "submitSuccess": "تم إرسال طلب النقل بنجاح. بانتظار عروض السائقين.",
+        "authRequired": "يرجى تسجيل الدخول لإرسال طلب النقل.",
         "steps": {
           "delivery": "بيانات التوصيل",
           "shipmentType": "اختيار نوع الشحنة",
@@ -825,8 +826,36 @@
           "distanceRequired": "مسافة الرحلة مطلوبة",
           "distanceInvalid": "أدخل مسافة رحلة صالحة",
           "shipmentTypeRequired": "يرجى اختيار نوع الشحنة",
-          "termsRequired": "يجب الموافقة على الشروط للمتابعة"
+          "termsRequired": "يجب الموافقة على الشروط للمتابعة",
+          "locationRequired": "يرجى اختيار موقعاً من الاقتراحات"
         }
+      },
+      "request": {
+        "seoTitle": "حالة طلب النقل | منصة إبل",
+        "seoDescription": "تابع طلب نقل الإبل واقبل عروض السائقين مباشرة.",
+        "breadcrumb": "حالة الطلب",
+        "loading": "جاري تحميل طلبك…",
+        "errorTitle": "تعذر تحميل هذا الطلب",
+        "title": "بانتظار السائقين",
+        "subtitle": "تم إرسال طلبك. أبقِ هذه الصفحة مفتوحة — نستمع لإشعار Firebase عند رد السائق.",
+        "status": "الحالة: {status}",
+        "waitingPush": "جاري الاستماع لرد السائق…",
+        "acceptingOffer": "جاري تأكيد عرض السائق…",
+        "estimatedPrice": "السعر التقديري",
+        "offersTitle": "عروض السائقين",
+        "offersHint": "عند وصول عرض عبر الإشعار يتم قبوله تلقائياً. يمكنك أيضاً القبول يدوياً.",
+        "driverOffer": "عرض سائق",
+        "waitingTitle": "بانتظار إشعار Firebase",
+        "waitingDescription": "اسمح بالإشعارات إذا طُلب منك. عند رد السائق نستدعي عرض العرض وننشئ رحلتك.",
+        "enableNotificationsTitle": "تفعيل الإشعارات",
+        "enableNotificationsHint": "اسمح بإشعارات المتصفح لاستلام رد السائق فوراً.",
+        "enableNotifications": "تفعيل الإشعارات",
+        "acceptOffer": "قبول العرض",
+        "acceptSuccess": "تم إنشاء الرحلة بنجاح.",
+        "offerReceived": "وصل عرض من سائق — جاري التأكيد…",
+        "tripCreatedPush": "تم إنشاء رحلتك. جاري فتح رحلاتك…",
+        "goToTrips": "رحلاتي",
+        "backHome": "العودة للنقل"
       }
     },
     "veterinary": {

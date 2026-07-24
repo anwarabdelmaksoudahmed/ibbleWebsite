@@ -2,8 +2,14 @@ import type { AxiosInstance } from 'axios'
 import { getHttpClient } from '@core/api/http/client'
 import { TRANSPORT_ENDPOINTS } from '@modules/transport/constants/endpoints'
 import type {
+  AcceptTransportOfferApiPayload,
+  AcceptTransportOfferApiResponse,
+  CreateTransportTripRequestApiPayload,
+  RegisterFcmTokenApiPayload,
   TransportAllowedVehicleTypesApiResponse,
   TransportAllowedVehicleTypesQueryParams,
+  TransportOffersApiResponse,
+  TransportTripRequestApiResponse,
   TransportTripsApiResponse,
   TransportTripsQueryParams,
 } from '@modules/transport/types/api.types'
@@ -23,6 +29,12 @@ function serializeTripsQuery(params: Record<string, unknown>): string {
 function serializeStatusFilter(params: Record<string, unknown>): string {
   const status = encodeURIComponent(String(params.status ?? 1))
   return `filters[status]=${status}`
+}
+
+/** Build `filters[tripRequestId]=123` for offers of a request. */
+function serializeTripRequestFilter(params: Record<string, unknown>): string {
+  const tripRequestId = encodeURIComponent(String(params.tripRequestId ?? ''))
+  return `filters[tripRequestId]=${tripRequestId}`
 }
 
 export class TransportTripsApi {
@@ -73,6 +85,72 @@ export class TransportTripsApi {
           skipErrorToast: true,
         },
       )
+      .then((response) => response.data)
+  }
+
+  createTripRequest(
+    payload: CreateTransportTripRequestApiPayload,
+  ): Promise<TransportTripRequestApiResponse> {
+    return this.client
+      .post<TransportTripRequestApiResponse>(TRANSPORT_ENDPOINTS.TRIP_REQUESTS, payload, {
+        baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  getTripRequest(
+    id: string | number,
+    options?: { signal?: AbortSignal },
+  ): Promise<TransportTripRequestApiResponse> {
+    return this.client
+      .get<TransportTripRequestApiResponse>(TRANSPORT_ENDPOINTS.TRIP_REQUEST(id), {
+        baseURL: this.baseUrl,
+        signal: options?.signal,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  listOffersByTripRequest(
+    tripRequestId: string | number,
+    options?: { signal?: AbortSignal },
+  ): Promise<TransportOffersApiResponse> {
+    return this.client
+      .get<TransportOffersApiResponse>(TRANSPORT_ENDPOINTS.OFFERS, {
+        baseURL: this.baseUrl,
+        signal: options?.signal,
+        params: { tripRequestId },
+        paramsSerializer: {
+          serialize: serializeTripRequestFilter,
+        },
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  acceptOffer(
+    offerId: string | number,
+    payload: AcceptTransportOfferApiPayload,
+  ): Promise<AcceptTransportOfferApiResponse> {
+    return this.client
+      .patch<AcceptTransportOfferApiResponse>(
+        TRANSPORT_ENDPOINTS.OFFER(offerId),
+        payload,
+        {
+          baseURL: this.baseUrl,
+          skipErrorToast: true,
+        },
+      )
+      .then((response) => response.data)
+  }
+
+  registerFcmToken(payload: RegisterFcmTokenApiPayload): Promise<unknown> {
+    return this.client
+      .patch(TRANSPORT_ENDPOINTS.USER_FCM_TOKEN, payload, {
+        baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
       .then((response) => response.data)
   }
 }

@@ -1,5 +1,12 @@
 import { z } from 'zod'
 
+const coordSchema = z
+  .number({
+    required_error: 'site.transport.register.validation.locationRequired',
+    invalid_type_error: 'site.transport.register.validation.locationRequired',
+  })
+  .finite('site.transport.register.validation.locationRequired')
+
 export const transportDeliverySchema = z.object({
   name: z
     .string()
@@ -39,6 +46,10 @@ export const transportDeliverySchema = z.object({
     .min(1, 'site.transport.register.validation.distanceRequired')
     .regex(/^\d+(\.\d{1,2})?$/, 'site.transport.register.validation.distanceInvalid')
     .refine((value) => Number(value) > 0, 'site.transport.register.validation.distanceInvalid'),
+  originLat: coordSchema,
+  originLng: coordSchema,
+  destinationLat: coordSchema,
+  destinationLng: coordSchema,
 })
 
 export const transportShipmentTypeSchema = z.object({
@@ -54,7 +65,22 @@ export const transportPaymentSchema = z.object({
   }),
 })
 
-export type TransportDeliveryFormValues = z.infer<typeof transportDeliverySchema>
+/** Form state allows null coords until the user picks a place from autocomplete. */
+export type TransportDeliveryFormValues = {
+  name: string
+  phone: string
+  countryCode: string
+  transportDate: string
+  transportTime: string
+  origin: string
+  destination: string
+  distanceKm: string
+  originLat: number | null
+  originLng: number | null
+  destinationLat: number | null
+  destinationLng: number | null
+}
+
 export type TransportShipmentTypeFormValues = z.infer<typeof transportShipmentTypeSchema>
 export type TransportPaymentFormValues = z.infer<typeof transportPaymentSchema>
 
