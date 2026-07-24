@@ -1,3 +1,4 @@
+import { PERMITS_ROUTES } from '@modules/permits/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
 
 export type ServicesHubItemKey =
@@ -52,7 +53,7 @@ export const SERVICES_HUB_ITEMS: ServicesHubItem[] = [
   },
   {
     key: 'permits',
-    to: '/services/permits',
+    to: PERMITS_ROUTES.ROOT,
     icon: 'lucide:shield-check',
     image: '/images/services/permits.jpg',
     width: 1024,

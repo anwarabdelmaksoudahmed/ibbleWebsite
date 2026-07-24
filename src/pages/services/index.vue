@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CONTACT_INFO } from '@shared/constants/contact'
+import { PERMITS_ROUTES } from '@modules/permits/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
 
 definePageMeta({ layout: 'site' })
@@ -85,7 +86,7 @@ useHead(() => ({
               '@type': 'ListItem',
               position: 5,
               name: t('site.nav.permits'),
-              url: `${runtimeConfig.public.appUrl}${localePath('/services/permits')}`,
+              url: `${runtimeConfig.public.appUrl}${localePath(PERMITS_ROUTES.ROOT)}`,
             },
           ],
         },

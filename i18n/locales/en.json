@@ -961,6 +961,52 @@
         }
       }
     },
+    "permits": {
+      "seoTitle": "Camel Permits | Ibbil",
+      "seoDescription": "Issue and manage camel permits electronically on Ibbil with clear steps and real-time request tracking.",
+      "heroTitle": "Electronic camel permits with clarity and trust",
+      "heroSubtitle": "Submit your permit request from anywhere, track its status in real time, and receive a verified official document.",
+      "ctaPrimary": "Issue your permit",
+      "ctaSecondary": "Read terms and details",
+      "images": {
+        "hero": "A camel owner reviewing permits on a tablet at a camel pen at golden hour",
+        "service": "A camel owner verifying a digital permit beside a camel in a pen",
+        "howToApply": "Submitting an electronic camel permit request through Ibbil",
+        "approved": "An approved camel permit document with a verification stamp and QR code"
+      },
+      "benefits": {
+        "digital": {
+          "title": "Digital issuance",
+          "description": "Submit your permit request on the platform in minutes without long paper-based processes."
+        },
+        "track": {
+          "title": "Track your request",
+          "description": "Follow every stage from submission to approval with a clear interface and timely updates."
+        },
+        "verified": {
+          "title": "Trusted documents",
+          "description": "Receive an official, verifiable permit that protects your rights and simplifies procedures."
+        }
+      },
+      "howTitle": "How do you get a permit?",
+      "howDescription": "Through Ibbil you can submit a permit request online, complete the required details, then receive an approved document once the process is complete.",
+      "steps": {
+        "submit": {
+          "title": "1) Submit the request",
+          "description": "Enter your details and the required permit information through a clear, secure digital form."
+        },
+        "review": {
+          "title": "2) Review and verify",
+          "description": "Your request is reviewed and verified to ensure the permit is issued correctly."
+        },
+        "receive": {
+          "title": "3) Receive the permit",
+          "description": "After approval, download your official electronic permit and verify it anytime."
+        }
+      },
+      "footerTitle": "Camel Permits",
+      "footerDescription": "Sign in to start your permit request on Ibbil, complete the required details, then track the request until you receive the approved electronic document."
+    },
     "insurance": {
       "seoTitle": "Camel Insurance | Ibbil",
       "seoDescription": "Request a camel transport insurance policy in Saudi Arabia through clear steps and secure payment.",

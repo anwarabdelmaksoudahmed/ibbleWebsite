@@ -1,3 +1,4 @@
+import { PERMITS_ROUTES } from '@modules/permits/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
 
 export type SiteNavItem = {
@@ -17,7 +18,7 @@ export const SITE_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
   { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
-  { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
+  { key: 'site.nav.permits', to: PERMITS_ROUTES.ROOT, icon: 'lucide:shield-check' },
   { key: 'site.nav.services', to: ROUTES.SERVICES, icon: 'lucide:briefcase' },
   { key: 'site.nav.media', to: ROUTES.MEDIA.ROOT, icon: 'lucide:newspaper' },
 ]
@@ -28,7 +29,7 @@ export const HOME_SERVICE_LINKS: SiteNavItem[] = [
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE, icon: 'lucide:heart-handshake' },
   { key: 'site.nav.transport', to: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'site.nav.veterinary', to: '/services/veterinary', icon: 'lucide:stethoscope' },
-  { key: 'site.nav.permits', to: '/services/permits', icon: 'lucide:shield-check' },
+  { key: 'site.nav.permits', to: PERMITS_ROUTES.ROOT, icon: 'lucide:shield-check' },
   { key: 'site.nav.media', to: ROUTES.MEDIA.ROOT, icon: 'lucide:newspaper' },
 ]
 
@@ -40,7 +41,7 @@ export const SITE_FOOTER_STORES = [
 ]
 
 export const SITE_FOOTER_SERVICES = [
-  { key: 'site.nav.permits', to: '/services/permits' },
+  { key: 'site.nav.permits', to: PERMITS_ROUTES.ROOT },
   { key: 'site.nav.insurance', to: ROUTES.INSURANCE },
   { key: 'site.nav.transport', to: ROUTES.TRANSPORT },
   { key: 'site.nav.veterinary', to: '/services/veterinary' },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NewsTickerItem } from '@shared/types/news-ticker.types'
+import { PERMITS_ROUTES } from '@modules/permits/constants/routes'
 import { ROUTES } from '@shared/constants/routes'
 
 const { t } = useI18n()
@@ -9,7 +10,7 @@ const NEWS_KEYS = [
   { key: 'transport', href: ROUTES.TRANSPORT, icon: 'lucide:truck' },
   { key: 'stores', href: ROUTES.STORES.ROOT, icon: 'lucide:store' },
   { key: 'veterinary', href: '/services/veterinary', icon: 'lucide:stethoscope' },
-  { key: 'permits', href: '/services/permits', icon: 'lucide:shield-check' },
+  { key: 'permits', href: PERMITS_ROUTES.ROOT, icon: 'lucide:shield-check' },
   { key: 'join', href: ROUTES.JOIN, icon: 'lucide:user-plus' },
   { key: 'vision', icon: 'lucide:sparkles' },
 ] as const
