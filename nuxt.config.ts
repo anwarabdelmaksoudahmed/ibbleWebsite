@@ -39,7 +39,16 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['lodash-es', 'dayjs', 'axios', 'zod', 'firebase/app', 'firebase/messaging'],
+      include: [
+        'lodash-es',
+        'dayjs',
+        'axios',
+        'zod',
+        'firebase/app',
+        'firebase/messaging',
+        'chart.js',
+        'vue-chartjs',
+      ],
     },
   },
 

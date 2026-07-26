@@ -1835,6 +1835,35 @@
           "label": "Search favorites",
           "searchPlaceholder": "Search by product or store…"
         }
+      },
+      "charts": {
+        "loadError": "Could not load the chart",
+        "retry": "Retry",
+        "views": {
+          "label": "Chart view",
+          "doughnut": "Donut",
+          "bar": "Bars"
+        },
+        "activity": {
+          "title": "Activity overview",
+          "description": "A quick look at how your account activity is distributed across Ibbil services.",
+          "centerLabel": "Total",
+          "legendLabel": "Activity breakdown",
+          "emptyTitle": "No activity to chart yet",
+          "emptyDescription": "Start using Ibbil services and your activity mix will appear here."
+        },
+        "wallet": {
+          "title": "Wallet insights",
+          "description": "Compare deposits and withdrawals by amount or transaction count.",
+          "centerAmounts": "Total flow",
+          "centerCounts": "Operations",
+          "emptyTitle": "No wallet movement yet",
+          "emptyDescription": "Once you deposit or withdraw, your wallet charts will show up here.",
+          "views": {
+            "amounts": "Amounts",
+            "counts": "Counts"
+          }
+        }
       }
     }
   },

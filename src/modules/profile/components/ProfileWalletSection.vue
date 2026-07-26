@@ -41,6 +41,16 @@ function toggleExpanded(id: string) {
   <div v-else class="space-y-6 sm:space-y-7">
     <ProfileWalletSummaryCard :wallet="wallet" :loading="isWalletLoading" />
 
+    <ClientOnly>
+      <LazyProfileWalletCharts :wallet="wallet" :loading="isWalletLoading" />
+      <template #fallback>
+        <div
+          class="h-72 animate-pulse rounded-2xl border border-ibbil-green/10 bg-white dark:bg-surface-elevated"
+          aria-hidden="true"
+        />
+      </template>
+    </ClientOnly>
+
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <h2 class="text-base font-bold text-ibbil-green sm:text-lg">
         {{ t('site.profile.wallet.transactionsTitle') }}
