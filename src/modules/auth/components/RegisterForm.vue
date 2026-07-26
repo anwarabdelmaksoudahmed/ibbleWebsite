@@ -28,6 +28,14 @@ const touched = reactive<Record<string, boolean>>({})
 const fieldErrors = reactive<Record<string, string>>({})
 const formError = ref('')
 
+function togglePasswordVisibility() {
+  showPassword.value = !showPassword.value
+}
+
+function toggleConfirmPasswordVisibility() {
+  showConfirmPassword.value = !showConfirmPassword.value
+}
+
 const selectedCountry = computed(() => findCountryByApiCode(form.countryCode))
 
 const passwordChecks = computed(() => {
@@ -279,6 +287,9 @@ async function handleSubmit() {
             :error="fieldErrors.password"
             :type="showPassword ? 'text' : 'password'"
             autocomplete="new-password"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
             maxlength="64"
             required
             @blur="validateField('password')"
@@ -286,11 +297,18 @@ async function handleSubmit() {
             <template #suffix>
               <button
                 type="button"
-                class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+                class="inline-flex size-9 items-center justify-center rounded-lg text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green/30"
                 :aria-label="showPassword ? t('auth.hidePassword') : t('auth.showPassword')"
-                @click="showPassword = !showPassword"
+                :aria-pressed="showPassword"
+                aria-controls="register-password"
+                @mousedown.prevent
+                @click="togglePasswordVisibility"
               >
-                <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+                <Icon
+                  :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'"
+                  class="size-4"
+                  aria-hidden="true"
+                />
               </button>
             </template>
 
@@ -330,6 +348,9 @@ async function handleSubmit() {
             :type="showConfirmPassword ? 'text' : 'password'"
             :wrapper-class="confirmWrapperClass"
             autocomplete="new-password"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
             maxlength="64"
             required
             @blur="validateField('confirmPassword')"
@@ -337,11 +358,18 @@ async function handleSubmit() {
             <template #suffix>
               <button
                 type="button"
-                class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+                class="inline-flex size-9 items-center justify-center rounded-lg text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green/30"
                 :aria-label="showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')"
-                @click="showConfirmPassword = !showConfirmPassword"
+                :aria-pressed="showConfirmPassword"
+                aria-controls="register-confirm"
+                @mousedown.prevent
+                @click="toggleConfirmPasswordVisibility"
               >
-                <Icon :name="showConfirmPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+                <Icon
+                  :name="showConfirmPassword ? 'lucide:eye-off' : 'lucide:eye'"
+                  class="size-4"
+                  aria-hidden="true"
+                />
               </button>
             </template>
 

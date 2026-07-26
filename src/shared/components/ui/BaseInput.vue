@@ -44,17 +44,34 @@ const attrs = useAttrs()
 const slots = useSlots()
 const inputId = computed(() => props.id ?? useId())
 
-const sizeClasses: Record<ComponentSize, string> = {
-  xs: 'text-xs px-2 py-1.5',
-  sm: 'text-sm px-3 py-2',
-  md: 'text-sm px-3.5 py-3',
-  lg: 'text-base px-4 py-3',
-  xl: 'text-lg px-4 py-3.5',
+const sizeClasses: Record<ComponentSize, { text: string; py: string; px: string }> = {
+  xs: { text: 'text-xs', py: 'py-1.5', px: 'px-2' },
+  sm: { text: 'text-sm', py: 'py-2', px: 'px-3' },
+  md: { text: 'text-sm', py: 'py-3', px: 'px-3.5' },
+  lg: { text: 'text-base', py: 'py-3', px: 'px-4' },
+  xl: { text: 'text-lg', py: 'py-3.5', px: 'px-4' },
+}
+
+const sizeStartPadding: Record<ComponentSize, string> = {
+  xs: 'ps-2',
+  sm: 'ps-3',
+  md: 'ps-3.5',
+  lg: 'ps-4',
+  xl: 'ps-4',
+}
+
+const sizeEndPadding: Record<ComponentSize, string> = {
+  xs: 'pe-2',
+  sm: 'pe-3',
+  md: 'pe-3.5',
+  lg: 'pe-4',
+  xl: 'pe-4',
 }
 
 const hasPrefix = computed(() => !!slots.prefix)
 const hasSuffix = computed(() => !!slots.suffix)
-const hasAffix = computed(() => hasPrefix.value || hasSuffix.value)
+const hasAffix = computed(() => hasPrefix.value || hasSuffix.value || props.loading)
+const hasEndAffix = computed(() => hasSuffix.value || props.loading)
 
 const inputAttrs = computed(() => {
   const { class: _class, style: _style, ...rest } = attrs
@@ -70,25 +87,33 @@ const labelClasses = computed(() =>
 const wrapperClasses = computed(() =>
   cn(
     hasAffix.value &&
-      'relative flex overflow-hidden rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15',
+      'relative flex items-center rounded-xl border bg-[#fafbfa] transition-all focus-within:border-ibbil-green focus-within:bg-white focus-within:ring-2 focus-within:ring-ibbil-green/15',
     !hasAffix.value && 'relative',
     props.wrapperClass,
     hasAffix.value && (props.error ? 'border-danger' : !props.wrapperClass && 'border-border'),
   ),
 )
 
-const inputClasses = computed(() =>
-  cn(
+const inputClasses = computed(() => {
+  const size = sizeClasses[props.size]
+
+  return cn(
     hasAffix.value
       ? 'min-w-0 flex-1 appearance-none border-0 bg-transparent text-foreground shadow-none outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none placeholder:text-foreground-muted disabled:cursor-not-allowed disabled:opacity-50'
       : 'w-full appearance-none rounded-xl border bg-[#fafbfa] text-foreground outline-none transition-all placeholder:text-foreground-muted focus:border-ibbil-green focus:bg-white focus:outline-none focus:ring-2 focus:ring-ibbil-green/15 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
     !hasAffix.value && (props.error ? 'border-danger' : 'border-border'),
-    hasSuffix.value && 'pe-11',
-    sizeClasses[props.size],
+    size.text,
+    size.py,
+    hasAffix.value
+      ? cn(
+          hasPrefix.value ? 'ps-2' : sizeStartPadding[props.size],
+          hasEndAffix.value ? 'pe-1' : sizeEndPadding[props.size],
+        )
+      : size.px,
     props.inputClass,
     attrs.class as string | undefined,
-  ),
-)
+  )
+})
 
 function onInput(event: Event) {
   emit('update:modelValue', (event.target as HTMLInputElement).value)
@@ -103,7 +128,12 @@ function onInput(event: Event) {
     </label>
 
     <div :class="wrapperClasses">
-      <slot name="prefix" />
+      <div
+        v-if="hasPrefix"
+        class="flex shrink-0 items-center ps-3 text-foreground-muted"
+      >
+        <slot name="prefix" />
+      </div>
 
       <input
         :id="inputId"
@@ -121,11 +151,13 @@ function onInput(event: Event) {
         @focus="emit('focus', $event)"
       >
 
-      <div v-if="loading" class="absolute top-1/2 -translate-y-1/2 end-3">
-        <BaseLoader size="sm" />
+      <div
+        v-if="hasSuffix || loading"
+        class="flex shrink-0 items-center gap-1.5 pe-2.5 text-foreground-muted"
+      >
+        <BaseLoader v-if="loading" size="sm" />
+        <slot name="suffix" />
       </div>
-
-   
     </div>
 
     <p v-if="hint && !error" :id="`${inputId}-hint`" class="text-xs text-foreground-muted">

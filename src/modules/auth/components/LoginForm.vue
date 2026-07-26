@@ -30,6 +30,10 @@ const touched = reactive<Record<string, boolean>>({})
 const fieldErrors = reactive<Record<string, string>>({})
 const formError = ref('')
 
+function togglePasswordVisibility() {
+  showPassword.value = !showPassword.value
+}
+
 function clearErrors() {
   formError.value = ''
   for (const key of Object.keys(fieldErrors)) {
@@ -156,6 +160,9 @@ async function handleSubmit() {
         :error="fieldErrors.password"
         :type="showPassword ? 'text' : 'password'"
         autocomplete="current-password"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
         maxlength="64"
         required
         @blur="validateField('password')"
@@ -163,11 +170,18 @@ async function handleSubmit() {
         <template #suffix>
           <button
             type="button"
-            class="rounded-md p-1 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green"
+            class="inline-flex size-9 items-center justify-center rounded-lg text-foreground-muted transition-colors hover:bg-surface-muted hover:text-ibbil-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ibbil-green/30"
             :aria-label="showPassword ? t('auth.hidePassword') : t('auth.showPassword')"
-            @click="showPassword = !showPassword"
+            :aria-pressed="showPassword"
+            aria-controls="login-password"
+            @mousedown.prevent
+            @click="togglePasswordVisibility"
           >
-            <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+            <Icon
+              :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'"
+              class="size-4"
+              aria-hidden="true"
+            />
           </button>
         </template>
       </BaseInput>
