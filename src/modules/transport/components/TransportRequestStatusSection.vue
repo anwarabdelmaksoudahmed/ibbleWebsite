@@ -144,29 +144,7 @@ function formatDateTime(value: string): string {
                   />
                   {{ waitingStatusLabel }}
                 </p>
-                <p
-                  v-if="sseStatusLabel"
-                  class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
-                  :class="
-                    sseStatus === 'open'
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : sseStatus === 'error'
-                        ? 'bg-red-50 text-red-700'
-                        : 'bg-ibbil-gold/15 text-[#a87820]'
-                  "
-                >
-                  <span
-                    class="size-1.5 rounded-full"
-                    :class="
-                      sseStatus === 'open'
-                        ? 'bg-emerald-600'
-                        : sseStatus === 'error'
-                          ? 'bg-red-600'
-                          : 'animate-pulse bg-[#a87820]'
-                    "
-                  />
-                  {{ sseStatusLabel }}
-                </p>
+            
               </div>
             </div>
           </div>
