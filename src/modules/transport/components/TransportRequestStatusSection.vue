@@ -17,13 +17,43 @@ const {
   pendingOffer,
   offerModalOpen,
   pushPermission,
+  sseStatus,
   isResponding,
   respondingStatus,
+  isCancelling,
   acceptPendingOffer,
   rejectPendingOffer,
   dismissOfferModal,
+  cancelRequest,
   enableNotifications,
 } = useTransportRequestStatus(() => props.requestId)
+
+const cancelConfirmOpen = ref(false)
+const cancelReason = ref('')
+const cancelReasonTouched = ref(false)
+
+const cancelReasonError = computed(() => {
+  if (!cancelReasonTouched.value) return undefined
+  if (!cancelReason.value.trim()) return t('site.transport.request.cancelReasonRequired')
+  return undefined
+})
+
+const canConfirmCancel = computed(
+  () => Boolean(cancelReason.value.trim()) && !isCancelling.value,
+)
+
+watch(cancelConfirmOpen, (open) => {
+  if (open) return
+  cancelReason.value = ''
+  cancelReasonTouched.value = false
+})
+
+async function confirmCancel() {
+  cancelReasonTouched.value = true
+  if (!canConfirmCancel.value) return
+  const ok = await cancelRequest(cancelReason.value)
+  if (ok) cancelConfirmOpen.value = false
+}
 
 const breadcrumbItems = computed(() => [
   { label: t('site.nav.home'), to: localePath(ROUTES.HOME) },
@@ -37,6 +67,33 @@ const offerPriceLabel = computed(() => {
   const amount = Number(raw)
   if (!Number.isFinite(amount)) return String(raw)
   return formatMoneyAmount(amount, locale.value)
+})
+
+const vehicleLabel = computed(() => {
+  const offer = pendingOffer.value
+  if (!offer) return null
+  const parts = [offer.vehicleModel, offer.vehicleYear, offer.vehiclePlate].filter(Boolean)
+  return parts.length ? parts.join(' · ') : null
+})
+
+const sseStatusLabel = computed(() => {
+  switch (sseStatus.value) {
+    case 'open':
+      return t('site.transport.request.sseConnected')
+    case 'connecting':
+    case 'reconnecting':
+      return t('site.transport.request.sseConnecting')
+    case 'error':
+      return t('site.transport.request.sseError')
+    default:
+      return null
+  }
+})
+
+const waitingStatusLabel = computed(() => {
+  if (isResponding.value) return t('site.transport.request.acceptingOffer')
+  if (pendingOffer.value) return t('site.transport.request.offerPendingDecision')
+  return t('site.transport.request.waitingPush')
 })
 
 function formatMoney(value: number): string {
@@ -77,21 +134,40 @@ function formatDateTime(value: string): string {
               <p class="mt-1 text-sm text-foreground-muted">
                 {{ t('site.transport.request.subtitle') }}
               </p>
-              <p
-                class="mt-3 inline-flex items-center gap-2 rounded-full bg-ibbil-green/8 px-3 py-1 text-xs font-semibold text-ibbil-green"
-              >
-                <span
-                  class="size-1.5 rounded-full bg-ibbil-green"
-                  :class="isResponding ? 'animate-ping' : 'animate-pulse'"
-                />
-                {{
-                  isResponding
-                    ? t('site.transport.request.acceptingOffer')
-                    : pendingOffer
-                      ? t('site.transport.request.offerPendingDecision')
-                      : t('site.transport.request.waitingPush')
-                }}
-              </p>
+              <div class="mt-3 flex flex-wrap items-center gap-2">
+                <p
+                  class="inline-flex items-center gap-2 rounded-full bg-ibbil-green/8 px-3 py-1 text-xs font-semibold text-ibbil-green"
+                >
+                  <span
+                    class="size-1.5 rounded-full bg-ibbil-green"
+                    :class="isResponding ? 'animate-ping' : 'animate-pulse'"
+                  />
+                  {{ waitingStatusLabel }}
+                </p>
+                <p
+                  v-if="sseStatusLabel"
+                  class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+                  :class="
+                    sseStatus === 'open'
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : sseStatus === 'error'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-ibbil-gold/15 text-[#a87820]'
+                  "
+                >
+                  <span
+                    class="size-1.5 rounded-full"
+                    :class="
+                      sseStatus === 'open'
+                        ? 'bg-emerald-600'
+                        : sseStatus === 'error'
+                          ? 'bg-red-600'
+                          : 'animate-pulse bg-[#a87820]'
+                    "
+                  />
+                  {{ sseStatusLabel }}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -181,23 +257,70 @@ function formatDateTime(value: string): string {
         </div>
 
         <div class="flex flex-wrap gap-3">
-          <BaseButton
+          <!-- <BaseButton
             variant="outline"
             class="!border-ibbil-green/20 !text-ibbil-green"
+            :disabled="isCancelling"
             :to="localePath(PROFILE_ROUTES.TRANSPORTATION)"
           >
             {{ t('site.transport.request.goToTrips') }}
-          </BaseButton>
+          </BaseButton> -->
           <BaseButton
+            type="button"
             variant="ghost"
-            class="!text-foreground-muted"
-            :to="localePath(TRANSPORT_ROUTES.ROOT)"
+            class="!text-red-600 hover:!bg-red-50"
+            :disabled="isResponding || isCancelling"
+            :loading="isCancelling"
+            @click="cancelConfirmOpen = true"
           >
-            {{ t('site.transport.request.backHome') }}
+            {{ t('site.transport.request.cancel') }}
           </BaseButton>
         </div>
       </div>
     </div>
+
+    <BaseModal
+      v-model:open="cancelConfirmOpen"
+      :title="t('site.transport.request.cancelTitle')"
+      size="sm"
+      :closable="!isCancelling"
+    >
+      <div class="space-y-4">
+        <p class="text-sm text-foreground-muted">
+          {{ t('site.transport.request.cancelConfirm') }}
+        </p>
+        <BaseTextarea
+          v-model="cancelReason"
+          :label="t('site.transport.request.cancelReason')"
+          :placeholder="t('site.transport.request.cancelReasonPlaceholder')"
+          :error="cancelReasonError"
+          :disabled="isCancelling"
+          :rows="3"
+          required
+          @blur="cancelReasonTouched = true"
+        />
+      </div>
+      <div class="mt-6 flex flex-wrap justify-end gap-2">
+        <BaseButton
+          type="button"
+          variant="outline"
+          :disabled="isCancelling"
+          @click="cancelConfirmOpen = false"
+        >
+          {{ t('common.back') }}
+        </BaseButton>
+        <BaseButton
+          type="button"
+          variant="primary"
+          class="!bg-red-600 hover:!bg-red-700"
+          :disabled="!canConfirmCancel"
+          :loading="isCancelling"
+          @click="confirmCancel"
+        >
+          {{ t('site.transport.request.cancelConfirmAction') }}
+        </BaseButton>
+      </div>
+    </BaseModal>
 
     <BaseModal
       v-model:open="offerModalOpen"
@@ -212,6 +335,22 @@ function formatDateTime(value: string): string {
         </p>
 
         <dl class="grid gap-3 rounded-2xl border border-ibbil-green/10 bg-[#fafbfa] p-4 sm:grid-cols-2">
+          <div v-if="pendingOffer?.driverName" class="sm:col-span-2">
+            <dt class="text-xs font-semibold text-foreground-muted">
+              {{ t('site.transport.request.driverName') }}
+            </dt>
+            <dd class="mt-1 text-sm font-bold text-ibbil-green">
+              {{ pendingOffer.driverName }}
+            </dd>
+          </div>
+          <div v-if="vehicleLabel" class="sm:col-span-2">
+            <dt class="text-xs font-semibold text-foreground-muted">
+              {{ t('site.transport.request.vehicleDetails') }}
+            </dt>
+            <dd class="mt-1 text-sm font-bold text-ibbil-green">
+              {{ vehicleLabel }}
+            </dd>
+          </div>
           <div>
             <dt class="text-xs font-semibold text-foreground-muted">
               {{ t('site.transport.request.driverOffer') }}
@@ -241,7 +380,7 @@ function formatDateTime(value: string): string {
             type="button"
             variant="outline"
             class="!border-red-200 !text-red-700 hover:!bg-red-50"
-            :disabled="isResponding"
+            :disabled="isResponding || isCancelling"
             :loading="respondingStatus === 'rejected'"
             @click="rejectPendingOffer"
           >
@@ -250,7 +389,7 @@ function formatDateTime(value: string): string {
           <BaseButton
             type="button"
             class="!bg-ibbil-green !text-white hover:!bg-ibbil-green-dark"
-            :disabled="isResponding"
+            :disabled="isResponding || isCancelling"
             :loading="respondingStatus === 'accepted'"
             @click="acceptPendingOffer"
           >

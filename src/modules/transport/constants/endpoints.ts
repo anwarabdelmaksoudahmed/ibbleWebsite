@@ -3,6 +3,8 @@ export const TRANSPORT_ENDPOINTS = {
   ALLOWED_VEHICLE_TYPES: '/allowed-vehicle-types',
   TRIP_REQUESTS: '/trip-requests',
   TRIP_REQUEST: (id: string | number) => `/trip-requests/${id}`,
+  /** PATCH trip-requests/:id/cancel — cancel while waiting for drivers */
+  TRIP_REQUEST_CANCEL: (id: string | number) => `/trip-requests/${id}/cancel`,
   OFFERS: '/offers',
   OFFER: (id: string | number) => `/offers/${id}`,
   /** Matches legacy: PATCH trips/:id/pay */
@@ -13,6 +15,8 @@ export const TRANSPORT_ENDPOINTS = {
   VEHICLE: (id: string | number) => `/vehicles/${id}`,
   /** Matches legacy website: PATCH users/fcm-token { fcm_token } */
   USER_FCM_TOKEN: '/users/fcm-token',
+  /** Live offers stream: GET /sse/user/:userId/stream (Bearer auth) */
+  USER_SSE_STREAM: (userId: string | number) => `/sse/user/${userId}/stream`,
 } as const
 
 /** Same IDs as marketplace / insurance (legacy transportation payment.vue). */

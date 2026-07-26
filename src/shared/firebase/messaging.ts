@@ -320,6 +320,9 @@ export type TransportPushPayload = {
   type?: string
   price?: string
   distance?: number
+  message?: string
+  reason?: string
+  driverName?: string
   raw?: Record<string, unknown>
 }
 
@@ -372,6 +375,9 @@ export function parseTransportPushPayload(
     type: fromBody.type || fromData.type,
     price: fromBody.price || fromData.price,
     distance: fromBody.distance ?? fromData.distance,
+    message: fromBody.message || fromData.message,
+    reason: fromBody.reason || fromData.reason,
+    driverName: fromBody.driverName || fromData.driverName,
     raw: fromBody.raw || fromData.raw,
   }
   console.log('[FCM] parsed transport payload', parsed)
@@ -392,6 +398,11 @@ export function parseTransportPushData(
         ? Number(distanceRaw)
         : undefined
 
+  const driverRecord = asRecord(nested.driver)
+  const driverName =
+    pick(nested, 'driverName', 'driver_name', 'name') ||
+    (driverRecord ? pick(driverRecord, 'name') : undefined)
+
   const parsed = {
     offerId: pick(nested, 'offerId', 'offer_id', 'offerID', 'OfferId'),
     tripRequestId: pick(
@@ -407,6 +418,9 @@ export function parseTransportPushData(
     type: pick(nested, 'type', 'event', 'notificationType'),
     price: pick(nested, 'price'),
     distance: Number.isFinite(distance) ? distance : undefined,
+    message: pick(nested, 'message', 'body', 'title', 'notification_message'),
+    reason: pick(nested, 'reason', 'rejectReason', 'reject_reason', 'cancellationReason'),
+    driverName,
     raw: nested,
   }
   console.log('[FCM] parsed push data', { source, parsed })

@@ -9,6 +9,7 @@ import type {
 } from '@modules/transport/types'
 import type {
   AcceptTransportOfferApiPayload,
+  CancelTransportTripRequestApiPayload,
   CreateTransportTripRequestApiPayload,
   PayTransportTripApiPayload,
   PayTransportTripApiResponse,
@@ -104,6 +105,13 @@ export class TransportTripsService {
   ): Promise<PayTransportTripApiResponse> {
     const response = await this.api.payTrip(tripId, payload)
     return unwrapPayTransportTripResponse(response)
+  }
+
+  async cancelTripRequest(
+    id: string | number,
+    payload: CancelTransportTripRequestApiPayload,
+  ): Promise<void> {
+    await this.api.cancelTripRequest(id, payload)
   }
 
   async cancelTrip(tripId: string | number): Promise<void> {

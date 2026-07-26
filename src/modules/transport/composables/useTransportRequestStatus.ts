@@ -4,6 +4,7 @@ import { getApiErrorMessage, normalizeApiError } from '@core/api/http/errors'
 import { TRANSPORT_QUERY_KEYS } from '@modules/transport/constants/query-keys'
 import { TRANSPORT_ROUTES } from '@modules/transport/constants/routes'
 import { getTransportTripsService } from '@modules/transport/services/trips.service'
+import { useTransportUserSse } from '@modules/transport/composables/useTransportUserSse'
 import { useFirebaseMessaging } from '@shared/firebase/useFirebaseMessaging'
 import type { TransportPushPayload } from '@shared/firebase/messaging'
 import {
@@ -12,6 +13,7 @@ import {
   type TransportTripRequestSnapshot,
 } from '@modules/transport/utils/trip-request-snapshot'
 import { saveTripPaymentSnapshot } from '@modules/transport/utils/trip-payment-snapshot'
+import type { TransportSseOfferPayload } from '@modules/transport/utils/sse-event-mappers'
 import type { AcceptedTransportTrip } from '@modules/transport/types'
 
 export type PendingDriverOffer = {
@@ -19,11 +21,22 @@ export type PendingDriverOffer = {
   tripRequestId?: string
   price?: string
   distance?: number
+  driverName?: string
+  vehiclePlate?: string
+  vehicleModel?: string
+  vehicleYear?: string
+  /** Where this offer was first observed (for console tracing). */
+  source?: 'sse' | 'fcm'
 }
+
+type OfferChannel = 'sse' | 'fcm'
 
 /**
  * Waiting room after trip-request create.
- * Firebase push delivers a driver offer → user accepts/rejects via modal.
+ *
+ * Offer sources (deduped by offerId):
+ * 1. Transport SSE  → GET /sse/user/:id/stream  (primary while page is open)
+ * 2. Firebase FCM   → fallback when tab backgrounded / notifications enabled
  */
 export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
   const { t } = useI18n()
@@ -40,6 +53,28 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
   const isResponding = ref(false)
   const dismissedOfferIds = new Set<string>()
   const handledOfferIds = new Set<string>()
+  /** Prevent double UI when the same offer arrives on SSE + FCM. */
+  const seenOfferIds = new Set<string>()
+
+  const {
+    connectionStatus: sseStatus,
+    streamUrl: sseUrl,
+    start: startSse,
+    stop: stopSse,
+  } = useTransportUserSse(() => ({
+    onOffer: (payload) => handleIncomingOffer(payload, 'sse'),
+    onDriverRejection: (payload) => {
+      console.log('[Waiting] SSE driver rejection', payload)
+      toast.warning(
+        payload.message ||
+          payload.reason ||
+          t('site.transport.request.driverRejectedToast'),
+      )
+    },
+    onUnknownEvent: (input) => {
+      console.warn('[Waiting] SSE unknown event', input)
+    },
+  }))
 
   onMounted(() => {
     snapshot.value = readTripRequestSnapshot(id.value)
@@ -47,7 +82,9 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
       requestId: id.value,
       snapshot: snapshot.value,
       permission: permission.value,
+      sseUrl: sseUrl.value,
     })
+    startSse()
     void syncToken()
   })
 
@@ -71,6 +108,17 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     },
   })
 
+  const cancelMutation = useMutation({
+    mutationFn: (reason: string) => {
+      console.log('[Waiting] PATCH /trip-requests/:id/cancel', { requestId: id.value, reason })
+      return getTransportTripsService().cancelTripRequest(id.value, { reason })
+    },
+    onError: (error) => {
+      console.error('[Waiting] cancel request failed', error)
+      toast.error(getApiErrorMessage(normalizeApiError(error)))
+    },
+  })
+
   async function goToPayment(trip: AcceptedTransportTrip) {
     clearTripRequestSnapshot()
     saveTripPaymentSnapshot({
@@ -84,32 +132,92 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     await navigateTo(localePath(TRANSPORT_ROUTES.REGISTER))
   }
 
-  function showOfferModal(payload: TransportPushPayload) {
+  function toPendingOffer(
+    payload: TransportPushPayload | TransportSseOfferPayload,
+    source: OfferChannel,
+  ): PendingDriverOffer | null {
     const offerId = String(payload.offerId || '').trim()
-    if (!offerId) return
-    if (handledOfferIds.has(offerId) || dismissedOfferIds.has(offerId)) {
-      console.log('[Waiting] offer ignored (already handled/dismissed)', offerId)
-      return
-    }
+    if (!offerId) return null
 
-    // If another offer modal is open, ignore newer ones until user responds.
-    if (offerModalOpen.value && pendingOffer.value?.offerId !== offerId) {
-      console.log('[Waiting] offer deferred — modal already open', {
-        open: pendingOffer.value?.offerId,
-        incoming: offerId,
-      })
-      return
-    }
-
-    pendingOffer.value = {
+    const sse = payload as TransportSseOfferPayload
+    return {
       offerId,
       tripRequestId: payload.tripRequestId,
       price: payload.price,
       distance: payload.distance,
+      driverName: sse.driverName || payload.driverName,
+      vehiclePlate: sse.vehiclePlate,
+      vehicleModel: sse.vehicleModel,
+      vehicleYear: sse.vehicleYear,
+      source,
     }
+  }
+
+  function handleIncomingOffer(
+    payload: TransportPushPayload | TransportSseOfferPayload,
+    source: OfferChannel,
+  ) {
+    console.log('[Waiting] incoming offer', { source, payload })
+
+    const matchesRequest = !payload.tripRequestId || payload.tripRequestId === id.value
+    if (!matchesRequest) {
+      console.log('[Waiting] offer ignored (different request)', {
+        source,
+        payloadTripRequestId: payload.tripRequestId,
+        currentRequestId: id.value,
+      })
+      return
+    }
+
+    const offer = toPendingOffer(payload, source)
+    if (!offer) {
+      console.warn('[Waiting] offer missing offerId', { source, payload })
+      return
+    }
+
+    if (handledOfferIds.has(offer.offerId) || dismissedOfferIds.has(offer.offerId)) {
+      console.log('[Waiting] offer ignored (already handled/dismissed)', {
+        source,
+        offerId: offer.offerId,
+      })
+      return
+    }
+
+    if (seenOfferIds.has(offer.offerId)) {
+      console.log('[Waiting] offer ignored (duplicate channel)', {
+        source,
+        offerId: offer.offerId,
+        alreadyOpen: pendingOffer.value?.offerId === offer.offerId,
+      })
+      // Enrich open modal if SSE arrives with richer driver/vehicle after a thin FCM push.
+      if (pendingOffer.value?.offerId === offer.offerId) {
+        pendingOffer.value = {
+          ...pendingOffer.value,
+          driverName: offer.driverName || pendingOffer.value.driverName,
+          vehiclePlate: offer.vehiclePlate || pendingOffer.value.vehiclePlate,
+          vehicleModel: offer.vehicleModel || pendingOffer.value.vehicleModel,
+          vehicleYear: offer.vehicleYear || pendingOffer.value.vehicleYear,
+          price: offer.price || pendingOffer.value.price,
+        }
+        console.log('[Waiting] enriched pending offer from', source, pendingOffer.value)
+      }
+      return
+    }
+
+    if (offerModalOpen.value && pendingOffer.value?.offerId !== offer.offerId) {
+      console.log('[Waiting] offer deferred — modal already open', {
+        source,
+        open: pendingOffer.value?.offerId,
+        incoming: offer.offerId,
+      })
+      return
+    }
+
+    seenOfferIds.add(offer.offerId)
+    pendingOffer.value = offer
     offerModalOpen.value = true
     toast.info(t('site.transport.request.offerReceived'))
-    console.log('[Waiting] offer modal opened', pendingOffer.value)
+    console.log('[Waiting] offer modal opened', { source, offer: pendingOffer.value })
   }
 
   async function respondToOffer(status: 'accepted' | 'rejected') {
@@ -135,13 +243,14 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
       pendingOffer.value = null
 
       if (status === 'accepted') {
+        stopSse()
         await goToPayment(trip)
         return
       }
 
       dismissedOfferIds.add(offer.offerId)
       toast.success(t('site.transport.request.rejectSuccess'))
-      console.log('[Waiting] offer rejected', offer.offerId)
+      console.log('[Waiting] offer rejected by user', { offerId: offer.offerId, source: offer.source })
     } catch {
       // keep modal open for retry
     } finally {
@@ -158,9 +267,30 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
   }
 
   function dismissOfferModal() {
-    // Closing without accept/reject just hides UI; offer can be reopened if push repeats.
-    // Prefer explicit reject for API cleanup.
     offerModalOpen.value = false
+  }
+
+  async function cancelRequest(reason: string): Promise<boolean> {
+    const trimmed = reason.trim()
+    if (!id.value || !trimmed || cancelMutation.isPending.value || isResponding.value) {
+      return false
+    }
+
+    try {
+      await cancelMutation.mutateAsync(trimmed)
+    } catch {
+      return false
+    }
+
+    stopSse()
+    clearTripRequestSnapshot()
+    snapshot.value = null
+    pendingOffer.value = null
+    offerModalOpen.value = false
+    await queryClient.invalidateQueries({ queryKey: TRANSPORT_QUERY_KEYS.root })
+    toast.success(t('site.transport.request.cancelSuccess'))
+    await navigateTo(localePath(TRANSPORT_ROUTES.ROOT), { replace: true })
+    return true
   }
 
   async function goToPaymentFromPush(tripId: string) {
@@ -173,14 +303,15 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     })
     await queryClient.invalidateQueries({ queryKey: TRANSPORT_QUERY_KEYS.root })
     toast.success(t('site.transport.request.tripCreatedPush'))
+    stopSse()
     await navigateTo(localePath(TRANSPORT_ROUTES.REGISTER))
   }
 
   const stopPush = onTransportPush((payload) => {
-    console.log('[Waiting] push received', payload)
+    console.log('[Waiting] FCM push received', payload)
     const matchesRequest = !payload.tripRequestId || payload.tripRequestId === id.value
     if (!matchesRequest) {
-      console.log('[Waiting] push ignored (different request)', {
+      console.log('[Waiting] FCM ignored (different request)', {
         payloadTripRequestId: payload.tripRequestId,
         currentRequestId: id.value,
       })
@@ -197,14 +328,16 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     }
 
     if (payload.offerId) {
-      showOfferModal(payload)
+      handleIncomingOffer(payload, 'fcm')
     } else {
-      console.warn('[Waiting] push without offerId', payload)
+      console.warn('[Waiting] FCM push without offerId', payload)
     }
   })
 
   onBeforeUnmount(() => {
+    console.log('[Waiting] unmount — stop SSE + FCM listener')
     stopPush()
+    stopSse()
   })
 
   return {
@@ -212,15 +345,18 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     pendingOffer,
     offerModalOpen,
     pushPermission: permission,
+    sseStatus,
     isResponding: computed(() => isResponding.value || respondMutation.isPending.value),
     respondingStatus: computed(() =>
       respondMutation.isPending.value
         ? (respondMutation.variables.value?.status ?? null)
         : null,
     ),
+    isCancelling: computed(() => cancelMutation.isPending.value),
     acceptPendingOffer,
     rejectPendingOffer,
     dismissOfferModal,
+    cancelRequest,
     enableNotifications: syncToken,
   }
 }

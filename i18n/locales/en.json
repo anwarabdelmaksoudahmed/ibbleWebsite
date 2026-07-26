@@ -864,7 +864,21 @@
         "offerPrice": "Offer price",
         "tripCreatedPush": "Your trip was created. Opening the payment step…",
         "goToTrips": "My trips",
-        "backHome": "Back to transport"
+        "backHome": "Back to transport",
+        "cancel": "Cancel request",
+        "cancelTitle": "Confirm cancellation",
+        "cancelConfirm": "Do you want to cancel this transport request? Drivers will no longer see it.",
+        "cancelReason": "Cancellation reason",
+        "cancelReasonPlaceholder": "Tell us why you are cancelling…",
+        "cancelReasonRequired": "Please enter a cancellation reason",
+        "cancelConfirmAction": "Confirm cancel",
+        "cancelSuccess": "Request cancelled. You can start a new one anytime.",
+        "driverName": "Driver name",
+        "vehicleDetails": "Vehicle details",
+        "sseConnected": "Live stream connected",
+        "sseConnecting": "Connecting to live stream…",
+        "sseError": "Live stream connection failed",
+        "driverRejectedToast": "The driver rejected your request"
       },
       "pay": {
         "seoTitle": "Pay Transport Trip | Ibbil",

@@ -864,7 +864,21 @@
         "offerPrice": "سعر العرض",
         "tripCreatedPush": "تم إنشاء رحلتك. جاري فتح خطوة الدفع…",
         "goToTrips": "رحلاتي",
-        "backHome": "العودة للنقل"
+        "backHome": "العودة للنقل",
+        "cancel": "إلغاء الطلب",
+        "cancelTitle": "تأكيد الإلغاء",
+        "cancelConfirm": "هل تريد إلغاء طلب النقل؟ لن يظهر الطلب للسائقين بعد الآن.",
+        "cancelReason": "سبب الإلغاء",
+        "cancelReasonPlaceholder": "اكتب سبب إلغاء الطلب…",
+        "cancelReasonRequired": "يرجى إدخال سبب الإلغاء",
+        "cancelConfirmAction": "تأكيد الإلغاء",
+        "cancelSuccess": "تم إلغاء الطلب. يمكنك إنشاء طلب جديد في أي وقت.",
+        "driverName": "اسم السائق",
+        "vehicleDetails": "بيانات المركبة",
+        "sseConnected": "البث المباشر متصل",
+        "sseConnecting": "جاري الاتصال بالبث المباشر…",
+        "sseError": "تعذر الاتصال بالبث المباشر",
+        "driverRejectedToast": "السائق رفض الطلب"
       },
       "pay": {
         "seoTitle": "دفع رحلة النقل | منصة إبل",

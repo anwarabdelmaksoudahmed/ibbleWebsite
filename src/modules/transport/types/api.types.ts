@@ -172,6 +172,10 @@ export type PayTransportTripApiPayload = {
   PIN_code?: string
 }
 
+export type CancelTransportTripRequestApiPayload = {
+  reason: string
+}
+
 /** Wallet settles immediately. */
 export type PayTransportTripWalletApiResponse = {
   message?: string

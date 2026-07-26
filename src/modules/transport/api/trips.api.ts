@@ -4,6 +4,7 @@ import { TRANSPORT_ENDPOINTS } from '@modules/transport/constants/endpoints'
 import type {
   AcceptTransportOfferApiPayload,
   AcceptTransportOfferApiResponse,
+  CancelTransportTripRequestApiPayload,
   CreateTransportTripRequestApiPayload,
   PayTransportTripApiPayload,
   PayTransportTripApiResponse,
@@ -163,6 +164,18 @@ export class TransportTripsApi {
   ): Promise<PayTransportTripApiResponse> {
     return this.client
       .patch<PayTransportTripApiResponse>(TRANSPORT_ENDPOINTS.TRIP_PAY(tripId), payload, {
+        baseURL: this.baseUrl,
+        skipErrorToast: true,
+      })
+      .then((response) => response.data)
+  }
+
+  cancelTripRequest(
+    id: string | number,
+    payload: CancelTransportTripRequestApiPayload,
+  ): Promise<unknown> {
+    return this.client
+      .patch(TRANSPORT_ENDPOINTS.TRIP_REQUEST_CANCEL(id), payload, {
         baseURL: this.baseUrl,
         skipErrorToast: true,
       })
