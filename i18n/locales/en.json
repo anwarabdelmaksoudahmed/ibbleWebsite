@@ -34,7 +34,9 @@
       "nextMonth": "Next month"
     },
     "timePicker": {
-      "placeholder": "Select a time"
+      "placeholder": "Select a time",
+      "hour": "Hour",
+      "minute": "Minute"
     },
     "pagination": {
       "label": "Pagination",
@@ -845,7 +847,7 @@
         "offersTitle": "Driver offers",
         "offersHint": "When a driver offer arrives via notification it is accepted automatically. You can also accept manually.",
         "driverOffer": "Driver offer",
-        "waitingTitle": "Waiting for Firebase notification",
+        "waitingTitle": "Waiting for driver response",
         "waitingDescription": "Allow notifications if prompted. When the driver responds we call the offer endpoint and create your trip.",
         "enableNotificationsTitle": "Enable notifications",
         "enableNotificationsHint": "Allow browser notifications so you get the driver response immediately.",

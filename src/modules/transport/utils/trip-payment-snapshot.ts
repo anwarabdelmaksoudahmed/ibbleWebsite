@@ -5,6 +5,8 @@ export const TRANSPORT_PAY_WINDOW_MS = 15 * 60 * 1000
 
 export type TransportTripPaymentSnapshot = {
   tripId: string
+  /** The trip-request that originated this trip — used for cancellation. */
+  tripRequestId: string
   vehicleId: string
   price: number
   /** Epoch ms — payment must complete before this. */
@@ -16,6 +18,7 @@ export function saveTripPaymentSnapshot(
 ): void {
   const snapshot: TransportTripPaymentSnapshot = {
     tripId: String(input.tripId),
+    tripRequestId: String(input.tripRequestId || ''),
     vehicleId: String(input.vehicleId || ''),
     price: Number(input.price) || 0,
     expiresAt: input.expiresAt ?? Date.now() + TRANSPORT_PAY_WINDOW_MS,

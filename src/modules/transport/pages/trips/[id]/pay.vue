@@ -25,6 +25,7 @@ onMounted(async () => {
   if (id && !readTripPaymentSnapshot(id)) {
     saveTripPaymentSnapshot({
       tripId: id,
+      tripRequestId: String(route.query.tripRequestId || ''),
       vehicleId: '',
       price: Number(route.query.price) || 0,
     })

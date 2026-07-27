@@ -123,6 +123,7 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     clearTripRequestSnapshot()
     saveTripPaymentSnapshot({
       tripId: trip.id,
+      tripRequestId: id.value,
       vehicleId: trip.vehicleId,
       price: trip.price || snapshot.value?.price || 0,
     })
@@ -298,6 +299,7 @@ export function useTransportRequestStatus(requestId: MaybeRefOrGetter<string>) {
     clearTripRequestSnapshot()
     saveTripPaymentSnapshot({
       tripId,
+      tripRequestId: id.value,
       vehicleId: '',
       price: snapshot.value?.price || 0,
     })

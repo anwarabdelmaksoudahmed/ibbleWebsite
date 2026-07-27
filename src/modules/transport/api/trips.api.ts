@@ -182,15 +182,6 @@ export class TransportTripsApi {
       .then((response) => response.data)
   }
 
-  cancelTrip(tripId: string | number): Promise<unknown> {
-    return this.client
-      .patch(TRANSPORT_ENDPOINTS.TRIP_CANCEL(tripId), undefined, {
-        baseURL: this.baseUrl,
-        skipErrorToast: true,
-      })
-      .then((response) => response.data)
-  }
-
   getVehicle(vehicleId: string | number): Promise<TransportVehicleApiResponse> {
     return this.client
       .get<TransportVehicleApiResponse>(TRANSPORT_ENDPOINTS.VEHICLE(vehicleId), {

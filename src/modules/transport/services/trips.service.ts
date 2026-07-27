@@ -114,10 +114,6 @@ export class TransportTripsService {
     await this.api.cancelTripRequest(id, payload)
   }
 
-  async cancelTrip(tripId: string | number): Promise<void> {
-    await this.api.cancelTrip(tripId)
-  }
-
   async getVehicle(vehicleId: string | number): Promise<TransportVehicleDetails> {
     const response = await this.api.getVehicle(vehicleId)
     return mapTransportVehicleResponse(response)

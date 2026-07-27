@@ -32,7 +32,6 @@ const { t } = useI18n()
       aria-hidden="true"
     />
 
-    <!-- ============ Brand composition: Ibbil camel + contextual badge ============ -->
     <div
       v-if="variant === 'brand'"
       class="empty-state__icon relative mb-6"
@@ -61,7 +60,6 @@ const { t } = useI18n()
       <span class="empty-state__dot absolute -top-4 end-5 size-1 rounded-full bg-ibbil-gold/40" />
     </div>
 
-    <!-- ============ Default (admin / neutral) composition ============ -->
     <div
       v-else
       class="empty-state__icon relative mb-5"
@@ -93,9 +91,6 @@ const { t } = useI18n()
       <span class="h-px w-6 rounded-full bg-gradient-to-l from-transparent to-ibbil-gold/60" />
     </div>
 
-    <p class="empty-state__description relative mt-2 max-w-md text-sm leading-relaxed text-foreground-muted">
-      {{ description ?? t('common.emptyDescription') }}
-    </p>
 
     <div
       v-if="$slots.default"

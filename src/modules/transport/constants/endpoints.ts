@@ -9,8 +9,6 @@ export const TRANSPORT_ENDPOINTS = {
   OFFER: (id: string | number) => `/offers/${id}`,
   /** Matches legacy: PATCH trips/:id/pay */
   TRIP_PAY: (id: string | number) => `/trips/${id}/pay`,
-  /** Matches legacy: PATCH trips/:id/cancel */
-  TRIP_CANCEL: (id: string | number) => `/trips/${id}/cancel`,
   /** Matches legacy: GET vehicles/:id */
   VEHICLE: (id: string | number) => `/vehicles/${id}`,
   /** Matches legacy website: PATCH users/fcm-token { fcm_token } */

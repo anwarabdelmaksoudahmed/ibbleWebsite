@@ -82,8 +82,14 @@ export function useTransportTripPay(tripId: MaybeRefOrGetter<string>) {
     }
   })
 
+  const tripRequestId = computed(() => snapshot.value?.tripRequestId || '')
+
   const cancelMutation = useMutation({
-    mutationFn: () => getTransportTripsService().cancelTrip(id.value),
+    mutationFn: () => {
+      const reqId = tripRequestId.value
+      if (!reqId) throw new Error('Missing tripRequestId for cancellation')
+      return getTransportTripsService().cancelTripRequest(reqId, { reason: 'user_cancelled' })
+    },
   })
 
   watch(isExpired, (expired) => {
